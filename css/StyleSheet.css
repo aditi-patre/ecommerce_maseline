@@ -1,0 +1,84 @@
+﻿body {
+	margin: 0;
+	padding: 0;
+}
+.logo
+{
+    float:left;
+}
+#header
+{
+    background:url(../images/header-bg.gif) repeat-x;
+    height: 130px;
+    width:100%;
+}
+.dvLogin
+{
+    float:right;
+    vertical-align :bottom;
+    margin-top: 95px;
+}
+
+.textbox
+{
+    height:25px;
+}
+
+/*For grid*/
+.mSearchGrid
+{
+    width: 100%;
+    background-color: #fff;
+    margin: 5px 0 5px 0;
+    border: solid 1px #525252;
+    border-collapse: inherit;
+}
+.mSearchGrid td
+{
+    border: 1px solid #c1c1c1;
+}
+.mSearchGrid th
+{
+    padding: 4px 2px;
+    color: #fff;
+    background: #424242 url(grd_head.png) repeat-x top;
+    border-left: solid 1px #525252;
+    font-size: 20px;
+    text-align: left;
+}
+.mSearchGrid .alt
+{
+    background: #fcfcfc url(grd_alt.png) repeat-x top;
+}
+.mSearchGrid .Row
+{
+    background: #CFDCF3;
+}
+.mSearchGrid .pgr
+{
+    background: #CFDCF3;
+}
+.mSearchGrid .pgr table
+{
+    margin: 5px 0;
+}
+.mSearchGrid .pgr td
+{
+    border-width: 0;
+    padding: 0 6px;
+    border-left: solid 1px #666;
+    font-weight: bold;
+    color: red;
+    line-height: 12px;
+}
+.mSearchGrid .pgr a
+{
+    color: black;
+    text-decoration: none;
+}
+.mSearchGrid .pgr a:hover
+{
+    color: #000;
+    text-decoration: none;
+}
+/* grid end*/
