@@ -6,18 +6,35 @@ using System.Linq;
 using System.Web;
 
 /// <summary>
-/// Summary description for Manufacturer
+/// Summary description for Attribute
 /// </summary>
-public class Manufacturer
+public class Attribute
 {
     #region Properties
-    public int ManufacturerID
-    { get;set;}
+
+    public int AttributeID
+    { get; set; }
+
+    public string ShortCode
+    { get; set; }
 
     public string Name
     { get; set; }
+
+    public int CategoryID
+    { get; set; }
+
+    public int SubCategoryID
+    { get; set; }
+
+    public string C_ShortCode
+    { get; set; }
+
+    public string S_ShortCode
+    { get; set; }
     #endregion
-    public Manufacturer()
+
+    public Attribute()
 	{
 		//
 		// TODO: Add constructor logic here
@@ -30,7 +47,7 @@ public class Manufacturer
         SqlParameter[] sqlParams = new SqlParameter[0];
         try
         {
-            dt = SqlHelper.ExecuteDataSet("ManufacturerGetList", CommandType.StoredProcedure, sqlParams).Tables[0];
+            dt = SqlHelper.ExecuteDataSet("AttributeGetList", CommandType.StoredProcedure, sqlParams).Tables[0];
         }
         catch (Exception ex)
         {

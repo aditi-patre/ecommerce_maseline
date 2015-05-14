@@ -82,3 +82,14 @@
     text-decoration: none;
 }
 /* grid end*/
+
+.CheckBoxContainer
+{
+    width:200px; height:300px; overflow-y:auto;
+}
+
+.DynamicDialogStyle
+        {
+            background-color: #F7FAFE;
+            font-size: small;
+        }

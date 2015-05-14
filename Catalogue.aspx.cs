@@ -28,9 +28,9 @@ public partial class Catalogue : System.Web.UI.Page
                 ltCatalogue.Text = GetCategories(Category, SubCategory);
             else
             {
-                GetProducts("", "", "", "");
-                PopulateSearchCriteria();
+                GetProducts("", "", "", "",false,false);
             }
+            PopulateSearchCriteria();
         }
     }
 
@@ -125,7 +125,7 @@ public partial class Catalogue : System.Web.UI.Page
             }
             catch (Exception ex)
             {
-                
+
             }
         }
     }
@@ -140,16 +140,16 @@ public partial class Catalogue : System.Web.UI.Page
             }
             catch (Exception ex)
             {
-               
+
             }
         }
     }
 
-    private void GetProducts(string CategoryID, string SubCategoryID, string ManufacturerID, string Attributes)
+    private void GetProducts(string CategoryID, string SubCategoryID, string ManufacturerID, string Attributes, bool IsInStock, bool IsPricingAvailable)
     {
         Product objP = new Product();
         DataTable dt = new DataTable();
-        dt = objP.GetList(CategoryID, SubCategoryID, ManufacturerID, Attributes);
+        dt = objP.GetList(CategoryID, SubCategoryID, ManufacturerID, Attributes, IsInStock, IsPricingAvailable).Tables[0];
         if (dt != null)
         {
             gvProducts.DataSource = dt;
@@ -159,7 +159,108 @@ public partial class Catalogue : System.Web.UI.Page
 
     private void PopulateSearchCriteria()
     {
-        DataTable dtManufacturer = new DataTable();
+        DataTable dt = new DataTable();
+        Manufacturer objM = new Manufacturer();
+        dt = objM.GetList();
+        chkManufacturer.DataSource = dt;
+        chkManufacturer.DataTextField = "Name";
+        chkManufacturer.DataValueField = "ManufacturerID";
+        chkManufacturer.DataBind();
 
+        Category objC = new Category();
+        dt = objC.CategoriesList();
+        chkCategory.DataSource = dt;
+        chkCategory.DataTextField = "Name";
+        chkCategory.DataValueField = "ShortCode";
+        chkCategory.DataBind();
+
+        SubCategory objS = new SubCategory();
+        dt = objS.GetList();
+        chkSubCategory.DataSource = dt;
+        chkSubCategory.DataTextField = "Name";
+        chkSubCategory.DataValueField = "S_ShortCode";
+        chkSubCategory.DataBind();
+
+        string filter = "";
+        Attribute objA = new Attribute();
+        dt = objA.GetList();
+        if (chkCategory.Items.Cast<ListItem>().Count(li => li.Selected) > 0)
+        {
+            foreach (ListItem itm in chkCategory.Items)
+            {
+                if (itm.Selected)
+                    filter = (filter == "") ? "C_ShortCode ='" + itm.Value + "'" : "or C_ShortCode ='" + itm.Value + "'";
+            }
+        }
+
+        if (chkSubCategory.Items.Cast<ListItem>().Count(li => li.Selected) > 0)
+        {
+            foreach (ListItem itm in chkSubCategory.Items)
+            {
+                if (itm.Selected)
+                    filter = (filter == "") ? "S_ShortCode ='" + itm.Value + "'" : "or S_ShortCode ='" + itm.Value + "'";
+            }
+        }
+        if (filter != "")
+        {
+            if (dt.Select(filter).Length > 0)
+            {
+                dt = dt.Select(filter).CopyToDataTable();
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<table>");
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            sb.Append("<tr><td>" + dt.Rows[i]["Name"] + ": </td><td><input type=\"text\" name='" + dt.Rows[i]["AttributeID"] + "' id='" + dt.Rows[i]["AttributeID"] + "' runat=\"server\" style=\" width:80px;\" /><br/></td></tr>");
+        }
+        sb.Append("</table>");
+        ltAttributes.Text = sb.ToString();
     }
+
+    protected void btnApplyFilter_Click(object sender, EventArgs e)
+    {
+        ltCatalogue.Text = "";
+        GetProducts(hdnCategory.Value, hdnSubCategory.Value, hdnManufacturer.Value, hdnAttributes.Value, Convert.ToBoolean(hdnInStock.Value), Convert.ToBoolean(hdnPricingAvailable.Value));
+    }
+
+    //private string GetSelectedManufacturer()
+    //{
+    //    string Cat = "";
+    //    foreach (ListItem item in chkManufacturer.Items) 
+    //    {
+    //        if (item.Selected)
+    //        {
+    //            Cat = Cat == "" ? item.Value : Cat + ", " + item.Value;
+    //        }
+    //    }
+    //    return Cat;
+    //}
+
+    //private string GetSelectedCategories()
+    //{
+    //    string Cat = "";
+    //    foreach (ListItem item in chkCategory.Items)
+    //    {
+    //        if (item.Selected)
+    //        {
+    //            Cat = Cat == "" ? item.Value : Cat + ", " + item.Value;
+    //        }
+    //    }
+    //    return Cat;
+    //}
+
+    //private string GetSelectedSubCategories()
+    //{
+    //    string Cat = "";
+    //    foreach (ListItem item in chkSubCategory.Items)
+    //    {
+    //        if (item.Selected)
+    //        {
+    //            Cat = Cat == "" ? item.Value : Cat + ", " + item.Value;
+    //        }
+    //    }
+    //    return Cat;
+    //}
 }
