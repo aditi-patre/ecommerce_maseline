@@ -28,7 +28,7 @@ public partial class Catalogue : System.Web.UI.Page
                 ltCatalogue.Text = GetCategories(Category, SubCategory);
             else
             {
-                GetProducts("", "", "", "",false,false);
+                GetProducts("", "", "", "", false, false);
             }
             PopulateSearchCriteria();
         }
@@ -101,31 +101,73 @@ public partial class Catalogue : System.Web.UI.Page
         {
             try
             {
+                Literal ltPricing = (Literal)e.Row.FindControl("ltPricing");
+                //when pricing as per qty NA
                 Label lblInventory = (Label)e.Row.FindControl("lblInventory");
                 Button btnGetPrice = (Button)e.Row.FindControl("btnGetPrice");
-                if (lblInventory.Text == "0")
-                    lblInventory.Text = "Unavailable";
-                if (Convert.ToInt32(lblInventory.Text) <= 0)
-                {
-                    lblInventory.Text = "Requires Quote";
-                    btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "block");
-                }
-                else
-                    btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
-
                 Label lblPrice = (Label)e.Row.FindControl("lblPrice");
-                Button btnCallAvail = (Button)e.Row.FindControl("btnCallAvail");
-                if (Convert.ToInt32(lblPrice.Text) <= 0)
+                Label lblPricing = (Label)e.Row.FindControl("lblPricing");
+                //[-]
+                if (lblPricing.Text == "")
                 {
-                    lblPrice.Text = "Requires Quote";
-                    btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "block");
+                    lblInventory.Style.Add(HtmlTextWriterStyle.Display, "block");
+                    lblPrice.Style.Add(HtmlTextWriterStyle.Display, "block");
+                    if (lblInventory.Text == "0")
+                        lblInventory.Text = "Unavailable";
+                    if (Convert.ToInt32(lblInventory.Text) <= 0)
+                    {
+                        lblInventory.Text = "Requires Quote";
+                        btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "block");
+                    }
+                    else
+                        btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
+                    ltPricing.Visible = false;
+
+                    Button btnCallAvail = (Button)e.Row.FindControl("btnCallAvail");
+                    if (Convert.ToInt32(lblPrice.Text) <= 0)
+                    {
+                        lblPrice.Text = "Requires Quote";
+                        btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "block");
+                    }
+                    else
+                        btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "none");
                 }
-                else
-                    btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "none");
+                else //display pricing as per quantity table
+                {
+                    lblInventory.Style.Add(HtmlTextWriterStyle.Display, "none");
+                    btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
+                    lblPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
+                   
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("<table>");
+                    sb.Append("<tr><td>Quantity</td><td>Price Per Unit</td></tr>");
+                    string[] arrPricing = lblPricing.Text.Split(',');
+                    string Qty = "";
+                    for (int i = 0; i < arrPricing.Length; i++)
+                    {
+                        sb.Append("<tr>");
+                        string[] arrQtyPrice = arrPricing[i].Split('|');
+                        for (int j = 0; j < arrQtyPrice.Length; j++)
+                        {
+                            if (j > 0 && j % 2 == 0)
+                            {
+                                sb.Append("<td>" + Qty + "</td>");
+                                sb.Append("<td>" + arrQtyPrice[j] + "</td>");
+                                Qty = "";
+                            }
+                            else
+                            {
+                                Qty = Qty == "" ? arrQtyPrice[j] : Qty + " - " + arrQtyPrice[j];
+                            }
+                        }
+                        sb.Append("</tr>");
+                    }
+                    sb.Append("</table>");
+                    ltPricing.Text = sb.ToString();
+                }
             }
             catch (Exception ex)
             {
-
             }
         }
     }
@@ -189,7 +231,7 @@ public partial class Catalogue : System.Web.UI.Page
             foreach (ListItem itm in chkCategory.Items)
             {
                 if (itm.Selected)
-                    filter = (filter == "") ? "C_ShortCode ='" + itm.Value + "'" : "or C_ShortCode ='" + itm.Value + "'";
+                    filter = (filter == "") ? "C_ShortCode ='" + itm.Value + "'" : "or C_ShortCode ='" + itm.Value + "'";// (filter == "") ? "C_ShortCode ='" + itm.Value + "'" : "or C_ShortCode ='" + itm.Value + "'";
             }
         }
 

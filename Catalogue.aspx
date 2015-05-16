@@ -18,6 +18,7 @@
             window.location("Catalogue.aspx?a=x");
         }
 
+        /*
         $(document).ready(function () {
             $("#btnApplyFilter1").click(function () {
                 $.support.cors = true;
@@ -49,6 +50,7 @@
                 });
             });
         });
+        */
 
         /* Set search parameters in hidden fields*/
         function SetSearchFields(x) {
@@ -339,6 +341,8 @@
                                 <span>
                                     <span style="float: left;">
                                         <asp:Label ID="lblPrice" runat="server" Text='<%# Eval("Price") %>'></asp:Label>
+                                        <asp:Label ID="lblPricing" runat="server" Text='<%# Eval("Pricing") %>' Style="display: none;"></asp:Label>
+                                        <asp:Literal ID="ltPricing" runat="server"></asp:Literal>
                                     </span>
                                     <span style="float: right;">
                                         <asp:Button ID="btnGetPrice" runat="server" Text="Request Quote" /></span>
@@ -348,7 +352,9 @@
                         <asp:TemplateField HeaderText="Inventory" ItemStyle-Width="35%">
                             <ItemTemplate>
                                 <asp:Label ID="lblInventory" runat="server" Text='<%# Eval("Inventory") %>'></asp:Label>
-                                <asp:Button ID="btnCallAvail" runat="server" Text="Call for Availability" />
+                                <div style="text-align:center;">
+                                    <asp:Button ID="btnCallAvail" runat="server" Text="Call for Availability" />
+                                </div>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

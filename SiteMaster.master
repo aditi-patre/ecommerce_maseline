@@ -17,6 +17,13 @@
 
     <%--    <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>--%>
+    <script type="text/javascript">
+        $(function () {
+            document.getElementById("btnSignUp").onclick = function () {
+                location.href = "Registeration.aspx";
+            };
+        })
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -28,10 +35,10 @@
                             <img src="images/logo_reconstruction5_1.png" alt="Home" />
                         </a>
                         <div class="dvLogin">
-                            <button type="button" class="btn btn-info">
+                            <button type="button" class="btn btn-info" id="btnSignUp">
                                 Signup
                             </button>
-                            <button type="button" class="btn btn-info">
+                            <button type="button" class="btn btn-info" id="btnLogin">
                                 Login
                             </button>
                         </div>

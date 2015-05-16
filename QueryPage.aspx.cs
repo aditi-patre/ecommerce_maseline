@@ -13,6 +13,7 @@ public partial class QueryPage : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+
     }
 
     [WebMethod]
@@ -64,7 +65,7 @@ public partial class QueryPage : System.Web.UI.Page
                 chkM = ConvertDataTable<ManufacturerItem>(dtM);
                 JavaScriptSerializer ser = new JavaScriptSerializer();
                 return ser.Serialize(chkM);
-            }            
+            }
             else if (CriteriaToExpand == "Sub-Category")
             {
                 SubCategory objM = new SubCategory();
@@ -87,6 +88,32 @@ public partial class QueryPage : System.Web.UI.Page
         {
             return null;
         }
+    }
+
+    [WebMethod]
+    public static string Register(string UserName, string Password)
+    {
+        bool RetVal = false;
+        Output objMsg = new Output();
+        if (UserName != "" && Password != "")
+        {
+            if (UserInfo.UserExists(UserName))
+            {
+                RetVal = false;
+                objMsg.Message = "UserName in use, please select another user.";
+            }
+            else
+            {
+                if (UserInfo.AddUser(UserName, Password))
+                {
+                    RetVal = true;
+                    objMsg.Message = "User added successfully.";
+                }
+            }
+        }
+        objMsg.IsSuccess = RetVal;
+        JavaScriptSerializer js = new JavaScriptSerializer();
+        return js.Serialize(objMsg);
     }
 
     private static List<T> ConvertDataTable<T>(DataTable dt)
@@ -133,4 +160,10 @@ public class CategoryItem
 {
     public int Value { get; set; }
     public string Name { get; set; }
+}
+
+public class Output
+{
+    public bool IsSuccess { get; set; }
+    public string Message { get; set; }
 }

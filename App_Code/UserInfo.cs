@@ -57,11 +57,13 @@ public class UserInfo
         Guid UserGuid = System.Guid.NewGuid();
         string hashedPassword = Security.HashSHA1(password + UserGuid.ToString());
 
-        SqlParameter[] sqlParams = new SqlParameter[3];
-        sqlParams[0] = new SqlParameter("@UserID", username);
+        SqlParameter[] sqlParams = new SqlParameter[4];
+        sqlParams[0] = new SqlParameter("@UserID", 0);
         sqlParams[0].Direction = ParameterDirection.Output;
-        sqlParams[1] = new SqlParameter("@Password", password);
-        sqlParams[2] = new SqlParameter("@UserGuid", UserGuid);
+        sqlParams[1] = new SqlParameter("@UserName", username);
+        sqlParams[2] = new SqlParameter("@Password", password);
+        sqlParams[3] = new SqlParameter("@UserGuid", UserGuid);
+        
         int i = SqlHelper.ExecuteNonQuery("UserInsert", CommandType.StoredProcedure, sqlParams);
         return true;
     }
@@ -90,6 +92,25 @@ public class UserInfo
             con.Close();
         }
         return userId;
+    }
+   
+    public static bool UserExists(string username)
+    {
+        int userId = 0;
+        SqlConnection con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString());
+        using (SqlCommand cmd = new SqlCommand("SELECT count(UserID) as cnt FROM [Users] WHERE UserName=@username", con))
+        {
+            cmd.Parameters.AddWithValue("@username", username);
+            con.Open();           
+
+            SqlDataReader dr = cmd.ExecuteReader();            
+            while (dr.Read())
+            {
+                userId = Convert.ToInt32(dr["cnt"]);
+            }
+            con.Close();
+        }
+        return (userId > 0);
     }
     #endregion
 }
