@@ -107,7 +107,7 @@ public partial class QueryPage : System.Web.UI.Page
                 if (UserInfo.AddUser(UserName, Password))
                 {
                     RetVal = true;
-                    objMsg.Message = "User added successfully.";
+                    objMsg.Message = "User registered successfully.";
                 }
             }
         }
@@ -143,6 +143,54 @@ public partial class QueryPage : System.Web.UI.Page
         }
         return obj;
     }
+
+    [WebMethod]
+    public static string AddToCart(string ProductID)
+    {
+        int CartItemCount = ShoppingCart.Instance.AddItem(Convert.ToInt32(ProductID));
+        JavaScriptSerializer ser = new JavaScriptSerializer();
+        return ser.Serialize(CartItemCount.ToString());
+    }
+
+    [WebMethod]
+    public static string ComputePrice(string Qty, string Index)
+   {
+        //List<CartItem> obj = ShoppingCart.Instance.Items;
+        Output objMsg = new Output();
+        if (Convert.ToInt32(Qty) > ShoppingCart.Instance.Items[Convert.ToInt32(Index)].Inventory)
+        {
+            ShoppingCart.Instance.Items[Convert.ToInt32(Index)].Quantity = 0;
+            objMsg.IsSuccess = false;
+            objMsg.Message = "The specified quantity is unavailable";
+        }
+        else
+        {
+            ShoppingCart.Instance.Items[Convert.ToInt32(Index)].Quantity = Convert.ToInt32(Qty);
+            objMsg.IsSuccess = true;
+            objMsg.Message = ShoppingCart.Instance.Items[Convert.ToInt32(Index)].Price.ToString();
+        }
+        objMsg.TotalAmt = ShoppingCart.Instance.GetSubTotal().ToString();
+        JavaScriptSerializer js = new JavaScriptSerializer();
+        return js.Serialize(objMsg);
+    }
+
+    [WebMethod]
+    public string Checkout(string CartHasItems)
+    {
+        Output objMsg = new Output();
+         if (HttpContext.Current.Session["User"] == null)
+         {
+             objMsg.IsSuccess = false;
+             objMsg.Message = "Please login to continue";
+         }
+         else
+         {
+             objMsg.IsSuccess = true;
+             objMsg.Message = Convert.ToString(HttpContext.Current.Session["User"]);
+         }
+         JavaScriptSerializer js = new JavaScriptSerializer();
+         return js.Serialize(objMsg);
+    }
 }
 public class ManufacturerItem
 {
@@ -166,4 +214,6 @@ public class Output
 {
     public bool IsSuccess { get; set; }
     public string Message { get; set; }
+
+    public string TotalAmt { get; set; }
 }

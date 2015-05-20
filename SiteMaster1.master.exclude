@@ -1,7 +1,5 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="SiteMaster.master.cs" Inherits="SiteMaster" %>
-
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="SiteMaster1.master.cs" Inherits="SiteMaster1" %>
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
@@ -42,7 +40,7 @@
                 },
                 open: function (event, ui) {
                     $('#dvCartPopUp').load('ViewCart.aspx', function () {
-
+                        
                     });
                 }
             });
@@ -75,7 +73,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-            <table style="width: 100%;">
+        <table style="width: 100%;">
             <tr>
                 <td colspan="2">
                     <div id="header">
@@ -97,7 +95,7 @@
                                 Login
                             </button>--%>
                             <asp:Label ID="lblUser" runat="server" style="display:none"></asp:Label>
-                            <asp:Button class="btn btn-info" id="btnLogOut" runat="server" visible="false" onclick="btnLogOut_Click" Text="LogOut"/>                            
+                          <asp:Button class="btn btn-info" id="btnLogOut" runat="server" visible="false" onclick="btnLogOut_Click" Text="LogOut"/>                            
                         </div>
                         <div class="dvLogin" style="padding-right: 200px;">
                             <table>

@@ -101,40 +101,47 @@ public partial class Catalogue : System.Web.UI.Page
         {
             try
             {
+                bool IsPriceAvail = false, IsAvail = false;
                 Literal ltPricing = (Literal)e.Row.FindControl("ltPricing");
-                //when pricing as per qty NA
                 Label lblInventory = (Label)e.Row.FindControl("lblInventory");
+                lblInventory.Style.Add(HtmlTextWriterStyle.Display, "block");
+                Button btnCallAvail = (Button)e.Row.FindControl("btnCallAvail");
+
+                //when pricing as per qty NA                
                 Button btnGetPrice = (Button)e.Row.FindControl("btnGetPrice");
                 Label lblPrice = (Label)e.Row.FindControl("lblPrice");
                 Label lblPricing = (Label)e.Row.FindControl("lblPricing");
                 //[-]
-                if (lblPricing.Text == "")
+                //System.Web.UI.HtmlControls.HtmlButton btnAddToCart = (System.Web.UI.HtmlControls.HtmlButton)e.Row.FindControl("btnAddToCart");
+                Button btnAddToCart = (Button)e.Row.FindControl("btnAddToCart");
+                if (Convert.ToInt32(lblInventory.Text) <= 0)
+                    btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "block");
+                else
                 {
-                    lblInventory.Style.Add(HtmlTextWriterStyle.Display, "block");
-                    lblPrice.Style.Add(HtmlTextWriterStyle.Display, "block");
-                    if (lblInventory.Text == "0")
-                        lblInventory.Text = "Unavailable";
-                    if (Convert.ToInt32(lblInventory.Text) <= 0)
+                    btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "none");
+                    IsAvail = true;
+                }
+                if (lblInventory.Text == "0")
+                    lblInventory.Text = "Unavailable";
+
+                if (lblPricing.Text == "")
+                {                    
+                    lblPrice.Style.Add(HtmlTextWriterStyle.Display, "block");                    
+                    ltPricing.Visible = false;
+                    if (Convert.ToDouble(lblPrice.Text) <= 0)
                     {
-                        lblInventory.Text = "Requires Quote";
+                        lblPrice.Text = "Requires Quote";
                         btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "block");
                     }
                     else
-                        btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
-                    ltPricing.Visible = false;
-
-                    Button btnCallAvail = (Button)e.Row.FindControl("btnCallAvail");
-                    if (Convert.ToInt32(lblPrice.Text) <= 0)
                     {
-                        lblPrice.Text = "Requires Quote";
-                        btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "block");
+                        IsPriceAvail = true;
+                        btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
                     }
-                    else
-                        btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "none");
                 }
                 else //display pricing as per quantity table
                 {
-                    lblInventory.Style.Add(HtmlTextWriterStyle.Display, "none");
+                    //lblInventory.Style.Add(HtmlTextWriterStyle.Display, "none");
                     btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
                     lblPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
                    
@@ -164,7 +171,16 @@ public partial class Catalogue : System.Web.UI.Page
                     }
                     sb.Append("</table>");
                     ltPricing.Text = sb.ToString();
+                    IsPriceAvail = true;
                 }
+                if (IsPriceAvail && IsAvail)
+                    btnAddToCart.Style.Add(HtmlTextWriterStyle.Display, "block");
+                else
+                    btnAddToCart.Style.Add(HtmlTextWriterStyle.Display, "none");
+                
+                //Display none, as currently such a situatio may not arise
+                btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
+                btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "none");
             }
             catch (Exception ex)
             {
@@ -267,6 +283,8 @@ public partial class Catalogue : System.Web.UI.Page
         GetProducts(hdnCategory.Value, hdnSubCategory.Value, hdnManufacturer.Value, hdnAttributes.Value, Convert.ToBoolean(hdnInStock.Value), Convert.ToBoolean(hdnPricingAvailable.Value));
     }
 
+    
+
     //private string GetSelectedManufacturer()
     //{
     //    string Cat = "";
@@ -305,4 +323,5 @@ public partial class Catalogue : System.Web.UI.Page
     //    }
     //    return Cat;
     //}
+
 }

@@ -8,10 +8,7 @@
 
     <%--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>--%>
     <link rel="Stylesheet" href="css/StyleSheet.css" />
-    <%--For  popUp--%>
-    <link rel="stylesheet" href="css/jquery-ui.css" />
-    <script src="js/jquery-1.10.2.js"></script>
-    <script src="js/jquery-ui.js"></script>
+
 
     <script type="text/javascript">
         function GetProducts(Category, SubCategory) {
@@ -161,10 +158,32 @@
             return true;
         }
 
+        /* Add to Cart*/
+        function btnAddToCart_Client(prodID)
+        {            
+            Product.ProductID = prodID;
+              $.ajax({
+                  type: "POST",
+                  url: "QueryPage.aspx/AddToCart",
+                  contentType: "application/json; charset=utf-8",
+                  data: JSON.stringify(Product),
+                  dataType: "json",
+                  success: function (result) {
+                      document.getElementById("lblCartItemCount").innerHTML = result.d.replace("/\"/g", "");
+                      alert("Item added to cart");
+                  },
+                  error: function () {
+                      alert("Item could not be added to the cart");
+                  }
+              });
+              return false;
+        }
+        /****/
 
         /* Display pop up on click of show more */
         var SearchCriteria = "";
         var obj = {};
+        var Product = {};
         $(function () {
             var dialog;
             dialog = $("#dialog-form").dialog({
@@ -197,7 +216,6 @@
                 PopulateCheckBoxList(SearchCriteria);
                 dialog.dialog("open");
             });
-
         });
 
         function PopulateCheckBoxList(str) {
@@ -270,7 +288,7 @@
     </script>
     <table>
         <tr>
-            <td style="width: 20%;">
+            <td style="width: 20%; vertical-align: top;">
                 <%--Search Filter--%>
                 <div style="border: thin;">
                     <div></div>
@@ -325,7 +343,7 @@
                     PagerStyle-CssClass="pgr" PagerSettings-Position="Bottom" AlternatingRowStyle-CssClass="alt"
                     RowStyle-Wrap="true" AlternatingRowStyle-Wrap="true" EditRowStyle-Wrap="true"
                     FooterStyle-Wrap="true" GridLines="None" ShowHeaderWhenEmpty="true" EnableCallBacks="False"
-                    ShowHeader="true" OnRowDataBound="gvProducts_DataBound" OnRowCreated="gvProducts_RowCreated">
+                    ShowHeader="true" OnRowDataBound="gvProducts_DataBound" OnRowCreated="gvProducts_RowCreated" AllowPaging="true" PageSize="10">
                     <HeaderStyle CssClass="mSearchGrid"></HeaderStyle>
                     <Columns>
                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center">
@@ -345,16 +363,29 @@
                                         <asp:Literal ID="ltPricing" runat="server"></asp:Literal>
                                     </span>
                                     <span style="float: right;">
-                                        <asp:Button ID="btnGetPrice" runat="server" Text="Request Quote" /></span>
+                                        <asp:Button ID="btnGetPrice" runat="server" class="btn btn-primary" Text="Request Quote" /></span>
                                 </span>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Inventory" ItemStyle-Width="35%">
+                        <asp:TemplateField HeaderText="Inventory" ItemStyle-Width="45%">
                             <ItemTemplate>
-                                <asp:Label ID="lblInventory" runat="server" Text='<%# Eval("Inventory") %>'></asp:Label>
-                                <div style="text-align:center;">
-                                    <asp:Button ID="btnCallAvail" runat="server" Text="Call for Availability" />
-                                </div>
+                                <span>
+                                    <div style="float: left;">
+                                        <asp:Label ID="lblInventory" runat="server" Text='<%# Eval("Inventory") %>'></asp:Label>
+                                    </div>
+                                    <div style="float:right;">
+                                        <%--<asp:ImageButton class="btn btn-primary" id="btnAddToCart" title="Add to cart" runat="server" ImageUrl="~/images/Cart.png" />--%>
+                                        <asp:Button ID="btnAddToCart" class="btn btn-primary" Text="Add To Cart" title="Add to cart" runat="server" 
+                                            OnClientClick='<%# string.Format("javascript:return btnAddToCart_Client(\"{0}\")", Eval("ProductID")) %>'
+                                             />
+                                        <%--<button type="button" class="btn btn-primary" id="btnAddToCart" title="Add to cart" runat="server" style="display: none;">
+                                            <span class="glyphicon glyphicon-shopping-cart"></span>
+                                        </button>--%>
+                                    </div>
+                                    <div style="float: right; padding-right:30px;">
+                                        <asp:Button ID="btnCallAvail" runat="server" class="btn btn-primary" Text="Call for Availability" />
+                                    </div>
+                                </span>
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

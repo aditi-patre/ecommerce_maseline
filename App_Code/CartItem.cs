@@ -40,14 +40,61 @@ public class CartItem : IEquatable<CartItem>
         }
     }
 
+    public string Code
+    {
+        get { return Prod.ProductCode; }
+    }
+
     public decimal UnitPrice
     {
         get { return Prod.Price; }
     }
 
+    public int Inventory
+    {
+        get { return Prod.Inventory; }
+    }
+    public decimal Price
+    {
+        get
+        {
+            decimal UP = 0;
+            if (Prod.Pricing != null)
+            {
+                if (Prod.Pricing.Count > 1)
+                {
+                    foreach (KeyValuePair<string, decimal> p in Prod.Pricing)
+                    {
+                        string[] arrQtyLimit = Convert.ToString(p.Key).Split('-');
+                        if (arrQtyLimit.Length > 1)
+                        {
+                            if (this.Quantity >= Convert.ToInt32(arrQtyLimit[0]) && this.Quantity <= Convert.ToInt32(arrQtyLimit[1]))
+                            {
+                                UP = Convert.ToDecimal(p.Value);
+                                break;
+                            }
+                        }
+                        else if (this.Quantity >= Convert.ToInt32(arrQtyLimit[0]))
+                        {
+                            UP = Convert.ToDecimal(p.Value);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    UP = Prod.Price;
+                }
+            }
+            else
+                UP = Prod.Price;
+            return UP;
+        }
+    }
+
     public decimal TotalPrice
     {
-        get { return UnitPrice * Quantity; }
+        get { return Price * Quantity; }
     }
 
     #endregion
@@ -67,4 +114,27 @@ public class CartItem : IEquatable<CartItem>
     {
         return item.ProductId == this.ProductId;
     }
+
+    //public decimal ComputeUnitPrice()
+    //{
+    //    decimal UP = 0;
+    //    if (Pricing.Count > 1)
+    //    {
+    //        foreach (KeyValuePair<string, decimal> p in Pricing)
+    //        {
+    //            string[] arrQtyLimit = Convert.ToString(p.Key).Split('|');
+    //            if (this.Quantity >= Convert.ToInt32(arrQtyLimit[0]) && this.Quantity <= Convert.ToInt32(arrQtyLimit[1]))
+    //            {
+    //                UP = p.Value;
+    //                break;
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        UP = Prod.Price;
+    //    }
+
+    //    return UP;
+    //}
 }

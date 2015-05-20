@@ -7,7 +7,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class SiteMaster : System.Web.UI.MasterPage
+public partial class SiteMaster1 : System.Web.UI.MasterPage
 {
     protected void Page_PreRender(object sender, EventArgs e)
     {
@@ -39,7 +39,7 @@ public partial class SiteMaster : System.Web.UI.MasterPage
             lblUser.Style.Add(HtmlTextWriterStyle.Display, "none");
             btnLogOut.Visible = false;
         }
-        lblCartItemCount.Text = ShoppingCart.Instance.Items.Count.ToString();
+        lblCartItemCount.Text = ShoppingCart.Instance.Items.Count;
     }
 
     private void PopulateLeftMenu()
@@ -112,11 +112,6 @@ public partial class SiteMaster : System.Web.UI.MasterPage
     protected void btnLogOut_Click(object sender, EventArgs e)
     {
         Session.Abandon();
-        do
-        {
-            ShoppingCart.Instance.Items.RemoveAt(ShoppingCart.Instance.Items.Count-1);
-        }
-        while (ShoppingCart.Instance.Items.Count == 0);
-        lblCartItemCount.Text = "0";
     }
+
 }

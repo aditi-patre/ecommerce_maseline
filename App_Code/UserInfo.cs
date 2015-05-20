@@ -61,7 +61,7 @@ public class UserInfo
         sqlParams[0] = new SqlParameter("@UserID", 0);
         sqlParams[0].Direction = ParameterDirection.Output;
         sqlParams[1] = new SqlParameter("@UserName", username);
-        sqlParams[2] = new SqlParameter("@Password", password);
+        sqlParams[2] = new SqlParameter("@Password", hashedPassword);
         sqlParams[3] = new SqlParameter("@UserGuid", UserGuid);
         
         int i = SqlHelper.ExecuteNonQuery("UserInsert", CommandType.StoredProcedure, sqlParams);
@@ -82,7 +82,7 @@ public class UserInfo
                 int dbUserId = Convert.ToInt32(dr["UserID"]);
                 string dbPassword = Convert.ToString(dr["Password"]);
                 string dbUserGuid = Convert.ToString(dr["UserGuid"]);
-
+                HttpContext.Current.Session["User"] = username;
                 string hashedPassword = Security.HashSHA1(password + dbUserGuid);
                 if (dbPassword == hashedPassword)
                 {

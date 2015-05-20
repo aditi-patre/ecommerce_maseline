@@ -17,6 +17,9 @@ public class Product
     public string Name
     { get; set; }
 
+    public string ProductCode
+    { get; set; }
+
     public int CategoryID
     { get; set; }
     public int SubCategoryID
@@ -42,6 +45,15 @@ public class Product
         get;
         set;
     }
+
+    public List<KeyValuePair<string, decimal>> Pricing
+    {
+        get;
+        set;
+    }
+
+    public int Inventory
+    { get; set; }
     #endregion
 
     #region Constructors
@@ -72,7 +84,7 @@ public class Product
             this.Technology = Convert.ToString(dtProduct.Rows[0]["Technology"]);
             this.HarmonizedCode = Convert.ToString(dtProduct.Rows[0]["HarmonizedCode"]);
             this.Price = Convert.ToDecimal(dtProduct.Rows[0]["Price"]);
-
+            this.ProductCode = Convert.ToString(dtProduct.Rows[0]["ProductCode"]);
             if (Convert.ToString(dtProduct.Rows[0]["Attributes"]) != "")
             {
                 this.Attributes = new List<KeyValuePair<int, string>>();
@@ -82,6 +94,20 @@ public class Product
                     this.Attributes.Add(new KeyValuePair<int, string>(Convert.ToInt32(arrAttributes[i].Split('|')[0]), Convert.ToString(arrAttributes[i].Split('|')[1])));
                 }
             }
+
+            if (Convert.ToString(dtProduct.Rows[0]["Pricing"]) != "")
+            {
+                this.Pricing = new List<KeyValuePair<string, decimal>>();
+                string[] arrAttributes = Convert.ToString(dtProduct.Rows[0]["Pricing"]).Split(',');
+                for (int i = 0; i < arrAttributes.Length; i++)
+                {
+                    if (Convert.ToString(arrAttributes[i].Split('|')[1]) != "0")
+                        this.Pricing.Add(new KeyValuePair<string, decimal>(Convert.ToString(arrAttributes[i].Split('|')[0]) + "-" + Convert.ToString(arrAttributes[i].Split('|')[1]), Convert.ToDecimal(arrAttributes[i].Split('|')[2])));
+                    else
+                        this.Pricing.Add(new KeyValuePair<string, decimal>(Convert.ToString(arrAttributes[i].Split('|')[0]), Convert.ToDecimal(arrAttributes[i].Split('|')[2])));
+                }
+            }
+            this.Inventory = Convert.ToInt32(dtProduct.Rows[0]["Inventory"]);
         }
     }
     #endregion

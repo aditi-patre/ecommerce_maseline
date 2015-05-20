@@ -47,13 +47,12 @@ using System.Web;
         /**
      * AddItem() - Adds an item to the shopping 
      */
-        public void AddItem(int productId)
+        public int AddItem(int productId) // public void AddItem(int productId)
         {
             // Create a new item to add to the cart
             CartItem newItem = new CartItem(productId);
 
-            // If this item already exists in our list of items, increase the quantity
-            // Otherwise, add the new item to the list
+            // If this item already exists in our list of items, increase the quantity otherwise, add the new item to the list
             if (Items.Contains(newItem))
             {
                 foreach (CartItem item in Items)
@@ -61,7 +60,7 @@ using System.Web;
                     if (item.Equals(newItem))
                     {
                         item.Quantity++;
-                        return;
+                        break;//return;
                     }
                 }
             }
@@ -70,6 +69,7 @@ using System.Web;
                 newItem.Quantity = 1;
                 Items.Add(newItem);
             }
+            return Items.Count;
         }
 
         /**
@@ -103,7 +103,7 @@ using System.Web;
         public void RemoveItem(int productId)
         {
             CartItem removedItem = new CartItem(productId);
-            Items.Remove(removedItem);
+            Items.Remove(removedItem);            
         }
         #endregion
 

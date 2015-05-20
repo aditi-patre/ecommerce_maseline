@@ -4,7 +4,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="server">
     <script type="text/javascript">
         $(function () {
-            debugger;
             var obj = {};
             $("#btnRegister").button().on("click", function () {
                 obj.UserName = $("#txtUserName").val();
@@ -27,7 +26,8 @@
             });//btnRegister
             function AjaxSucceeded(result) {
                 var output = JSON.parse(result.d);
-                alert(output.Message);
+                alert(output.Message+" please login to continue");
+                window.location.replace("Home.aspx");
             }
             function AjaxFailed(result) {
                 alert('Failed to register');
@@ -52,7 +52,7 @@
                 <tr>
                     <td>Password:</td>
                     <td>
-                        <input type="text" id="txtPassword" /></td>
+                        <input type="password" id="txtPassword"/></td>
                 </tr>
                 <tr>
                     <td colspan="2" style="height: 10px;"></td>
