@@ -16,30 +16,31 @@ public partial class SiteMaster : System.Web.UI.MasterPage
     }
     protected void Page_Load(object sender, EventArgs e)
     {
-        //if (!IsPostBack)
-        //{
-        //    PopulateLeftMenu();
-        //}
-        Button btnSignUp = (Button)FindControl("btnSignUp");
-        Button btnLogin = (Button)FindControl("btnLogin");
-        Button btnLogOut = (Button)FindControl("btnLogOut");
-        if (HttpContext.Current.Session["User"] != null)
+        Session["PopUpParentUrl"] = Request.Url.PathAndQuery;
+        if (!IsPostBack)
         {
+            //Button btnSignUp = (Button)FindControl("btnSignUp");
+            System.Web.UI.HtmlControls.HtmlAnchor btnLogin = (System.Web.UI.HtmlControls.HtmlAnchor)FindControl("btnLogin");
+            //Button btnLogin = (Button)FindControl("btnLogin");
+            Button btnLogOut = (Button)FindControl("btnLogOut");
+            if (HttpContext.Current.Session["User"] != null)
+            {
 
-            btnSignUp.Visible = false;
-            btnLogin.Visible = false;
-            lblUser.Style.Add(HtmlTextWriterStyle.Display, "block");
-            lblUser.Text = "Welcome " + Convert.ToString(HttpContext.Current.Session["User"]);
-            btnLogOut.Visible = true;
+                //btnSignUp.Visible = false;
+                btnLogin.Visible = false;
+                lblUser.Style.Add(HtmlTextWriterStyle.Display, "block");
+                lblUser.Text = "Welcome " + Convert.ToString(HttpContext.Current.Session["User"]).Split('|')[0];
+                btnLogOut.Visible = true;
+            }
+            else
+            {
+                //btnSignUp.Visible = true;
+                btnLogin.Visible = true;
+                lblUser.Style.Add(HtmlTextWriterStyle.Display, "none");
+                btnLogOut.Visible = false;
+            }
+            lblCartItemCount.Text = ShoppingCart.Instance.Items.Count.ToString();
         }
-        else
-        {
-            btnSignUp.Visible = true;
-            btnLogin.Visible = true;
-            lblUser.Style.Add(HtmlTextWriterStyle.Display, "none");
-            btnLogOut.Visible = false;
-        }
-        lblCartItemCount.Text = ShoppingCart.Instance.Items.Count.ToString();
     }
 
     private void PopulateLeftMenu()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
@@ -10,7 +11,7 @@ using System.Web.UI.WebControls;
 public partial class ViewCart : System.Web.UI.Page
 {
     //public event dBindCartHandler eBindCart;
-   
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -41,13 +42,20 @@ public partial class ViewCart : System.Web.UI.Page
             TextBox txtQty = e.Row.FindControl("txtQuantity") as TextBox;
             if (txtQty != null)
             {
-                string id = txtQty.ClientID+"|"+e.Row.RowIndex;
+                string id = txtQty.ClientID + "|" + e.Row.RowIndex;
                 txtQty.Attributes.Add("onKeyUp", "ChangeQty('" + id + "')");
-            }            
+            }
+
+            //ImageButton lbtnRemove = e.Row.FindControl("lbtnRemove") as ImageButton;
+            //if (lbtnRemove != null)
+            //{
+            //    lbtnRemove.Attributes.Add("OnClientClick", "RemoveCartItem('" + gvShoppingCart.DataKeys[e.Row.RowIndex].Value + "')");
+            //}
+
             //txtQty.Attributes.Add("onkeyup", "javascript:ChangeQty("++")");
             //ScriptManager.RegisterStartupScript(this, this.GetType(), "abc", "test("+a+")", true);
         }
-        else if(e.Row.RowType == DataControlRowType.Footer)
+        else if (e.Row.RowType == DataControlRowType.Footer)
         {
             Label lblTotalCartAmt = e.Row.FindControl("lblTotalCartAmt") as Label;
             lblTotalCartAmt.Text = ShoppingCart.Instance.GetSubTotal().ToString();
@@ -61,7 +69,8 @@ public partial class ViewCart : System.Web.UI.Page
         {
             ShoppingCart.Instance.RemoveItem(ProductID);
             BindCart();
-            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Item removed from cart');", true);
+            //ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Item removed from cart');", true);
+            Response.Redirect(Convert.ToString(Session["PopUpParentUrl"]));
         }
     }
 
@@ -69,13 +78,50 @@ public partial class ViewCart : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["User"] == null)
         {
-            Response.Redirect("Login.aspx");
+            Response.Redirect("Login.aspx?Checkout=Y");
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Please login to continue');", true);
-            
+
         }
         else
         {
-           
+            SaveOrder();
         }
+    }
+
+    private void SaveOrder()
+    {
+        if (HttpContext.Current.Session["ShoppingCart"] != null)
+        {
+            DataTable dtCart = null;
+            dtCart.Columns.Add("OrderID", typeof(int));
+            dtCart.Columns.Add("ProductID", typeof(int));
+            dtCart.Columns.Add("Qty", typeof(int));
+            dtCart.Columns.Add("Price", typeof(decimal));
+
+            Orders order = new Orders();
+            order.OrderID = 0;
+            order.UserID = Convert.ToInt32(Convert.ToString(HttpContext.Current.Session["User"]).Split('|')[1]);
+            order.UserEmail = "";
+            order.Save();
+
+            foreach (CartItem objItem in ShoppingCart.Instance.Items)
+            {
+                dtCart.Rows.Add(order.OrderID, objItem.ProductId, objItem.Quantity, objItem.UnitPrice);
+            }
+
+            OrderDetails OrderDtls = new OrderDetails();
+            OrderDtls.Insert(dtCart);
+        }
+    }
+
+    protected void lbtnRemove_Click(object sender, EventArgs e)
+    {
+        ImageButton lbtnRemove = (ImageButton)sender;
+        GridViewRow gvRow = (GridViewRow)lbtnRemove.NamingContainer;
+
+        int ProductId = Convert.ToInt32(gvShoppingCart.DataKeys[gvRow.RowIndex].Value);
+        ShoppingCart.Instance.RemoveItem(ProductId);
+        BindCart();
+        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Item removed from cart');", true);   
     }
 }

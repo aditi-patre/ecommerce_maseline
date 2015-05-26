@@ -21,7 +21,7 @@ public partial class SiteMaster1 : System.Web.UI.MasterPage
         //    PopulateLeftMenu();
         //}
         Button btnSignUp = (Button)FindControl("btnSignUp");
-        Button btnLogin = (Button)FindControl("btnLogin");
+        System.Web.UI.HtmlControls.HtmlAnchor btnLogin = (System.Web.UI.HtmlControls.HtmlAnchor)FindControl("btnLogin");
         Button btnLogOut = (Button)FindControl("btnLogOut");
         if (HttpContext.Current.Session["User"] != null)
         {

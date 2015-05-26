@@ -186,7 +186,7 @@ public partial class QueryPage : System.Web.UI.Page
          else
          {
              objMsg.IsSuccess = true;
-             objMsg.Message = Convert.ToString(HttpContext.Current.Session["User"]);
+             objMsg.Message = Convert.ToString(HttpContext.Current.Session["User"]).Split('|')[0];
          }
          JavaScriptSerializer js = new JavaScriptSerializer();
          return js.Serialize(objMsg);

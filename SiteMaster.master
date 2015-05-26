@@ -25,9 +25,9 @@
 
         $(function () {
             //******Redirect to registration page on click of signup
-            document.getElementById("btnSignUp").onclick = function () {
-                location.href = "Registeration.aspx";
-            };
+            /*document.getElementById("btnSignUp").onclick = function () {
+                window.location.href = "Registeration.aspx";
+            };*/
 
 
             //******open popup  on click of shopping cart*****//
@@ -66,38 +66,53 @@
                     });
                 }
             });
-            $("#btnLogin").button().on("click", function () {
-                location.href = "Login.aspx";
-            });
+
         });
+
+        function OpenLogin() {
+            window.location.replace("Login.aspx");
+            return false;
+        }
 
     </script>
 </head>
 <body>
     <form id="form1" runat="server">
-            <table style="width: 100%;">
+        <table style="width: 100%;">
             <tr>
                 <td colspan="2">
                     <div id="header">
                         <a href="Home.aspx" title="Home" rel="home" id="logo" class="logo">
                             <img src="images/logo_reconstruction5_1.png" alt="Home" />
                         </a>
-                        <div class="dvLogin">
-                            <button type="button" class="btn btn-info" id="btnShoppingCart">
-                                Shopping Cart<span class="glyphicon glyphicon-shopping-cart"></span> <%--<span class="badge" id="lblCartItemCount" runat="server"></span>--%>
-                                <asp:Label ID="lblCartItemCount" runat="server" CssClass="badge"></asp:Label>
-                            <%--    <asp:Label runat="server" CssClass="badge" ID="lblCartItemCount1"></asp:Label>--%>
-                            </button>
-                            <asp:Button class="btn btn-info" id="btnSignUp" runat="server" Text="Signup" />
-                           <%-- <button type="button" class="btn btn-info" id="btnSignUp">
-                                Signup
-                            </button>--%>
-                            <asp:Button class="btn btn-info" id="btnLogin" runat="server" Text="Login"/>
-                            <%--<button type="button" class="btn btn-info" id="btnLogin">
+                        <div class="dvLogin" style="margin-top: 75px;">
+                            <table>
+                                <tr>
+                                    <td colspan="3" style="height: 20px;">
+                                        <asp:Label ID="lblUser" runat="server" Style="display: none;" ForeColor="White"></asp:Label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-info" id="btnShoppingCart">
+                                            Shopping Cart<span class="glyphicon glyphicon-shopping-cart"></span> <%--<span class="badge" id="lblCartItemCount" runat="server"></span>--%>
+                                            <asp:Label ID="lblCartItemCount" runat="server" CssClass="badge"></asp:Label>
+                                            <%--    <asp:Label runat="server" CssClass="badge" ID="lblCartItemCount1"></asp:Label>--%>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <%-- <asp:Button class="btn btn-info" ID="btnSignUp" runat="server" Text="Signup" />--%>                                      
+                                    </td>
+                                    <td>
+                                        <%--<asp:Button class="btn btn-info" ID="btnLogin" runat="server" Text="Login" OnClientClick="return OpenLogin();" />--%>
+                                        <a href="login.aspx" target="_self" class="btn btn-info" id="btnLogin" runat="server">Login</a>
+                                        <%--<button type="button" class="btn btn-info" id="btnLogin">
                                 Login
                             </button>--%>
-                            <asp:Label ID="lblUser" runat="server" style="display:none"></asp:Label>
-                            <asp:Button class="btn btn-info" id="btnLogOut" runat="server" visible="false" onclick="btnLogOut_Click" Text="LogOut"/>                            
+                                        <asp:Button class="btn btn-info" ID="btnLogOut" runat="server" Visible="false" OnClick="btnLogOut_Click" Text="LogOut" />
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="dvLogin" style="padding-right: 200px;">
                             <table>
@@ -152,14 +167,12 @@
             <br />
             <br />
             <div id="dvCartPopUp">
-
             </div>
         </div>
 
         <div id="LoginPopUp">
             <br />
             <div id="dvLoginPopUp">
-
             </div>
         </div>
     </form>

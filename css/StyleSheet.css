@@ -93,3 +93,7 @@
             background-color: #F7FAFE;
             font-size: small;
         }
+.ErrorMsg
+{
+    color:red;
+}

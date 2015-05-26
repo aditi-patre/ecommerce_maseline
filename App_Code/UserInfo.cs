@@ -23,6 +23,14 @@ public class UserInfo
     public string UserGuid
     { get; set; }
 
+    public string UserEmail
+    { get; set; }
+
+    public string UserAddress
+    {
+        get;
+        set;
+    }
     #endregion
 
     #region Constructors
@@ -82,7 +90,7 @@ public class UserInfo
                 int dbUserId = Convert.ToInt32(dr["UserID"]);
                 string dbPassword = Convert.ToString(dr["Password"]);
                 string dbUserGuid = Convert.ToString(dr["UserGuid"]);
-                HttpContext.Current.Session["User"] = username;
+                HttpContext.Current.Session["User"] = username+"|"+dbUserId.ToString();
                 string hashedPassword = Security.HashSHA1(password + dbUserGuid);
                 if (dbPassword == hashedPassword)
                 {
