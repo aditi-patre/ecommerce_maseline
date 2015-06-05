@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
@@ -37,6 +38,7 @@ public partial class ViewCart : System.Web.UI.Page
 
     protected void gvShoppingCart_RowDataBound(object sender, GridViewRowEventArgs e)
     {
+        ShoppingCart objCart = ShoppingCart.Instance;
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             TextBox txtQty = e.Row.FindControl("txtQuantity") as TextBox;
@@ -45,6 +47,19 @@ public partial class ViewCart : System.Web.UI.Page
                 string id = txtQty.ClientID + "|" + e.Row.RowIndex;
                 txtQty.Attributes.Add("onKeyUp", "ChangeQty('" + id + "')");
             }
+
+            /* Map the path of product image*/
+            Image img = (Image)e.Row.FindControl("imgProduct");
+            //Label lblImagePath = (Label)e.Row.FindControl("lblImagePath");
+            string ProdImagePath = System.Configuration.ConfigurationManager.AppSettings["ImagePath"].ToString() + "//" + gvShoppingCart.DataKeys[e.Row.RowIndex].Value.ToString() + "//" + objCart.Items[e.Row.RowIndex].Prod.ImageName;
+            if (File.Exists(Server.MapPath(ProdImagePath)))
+                img.ImageUrl = ProdImagePath;
+            else
+                img.Style.Add(HtmlTextWriterStyle.Display, "none");
+            //***
+
+            LinkButton lbtnProdName = (LinkButton)e.Row.FindControl("lbtnProdName");
+            lbtnProdName.Text = objCart.Items[e.Row.RowIndex].Prod.Name;
 
             //ImageButton lbtnRemove = e.Row.FindControl("lbtnRemove") as ImageButton;
             //if (lbtnRemove != null)
@@ -73,6 +88,21 @@ public partial class ViewCart : System.Web.UI.Page
             Response.Redirect(Convert.ToString(Session["PopUpParentUrl"]));
         }
     }
+    protected void gvShoppingCart_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            try
+            {
+                e.Row.Attributes.Add("onmouseover", "this.className='Row'");
+                e.Row.Attributes.Add("onmouseout", "this.className='alt'");
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+    }
 
     protected void btnCheckoutCart_Click(object sender, EventArgs e)
     {
@@ -92,17 +122,17 @@ public partial class ViewCart : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["ShoppingCart"] != null)
         {
-            DataTable dtCart = null;
-            dtCart.Columns.Add("OrderID", typeof(int));
-            dtCart.Columns.Add("ProductID", typeof(int));
-            dtCart.Columns.Add("Qty", typeof(int));
-            dtCart.Columns.Add("Price", typeof(decimal));
-
             Orders order = new Orders();
             order.OrderID = 0;
             order.UserID = Convert.ToInt32(Convert.ToString(HttpContext.Current.Session["User"]).Split('|')[1]);
             order.UserEmail = "";
             order.Save();
+
+            DataTable dtCart = new DataTable();
+            dtCart.Columns.Add("OrderID", typeof(int));
+            dtCart.Columns.Add("ProductID", typeof(int));
+            dtCart.Columns.Add("Qty", typeof(int));
+            dtCart.Columns.Add("Price", typeof(decimal));           
 
             foreach (CartItem objItem in ShoppingCart.Instance.Items)
             {

@@ -1,12 +1,10 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ViewCart.aspx.cs" Inherits="ViewCart" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ViewCart.aspx.cs" Inherits="ViewCart" MasterPageFile="~/ParentMaster.master" %>
 
-<!DOCTYPE html>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="Server">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
     <script type="text/javascript">
         function ChangeQty(param) {
+            debugger;
             var c1 = param.split('|')[0];
             var txtQty = document.getElementById(c1);
             if (isNaN(parseInt(txtQty.value)))
@@ -40,44 +38,70 @@
             }
         }
     </script>
-</head>
-<body>
-    <form id="form1" runat="server">
-        <div>
+
+    <section>
+        <div class="container">
+            <div>
+                <h2>SHOPPING CART</h2>
+            </div>
+            <div class="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li><a href="#">Home</a></li>
+                    <li class="active">Shopping Cart</li>
+                </ol>
+            </div>
             <%--CART ITEMS --%>
 
             <asp:GridView runat="server" ID="gvShoppingCart" AutoGenerateColumns="false" EmptyDataText="There is nothing in your shopping cart." GridLines="None" Width="100%" CellPadding="5"
+                CssClass="table table-condensed" OnRowCreated="gvShoppingCart_RowCreated"
                 ShowFooter="true" DataKeyNames="ProductId" OnRowDataBound="gvShoppingCart_RowDataBound" OnRowCommand="gvShoppingCart_RowCommand">
-                <HeaderStyle HorizontalAlign="Left" BackColor="#3D7169" ForeColor="#FFFFFF" />
-                <FooterStyle HorizontalAlign="Right" BackColor="#6C6B66" ForeColor="#FFFFFF" />
-                <AlternatingRowStyle BackColor="#F8F8F8" />
+                <HeaderStyle CssClass="cart_menu"></HeaderStyle>
+                <FooterStyle CssClass="cart_menu"></FooterStyle>
                 <Columns>
-                    <asp:BoundField DataField="Code" HeaderText="Product Code" />
-                    <asp:TemplateField HeaderText="Quantity">
+                    <asp:TemplateField HeaderText="Item" HeaderStyle-HorizontalAlign="Center" ControlStyle-BorderColor="White">
+                        <HeaderStyle CssClass="image" />
+                        <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" CssClass="cart_product" BorderColor="White" />
                         <ItemTemplate>
-                            <asp:TextBox runat="server" ID="txtQuantity" Columns="5" Text='<%# Eval("Quantity") %>'></asp:TextBox><br />
-                            <%--<asp:LinkButton runat="server" ID="btnRemove" Text="Remove" CommandName="Remove" CommandArgument='<%# Eval("ProductId") %>' Style="font-size: 12px;"></asp:LinkButton>--%>
+                            <asp:Image ID="imgProduct" runat="server" ToolTip="ProductImage" />
+
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Price">
+                    <asp:TemplateField ControlStyle-BorderColor="White" HeaderStyle-Width="30%" >
+                        <HeaderStyle CssClass="description" HorizontalAlign="Center" />
+                        <ItemStyle HorizontalAlign="center" VerticalAlign="Middle" CssClass="cart_description" BorderColor="White"  Width="30%"/>
+                        <ControlStyle CssClass="cart_description" BorderColor="White" />
+                        <ItemTemplate>
+                            <h4>
+                                <asp:LinkButton ID="lbtnProdName" runat="server" Text='<%# Eval("Prod.Name") %>' CommandName="ShowProductDetails" CommandArgument='<%# Eval("ProductID") %>'></asp:LinkButton>
+                            </h4>
+                            <p id="lblProductCode" runat="server"><%# string.Format("{0}{1}","$", Eval("Prod.ProductCode")) %></p>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Price" ControlStyle-BorderColor="White">
+                        <ItemStyle BorderColor="White" VerticalAlign="Middle" HorizontalAlign="Left"  />
+                        <ControlStyle BorderColor="White"  />
                         <ItemTemplate>
                             <asp:Label ID="lblUnitPrice" Text='<%# Eval("Price") %>' runat="server" DataFormatString="{0:C}"></asp:Label>
-                            <%-- <asp:Label ID="lblPricing" Text='<%# Eval("Pricing") %>' runat="server" style="display:none;"></asp:Label>--%>
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <%-- <asp:BoundField DataField="UnitPrice" HeaderText="Price" ItemStyle-HorizontalAlign="Right" HeaderStyle-HorizontalAlign="Right" DataFormatString="{0:C}" />--%>
-                    <asp:TemplateField HeaderText="Total">
+                    <asp:TemplateField HeaderText="Quantity" ControlStyle-BorderColor="White" HeaderStyle-Width="20%">
+                        <ItemStyle BorderColor="White" VerticalAlign="Middle"  />
+                        <ControlStyle BorderColor="White"  />
                         <ItemTemplate>
-                            <asp:Label ID="lblTotalPrice" Text='<%# Eval("TotalPrice") %>' runat="server" DataFormatString="{0:C}"></asp:Label>
-                          <%--  <asp:ImageButton ID="lbtnRemove" runat="server"  OnClick="lbtnRemove_Click" 
-                                OnClientClick="if (confirm('Are you sure you want to remove this item from cart?') == false) return false;"
-                                ImageUrl="~/images/delete_icon.png"/>--%>
-                            <asp:ImageButton ID="lbtnRemove" runat="server"  CommandName="Remove" CommandArgument='<%# Eval("ProductId") %>' 
-                                OnClientClick="if (confirm('Are you sure you want to remove this item from cart?') == false) return false;"
-                                ImageUrl="~/images/delete_icon.png"/>
+                            <asp:TextBox runat="server" ID="txtQuantity" Columns="5" Text='<%# Eval("Quantity") %>'></asp:TextBox><br />
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <%--<asp:BoundField DataField="TotalPrice" HeaderText="Total" ItemStyle-HorizontalAlign="Right" HeaderStyle-HorizontalAlign="Right" DataFormatString="{0:C}" />--%>
+                    <asp:TemplateField HeaderText="Total" ControlStyle-BorderColor="White" HeaderStyle-Width="20%" >
+                        <ItemStyle BorderColor="White" VerticalAlign="Middle" />
+                        <ControlStyle BorderColor="White" />
+                        <ItemTemplate>
+                            <asp:Label ID="lblTotalPrice" Text='<%# Eval("TotalPrice") %>' runat="server" DataFormatString="{0:C}"></asp:Label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:ImageButton ID="lbtnRemove" runat="server" CommandName="Remove" CommandArgument='<%# Eval("ProductId") %>'
+                                OnClientClick="if (confirm('Are you sure you want to remove this item from cart?') == false) return false;"
+                                ImageUrl="~/images/delete_icon.png" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                     <asp:TemplateField>
                         <FooterTemplate>
                             <span>Total Amount: 
@@ -86,15 +110,10 @@
                         </FooterTemplate>
                     </asp:TemplateField>
                 </Columns>
-
             </asp:GridView>
-
             <br />
-            <asp:Button runat="server" ID="btnCheckoutCart" Text="Checkout" class="btn btn-primary"  OnClick="btnCheckoutCart_Click"/>
-            <%--            <asp:Button runat="server" ID="btnCheckoutCart" Text="Checkout" class="btn btn-primary"
-                OnClientClick='<%# String.Format("javascript:return btnCheckoutCart_Client()")%>' />--%>
+            <input class="btn btn-primary" type="button" value="Back" onclick="history.go(-1);" />
+            <asp:Button runat="server" ID="btnCheckoutCart" Text="Checkout" class="btn btn-primary" OnClick="btnCheckoutCart_Click" />
         </div>
-
-    </form>
-</body>
-</html>
+    </section>
+</asp:Content>

@@ -15,15 +15,21 @@ public partial class Login : System.Web.UI.Page
         {
             if (Request.QueryString["Checkout"].ToLower() == "y")
             {
-                tr1.Style.Add(HtmlTextWriterStyle.Display, "block");
-                tr2.Style.Add(HtmlTextWriterStyle.Display, "block");
+                //tr1.Style.Add(HtmlTextWriterStyle.Display, "block");
+                //tr2.Style.Add(HtmlTextWriterStyle.Display, "block");
+                dvEmailAddress.Style.Add(HtmlTextWriterStyle.Display, "block");
+                btnLogin.Style.Add(HtmlTextWriterStyle.Display, "none");
+                btnSubmit.Style.Add(HtmlTextWriterStyle.Display, "block");
                 RedirctToPaymntGateway = true;
             }
         }
         else
         {
-            tr1.Style.Add(HtmlTextWriterStyle.Display, "none");
-            tr2.Style.Add(HtmlTextWriterStyle.Display, "none");
+            dvEmailAddress.Style.Add(HtmlTextWriterStyle.Display, "none");
+            btnLogin.Style.Add(HtmlTextWriterStyle.Display, "block");
+            btnSubmit.Style.Add(HtmlTextWriterStyle.Display, "none");
+            //tr1.Style.Add(HtmlTextWriterStyle.Display, "none");
+            //tr2.Style.Add(HtmlTextWriterStyle.Display, "none");
         }
     }
 
@@ -31,33 +37,33 @@ public partial class Login : System.Web.UI.Page
     {
         if (true)
         {
-            if (txtUserName.Text != "" && txtPassword.Text != "")
+            if (txtUserName.Value != "" && txtPassword.Value != "")
             {
                 //Button btnSignUp = (Button)this.Master.FindControl("btnSignUp");
                 //Button btnLogin = (Button)this.Master.FindControl("btnLogin");
-                System.Web.UI.HtmlControls.HtmlAnchor btnLogin = (System.Web.UI.HtmlControls.HtmlAnchor)this.Master.FindControl("btnLogin");
-                Label lblUser = (Label)this.Master.FindControl("lblUser");
-                Button btnLogOut = (Button)this.Master.FindControl("btnLogOut");
+                //System.Web.UI.HtmlControls.HtmlAnchor btnLogin = (System.Web.UI.HtmlControls.HtmlAnchor)this.Master.FindControl("btnLogin");
+                //Label lblUser = (Label)this.Master.FindControl("lblUser");
+                //ImageButton btnLogOut = (ImageButton)this.Master.FindControl("btnLogOut");
 
-                int i = UserInfo.GetUserIdByUsernameAndPassword(txtUserName.Text, txtPassword.Text);
+                int i = UserInfo.GetUserIdByUsernameAndPassword(txtUserName.Value, txtPassword.Value);
                 if (i == 0)
                 {
                     ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Invalid username/password');", true);
-                    //btnSignUp.Visible = true;
-                    lblUser.Style.Add(HtmlTextWriterStyle.Display, "none");
-                    btnLogOut.Visible = false;
+          
+                    //lblUser.Style.Add(HtmlTextWriterStyle.Display, "none");
+                    //btnLogOut.Visible = false;
                     btnLogin.Visible = true;
                 }
                 else
                 {
                     if (HttpContext.Current.Session["User"] != null)
                     {
-                        HttpContext.Current.Session["User"] = txtUserName.Text + "|" + i.ToString();
-                        //btnSignUp.Visible = false;
-                        lblUser.Style.Add(HtmlTextWriterStyle.Display, "block");
-                        lblUser.Text = "Welcome " + txtUserName.Text;
+                        HttpContext.Current.Session["User"] = txtUserName.Value + "|" + i.ToString();
+                        
+                        //lblUser.Style.Add(HtmlTextWriterStyle.Display, "block");
+                        //lblUser.Text = "Welcome " + txtUserName.Value;
                         btnLogin.Visible = false;
-                        btnLogOut.Visible = true;
+                        //btnLogOut.Visible = true;
                        
                     }
                     //On logging in check the url, if user came via checkout then save order else just redirect user to home page
@@ -68,7 +74,7 @@ public partial class Login : System.Web.UI.Page
                         Response.Redirect("Home.aspx");
                 }
             }
-            else if(txtEmailAddress.Text != "" && RedirctToPaymntGateway)
+            else if(txtEmailAddress.Value != "" && RedirctToPaymntGateway)
             {
                 SaveOrder();
             }
@@ -79,17 +85,17 @@ public partial class Login : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["ShoppingCart"] != null)
         {
-            DataTable dtCart = null;
-            dtCart.Columns.Add("OrderID", typeof(int));
-            dtCart.Columns.Add("ProductID", typeof(int));
-            dtCart.Columns.Add("Qty", typeof(int));
-            dtCart.Columns.Add("Price", typeof(decimal));
-
             Orders order = new Orders();
             order.OrderID = 0;
             order.UserID = Convert.ToInt32(Convert.ToString(HttpContext.Current.Session["User"]).Split('|')[1]);
             order.UserEmail = "";
             order.Save();
+
+            DataTable dtCart = new DataTable();
+            dtCart.Columns.Add("OrderID", typeof(int));
+            dtCart.Columns.Add("ProductID", typeof(int));
+            dtCart.Columns.Add("Qty", typeof(int));
+            dtCart.Columns.Add("Price", typeof(decimal));            
 
             foreach (CartItem objItem in ShoppingCart.Instance.Items)
             {

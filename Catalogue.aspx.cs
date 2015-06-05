@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.IO;
 
 public partial class Catalogue : System.Web.UI.Page
 {
@@ -101,14 +102,24 @@ public partial class Catalogue : System.Web.UI.Page
         {
             try
             {
+                /* Map the path of product image*/
+                Image img = (Image)e.Row.FindControl("imgProduct");
+                Label lblImagePath = (Label)e.Row.FindControl("lblImagePath");
+                string ProdImagePath = System.Configuration.ConfigurationManager.AppSettings["ImagePath"].ToString() + "//" + gvProducts.DataKeys[e.Row.RowIndex].Value.ToString() + "//" + lblImagePath.Text;
+                if (File.Exists(Server.MapPath(ProdImagePath)))
+                    img.ImageUrl = ProdImagePath;
+                else
+                    img.Style.Add(HtmlTextWriterStyle.Display, "none");
+                //****
+
                 bool IsPriceAvail = false, IsAvail = false;
                 Literal ltPricing = (Literal)e.Row.FindControl("ltPricing");
                 Label lblInventory = (Label)e.Row.FindControl("lblInventory");
                 lblInventory.Style.Add(HtmlTextWriterStyle.Display, "block");
-                Button btnCallAvail = (Button)e.Row.FindControl("btnCallAvail");
+                LinkButton btnCallAvail = (LinkButton)e.Row.FindControl("btnCallAvail");
 
                 //when pricing as per qty NA                
-                Button btnGetPrice = (Button)e.Row.FindControl("btnGetPrice");
+                LinkButton btnGetPrice = (LinkButton)e.Row.FindControl("btnGetPrice");
                 Label lblPrice = (Label)e.Row.FindControl("lblPrice");
                 Label lblPricing = (Label)e.Row.FindControl("lblPricing");
                 //[-]
@@ -178,9 +189,9 @@ public partial class Catalogue : System.Web.UI.Page
                 else
                     btnAddToCart.Style.Add(HtmlTextWriterStyle.Display, "none");
                 
-                //Display none, as currently such a situatio may not arise
-                btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
-                btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "none");
+                //Display none, as currently such a situation may not arise
+                //btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
+                //btnCallAvail.Style.Add(HtmlTextWriterStyle.Display, "none");
             }
             catch (Exception ex)
             {
@@ -207,7 +218,7 @@ public partial class Catalogue : System.Web.UI.Page
     {
         Product objP = new Product();
         DataTable dt = new DataTable();
-        dt = objP.GetList(CategoryID, SubCategoryID, ManufacturerID, Attributes, IsInStock, IsPricingAvailable).Tables[0];
+        //dt = objP.GetList(CategoryID, SubCategoryID, ManufacturerID, Attributes, IsInStock, IsPricingAvailable).Tables[0];
         if (dt != null)
         {
             gvProducts.DataSource = dt;

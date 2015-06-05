@@ -1,0 +1,200 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="ParentMaster.master.cs" Inherits="ParentMaster" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <script src="http://code.jquery.com/jquery-1.7.2.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Products | Masline</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/prettyPhoto.css" rel="stylesheet" />
+    <link href="css/price-range.css" rel="stylesheet" />
+    <link href="css/animate.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="css/responsive.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+    <%--   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>--%>
+
+    <%--For  popUp--%>
+    <%--    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>--%>
+    <%--[-]--%>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <header id="header">
+            <div class="header-middle">
+                <!--header-middle-->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="logo pull-left">
+                                <a href="Home.aspx">
+                                    <img src="images/home/logo.png" alt="" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                          <%--  <div class="search_box">--%>
+                                <div class="search_box pull-right">
+                                <input type="text" placeholder="Search ProductCode" />
+                                <%--<a href="#">
+                                    <img src="images/home/searchicon.png" /></a>--%>
+                            </div>
+                        </div>
+                        <div class="col-sm-8 pull-right">
+                            <div class="logo pull-right">
+                                <ul>
+                                    <li>
+                                        <a href="login.aspx" target="_self" id="btnLogin" runat="server">
+                                            <img src="images/home/login.jpg" /></a>
+                                        <asp:Label ID="lblUser" runat="server" Style="display: none;" ForeColor="White"></asp:Label>
+
+                                        <asp:ImageButton ID="btnLogOut" runat="server" Visible="false" OnClick="btnLogOut_Click" ImageUrl="~/images/home/logout.png" />
+                                    </li>
+                                    <li>
+                                        <img src="images/home/contact.jpg" />
+                                    </li>
+                                    <li>
+                                        <button type="button" id="btnShoppingCart" style="background-color: #084E8B; border-color: #084E8B;" onclick="location.href = 'ViewCart.aspx';">
+                                            <img src="images/home/shoppingcart.jpg" />
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/header-middle-->
+        </header>
+        <!--/header-->
+        <section id="slider">
+            <!--slider-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="linkBg pull-right">
+                            <div class="mainmenu pull-right">
+                                <ul class="nav navbar-nav collapse navbar-collapse">
+                                    <li><a href="Home.aspx" class="active">HOME</a></li>
+                                    <li class="dropdown">
+                                        <a href="#">CATALOG</a>
+                                        <ul role="menu" class="sub-menu">
+                                            <li><a href="ProductListing.aspx">Products</a></li>
+                                            <li><a href="ProductDetails.aspx">Product Details</a></li>
+                                            <li><a href="Login.aspx?Checkout=Y">Checkout</a></li>
+                                            <li><a href="ViewCart.aspx">Cart</a></li>
+                                            <li><a href="Login.aspx">Login</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="#">SERVICES<i class="fa fa-angle-down"></i></a>
+                                        <ul role="menu" class="sub-menu">
+                                            <li><a href="blog.html">Blog List</a></li>
+                                            <li><a href="blog-single.html">Blog Single</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="404.html">PRODUCT VIDEOS</a></li>
+                                    <li><a href="contact-us.html">LINE CARD</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <img src="images/common/innerBg.png" />
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--/slider-->
+        <div>
+            <asp:ContentPlaceHolder ID="MainContentPlaceHolder" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+
+        <footer id="footer">
+            <!--Footer-->
+            <div class="footer-widget">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">Online Help</a></li>
+                                    <li><a href="#">Contact Us</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">T-Shirt</a></li>
+                                    <li><a href="#">Mens</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">Terms of Use</a></li>
+                                    <li><a href="#">Privecy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">Company Information</a></li>
+                                    <li><a href="#">Careers</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1">
+                            <div class="single-widget">
+                                <h2>1821546454654</h2>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">jobs@masline.com</a></li>
+                                    <li><a href="#">Contact us at sales@masline.com</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <p class="pull-left">Copyright © 2015. Masline Electronics INC. All rights reserved.</p>
+
+                    </div>
+                </div>
+            </div>
+
+        </footer>
+        <!--/Footer-->
+
+
+
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.scrollUp.min.js"></script>
+        <script src="js/price-range.js"></script>
+        <script src="js/jquery.prettyPhoto.js"></script>
+        <script src="js/main.js"></script>
+    </form>
+</body>
+</html>

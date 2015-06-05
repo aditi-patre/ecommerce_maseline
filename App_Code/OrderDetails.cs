@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 
@@ -98,7 +99,7 @@ public class OrderDetails
         return this.OrderID > 0;
     }
 
-    public bool Insert(DataTable dtOrderDetails) //
+    public bool Insert(DataTable dtOrderDetails) // bulk insert
     {
         bool ret = true;
         using (SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString()))
@@ -110,10 +111,24 @@ public class OrderDetails
                 cmd.CommandText = "OrderDetailsInsert";
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlParameter[] sqlParams = new SqlParameter[1];
-                sqlParams[0] = new SqlParameter("@OrderDtls", dtOrderDetails);
-                sqlParams[0].SqlDbType = SqlDbType.Structured;
-                sqlParams[0].ParameterName = "@OrderDtls";
+                //Added on 5/6/2015: 2005 doesnt support tvp
+                string xmlOrderDetails;
+                dtOrderDetails.TableName = "OrderDtls";
+                using (StringWriter sw = new StringWriter())
+                {
+                    dtOrderDetails.WriteXml(sw);
+                    xmlOrderDetails = sw.ToString();
+                }
+                SqlParameter param = new SqlParameter("@OrderDtls", SqlDbType.Xml);
+                param.Value = xmlOrderDetails;
+                cmd.Parameters.Add(param);
+                //[-]
+                
+
+                //SqlParameter[] sqlParams = new SqlParameter[1];
+                //sqlParams[0] = new SqlParameter("@OrderDtls", dtOrderDetails);
+                //sqlParams[0].SqlDbType = SqlDbType.Structured;
+                //sqlParams[0].ParameterName = "@OrderDtls";
 
                 conn.Open();
                 cmd.ExecuteNonQuery();

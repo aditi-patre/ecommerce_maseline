@@ -52,6 +52,8 @@ public class Product
         set;
     }
 
+    public string ImageName
+    { get; set; }
     public int Inventory
     { get; set; }
     #endregion
@@ -83,7 +85,7 @@ public class Product
             this.ManufacturerID = Convert.ToInt32(dtProduct.Rows[0]["ManufacturerID"]);
             this.Technology = Convert.ToString(dtProduct.Rows[0]["Technology"]);
             this.HarmonizedCode = Convert.ToString(dtProduct.Rows[0]["HarmonizedCode"]);
-            this.Price = Convert.ToDecimal(dtProduct.Rows[0]["Price"]);
+            this.Price = Convert.ToDecimal(Convert.ToString(dtProduct.Rows[0]["Price"]));
             this.ProductCode = Convert.ToString(dtProduct.Rows[0]["ProductCode"]);
             if (Convert.ToString(dtProduct.Rows[0]["Attributes"]) != "")
             {
@@ -108,15 +110,27 @@ public class Product
                 }
             }
             this.Inventory = Convert.ToInt32(dtProduct.Rows[0]["Inventory"]);
+            this.ImageName = Convert.ToString(dtProduct.Rows[0]["ImageName"]);
         }
     }
     #endregion
 
     #region Methods
-    public DataSet GetList(string CategoryID, string SubCategoryID, string ManufacturerID, string Attributes,bool IsInStock, bool IsPricingAvail)
+    public DataSet GetList(string CategoryID, string SubCategoryID, string ManufacturerID, string Attributes, bool IsInStock, bool IsPricingAvail, string PriceRange, int CurrentPgNo, out int TotalRecords)
     {
+        TotalRecords = 0;
         DataSet dt = null;
-        SqlParameter[] sqlParams = new SqlParameter[6];
+        string[] arrPR = new string[2];
+        if (PriceRange.Contains(':'))
+        {
+            arrPR = PriceRange.Split(':');
+        }
+        else
+        {
+            arrPR[0] = "0";
+            arrPR[1] = "0";
+        }
+        SqlParameter[] sqlParams = new SqlParameter[10];
         try
         {
             sqlParams[0] = CategoryID != "" ? new SqlParameter("@CategoryID", CategoryID) : new SqlParameter("@CategoryID", DBNull.Value);
@@ -125,11 +139,19 @@ public class Product
             sqlParams[3] = Attributes != "" ? new SqlParameter("@Attributes", Attributes) : new SqlParameter("@Attributes", DBNull.Value);
             sqlParams[4] = IsInStock == true ? new SqlParameter("@InStock", IsInStock) : new SqlParameter("@InStock", DBNull.Value);
             sqlParams[5] = IsPricingAvail == true ? new SqlParameter("@PricingAvailable", IsPricingAvail) : new SqlParameter("@PricingAvailable", DBNull.Value);
-            dt = SqlHelper.ExecuteDataSet("ProductGetList", CommandType.StoredProcedure, sqlParams);
+            sqlParams[6] = Convert.ToInt32(arrPR[0].Trim()) > 0 ? new SqlParameter("@PriceRange1", Convert.ToInt32(arrPR[0])) : new SqlParameter("@PriceRange1", DBNull.Value);
+            sqlParams[7] = Convert.ToInt32(arrPR[1].Trim()) > 0? new SqlParameter("@PriceRange2", Convert.ToInt32(arrPR[1])) : new SqlParameter("@PriceRange2", DBNull.Value);
+            sqlParams[8] = new SqlParameter("@CurrentPgNo",CurrentPgNo);
+            sqlParams[9] = new SqlParameter("@TotalRecords", TotalRecords);
+            sqlParams[9].Direction = ParameterDirection.Output;
+            sqlParams[9].SqlDbType = SqlDbType.Int;
+            sqlParams[9].ParameterName = "@TotalRecords";
+            dt = SqlHelper.ExecuteDataSet("ProductGetList", CommandType.StoredProcedure, sqlParams);            
+            TotalRecords = Convert.ToInt32(sqlParams[9].Value);
         }
         catch (Exception ex)
         {
-
+            return null;
         }
         return dt;
     }

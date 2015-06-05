@@ -98,11 +98,11 @@ public class Orders
             sqlParams[0].Direction = ParameterDirection.Output;
             sqlParams[0].SqlDbType = SqlDbType.Int;
             sqlParams[0].ParameterName = "@OrderID";
-            sqlParams[1] = new SqlParameter("@UserID", UserID);
-            sqlParams[2] = new SqlParameter("@UserEmail", UserID);
-            sqlParams[3] = new SqlParameter("@OrderGUID", UserID);
-            sqlParams[4] = new SqlParameter("@Address", UserID);
-            sqlParams[5] = new SqlParameter("@TransactionID", UserID);
+            sqlParams[1] = this.UserID != null ? new SqlParameter("@UserID", this.UserID) : new SqlParameter("@UserID", DBNull.Value);
+            sqlParams[2] = this.UserEmail != null ? new SqlParameter("@UserEmail", this.UserEmail) : new SqlParameter("@UserEmail", DBNull.Value);
+            sqlParams[3] = this.OrderGUID != null ? new SqlParameter("@OrderGUID", this.OrderGUID) : new SqlParameter("@OrderGUID", DBNull.Value);
+            sqlParams[4] = this.Address != null ? new SqlParameter("@Address", this.Address) : new SqlParameter("@Address", DBNull.Value);
+            sqlParams[5] = new SqlParameter("@TransactionID", DBNull.Value);
 
             SqlHelper.ExecuteScalar("OrdersInsert", CommandType.StoredProcedure, sqlParams);
             this.OrderID = Convert.ToInt32(sqlParams[0].Value);

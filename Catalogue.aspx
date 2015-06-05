@@ -180,10 +180,54 @@
         }
         /****/
 
+        /* Request availability/ quote*/
+        function ProductRequest(prodID, obj)
+        {
+            Product1.ProductID = prodID;
+            Product1.RequestEntity = obj;
+            var dialog;
+            dialog = $("#EmailPopUp").dialog({
+                autoOpen: false,
+                height: 400,
+                width: 400,
+                modal: true,
+                title: "Request " + obj,
+                buttons: {
+                    Done: function () {
+                        document.getElementById('<%=btnRequestQuote.ClientID%>').click();
+                    }
+                }
+            });
+            dialog.dialog("open");
+            return false;
+        }
+
+        function ProductRequest2()
+        {
+            Product1.Name = document.getElementById('<%=txtName.ClientID%>').value;
+            Product1.Email = document.getElementById('<%=txtEmail.ClientID%>').value;
+            Product1.ContactNo = document.getElementById('<%=txtContactNo.ClientID%>').value;
+            $.ajax({
+                type: "POST",
+                url: "QueryPage.aspx/RequestEntity",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(Product1),
+                dataType: "json",
+                success: function (result) {
+                    alert(JSON.parse(result.d).Message);
+                },
+                error: function () {
+                    alert("Request could not be made");
+                }
+            });
+        }
+        /****/
+
         /* Display pop up on click of show more */
         var SearchCriteria = "";
         var obj = {};
         var Product = {};
+        var Product1 = {};
         $(function () {
             var dialog;
             dialog = $("#dialog-form").dialog({
@@ -334,27 +378,28 @@
                     <asp:Button ID="btnApplyFilter" runat="server" Text="Apply Filter" CssClass="btn btn-info" OnClick="btnApplyFilter_Click" OnClientClick="return SetSearchFields(1);" />
                 </div>
             </td>
-            <td style="vertical-align: top;">
+            <td style="width: 100%; vertical-align: top;">
                 <asp:Literal ID="ltCatalogue" runat="server" EnableViewState="true">
 
                 </asp:Literal>
                 <asp:GridView ID="gvProducts" runat="server" AutoGenerateColumns="false" DataKeyNames="ProductID"
-                    ShowFooter="false" CssClass="mSearchGrid" Width="800px" Style="font-size: 15px"
+                    ShowFooter="false" CssClass="mSearchGrid" Width="900px" Style="font-size: 15px"
                     PagerStyle-CssClass="pgr" PagerSettings-Position="Bottom" AlternatingRowStyle-CssClass="alt"
                     RowStyle-Wrap="true" AlternatingRowStyle-Wrap="true" EditRowStyle-Wrap="true"
                     FooterStyle-Wrap="true" GridLines="None" ShowHeaderWhenEmpty="true" EnableCallBacks="False"
                     ShowHeader="true" OnRowDataBound="gvProducts_DataBound" OnRowCreated="gvProducts_RowCreated" AllowPaging="true" PageSize="10">
                     <HeaderStyle CssClass="mSearchGrid"></HeaderStyle>
                     <Columns>
-                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center">
+                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
                             <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" />
                             <ItemTemplate>
-                                <asp:Image ID="imgProduct" runat="server" ToolTip="ProductImage" />
+                                <asp:Image ID="imgProduct" runat="server" ToolTip="ProductImage" Width="99%" Height="99%" />
+                                <asp:Label ID="lblImagePath" runat="server" style="display:none;" Text='<%# Eval("ImageName") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:BoundField HeaderText="Product" DataField="ProductCode"></asp:BoundField>
                         <asp:BoundField HeaderText="Manufacturer" DataField="Manufacturer"></asp:BoundField>
-                        <asp:TemplateField HeaderText="Price" ItemStyle-Width="25%">
+                        <asp:TemplateField HeaderText="Price" ItemStyle-Width="30%">
                             <ItemTemplate>
                                 <span>
                                     <span style="float: left;">
@@ -362,18 +407,21 @@
                                         <asp:Label ID="lblPricing" runat="server" Text='<%# Eval("Pricing") %>' Style="display: none;"></asp:Label>
                                         <asp:Literal ID="ltPricing" runat="server"></asp:Literal>
                                     </span>
-                                    <span style="float: right;">
-                                        <asp:Button ID="btnGetPrice" runat="server" class="btn btn-primary" Text="Request Quote" /></span>
+                                    <span style="float: right; padding-right:30px;">
+                                        <%--<asp:Button ID="btnGetPrice" runat="server" class="btn btn-primary" Text="Request" />--%>
+                                        <asp:LinkButton ID="btnGetPrice" runat="server" Text="Request" 
+                                            OnClientClick='<%# string.Format("javascript:return ProductRequest(\"{0}\",\"{1}\")", Eval("ProductID"),"Price") %>'></asp:LinkButton>
+                                    </span>
                                 </span>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Inventory" ItemStyle-Width="45%">
+                        <asp:TemplateField HeaderText="Inventory" ItemStyle-Width="35%">
                             <ItemTemplate>
                                 <span>
                                     <div style="float: left;">
                                         <asp:Label ID="lblInventory" runat="server" Text='<%# Eval("Inventory") %>'></asp:Label>
                                     </div>
-                                    <div style="float:right;">
+                                    <div style="float:right;  padding-right:30px;">
                                         <%--<asp:ImageButton class="btn btn-primary" id="btnAddToCart" title="Add to cart" runat="server" ImageUrl="~/images/Cart.png" />--%>
                                         <asp:Button ID="btnAddToCart" class="btn btn-primary" Text="Add To Cart" title="Add to cart" runat="server" 
                                             OnClientClick='<%# string.Format("javascript:return btnAddToCart_Client(\"{0}\")", Eval("ProductID")) %>'
@@ -383,7 +431,9 @@
                                         </button>--%>
                                     </div>
                                     <div style="float: right; padding-right:30px;">
-                                        <asp:Button ID="btnCallAvail" runat="server" class="btn btn-primary" Text="Call for Availability" />
+                                        <%--<asp:Button ID="btnCallAvail" runat="server" class="btn btn-primary" Text="Call for Availability" />--%>
+                                        <asp:LinkButton ID="btnCallAvail" runat="server" Text="Call for Availability" 
+                                            OnClientClick='<%# string.Format("javascript:return ProductRequest(\"{0}\",\"{1}\")", Eval("ProductID"),"Availability") %>'/>
                                     </div>
                                 </span>
                             </ItemTemplate>
@@ -403,6 +453,27 @@
             <%--            <asp:Button ID="btnPopUpApplyFilter" runat="server" Text="Apply Filter" CssClass="btn btn-info" OnClick="btnApplyFilter_Click" Style="display: none;" />--%>
             <%--<asp:Button ID="Button1" runat="server" Text="Apply Filter" CssClass="btn btn-info" OnClick="btnApplyFilter_Click" OnClientClick="return SetSearchFields2();" />--%>
         </div>
+    </div>
+    <div id="EmailPopUp">
+        <table>
+            <tr>
+                <td>Name:</td>
+                <td><asp:TextBox ID="txtName" runat="server"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td><asp:TextBox ID="txtEmail" runat="server"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td>Contact No:</td>
+                <td><asp:TextBox ID="txtContactNo" runat="server"></asp:TextBox></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <asp:Button ID="btnRequestQuote" Text="Request" runat="server" OnClientClick="return ProductRequest2();" style="display:none;" />
+                </td>
+            </tr>
+        </table>
     </div>
     <asp:Button ID="Button1" runat="server" Text="Button" Style="display: none" OnClick="btnApplyFilter_Click" OnClientClick="return SetSearchFields2();" />
 </asp:Content>

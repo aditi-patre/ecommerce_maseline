@@ -4,23 +4,41 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
-    <script type="text/javascript" src="js/menu-vertical.js"></script>
-    <%--        <script type="text/javascript" lang="ja" src="js/jquery.min.js"></script>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>--%>
-    <link rel="stylesheet" href="css/menu-vertical.css" />
-    <link rel="stylesheet" href="css/StyleSheet.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Home | Masline</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/prettyPhoto.css" rel="stylesheet" />
+    <link href="css/price-range.css" rel="stylesheet" />
+    <link href="css/animate.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link href="css/responsive.css" rel="stylesheet" />
+     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script>var $j = jQuery.noConflict(true);</script>
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <%--UI design end--%>
 
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+
+    <%--<script type="text/javascript" src="js/menu-vertical.js"></script>
+    <link rel="stylesheet" href="css/menu-vertical.css" />
+    <link rel="stylesheet" href="css/StyleSheet.css" />--%>
+
+    <%--    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>--%>
 
     <%--For  popUp--%>
-    <link rel="stylesheet" href="css/jquery-ui.css" />
+<%--    <link rel="stylesheet" href="css/jquery-ui.css" />
     <script src="js/jquery-1.10.2.js"></script>
-    <script src="js/jquery-ui.js"></script>
+    <script src="js/jquery-ui.js"></script>--%>
     <%--[-]--%>
+
     <script type="text/javascript">
 
         $(function () {
@@ -32,21 +50,22 @@
 
             //******open popup  on click of shopping cart*****//
             var Cart_PopUp;
-            Cart_PopUp = $("#CartPopUp").dialog({
+            Cart_PopUp = $j("#CartPopUp").dialog({
                 autoOpen: false,
                 height: 500,
                 width: 500,
-                modal: true,
+                modal: false,
                 title: "Items in Cart",
                 buttons: {
+
                 },
                 open: function (event, ui) {
-                    $('#dvCartPopUp').load('ViewCart.aspx', function () {
+                    $j('#dvCartPopUp').load('ViewCart.aspx', function () {
 
                     });
                 }
             });
-            $("#btnShoppingCart").button().on("click", function () {
+            $j("#btnShoppingCart").button().on("click", function () {
                 Cart_PopUp.dialog("open");
             });
 
@@ -78,10 +97,199 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <table style="width: 100%;">
+        <header id="header">
+            <div class="header-middle">
+                <!--header-middle-->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="logo pull-left">
+                                <a href="Home.aspx">
+                                    <img src="images/home/logo.png" alt="" /></a>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-4">
+                            <%--<div class="search_box"> --%><div class="search_box pull-right">
+                                <input type="text" placeholder="Search ProductCode" /> <%--<a href="#">
+                                    <img src="images/home/searchicon.png" /></a>--%>
+                            </div>
+                        </div>
+                        <div class="col-sm-8 pull-right">
+                            <div class="logo pull-right">
+                                <ul>
+                                    <li>
+                                        <a href="login.aspx" target="_self" id="btnLogin" runat="server">
+                                            <img src="images/home/login.jpg" /></a>
+                                        <asp:Label ID="lblUser" runat="server" Style="display: none; font-size: large;" ForeColor="White"></asp:Label>
+
+                                        <asp:ImageButton ID="btnLogOut" runat="server" Visible="false" OnClick="btnLogOut_Click" ImageUrl="~/images/home/logout.png" />
+                                    </li>
+                                    <li>
+                                        <img src="images/home/contact.jpg" />
+                                    </li>
+                                    <li>
+                                        <button type="button" id="btnShoppingCart" style="background-color: #084E8B; border-color: #084E8B;" onclick="location.href = 'ViewCart.aspx';">
+                                            <img src="images/home/shoppingcart.jpg" />
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/header-middle-->
+
+        </header>
+        <!--/header-->
+
+        <div>
+            <asp:ContentPlaceHolder ID="ContentPlaceHolderTop" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>        
+        <!--/slider-->
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="left-sidebar" style="background-color: #CFD4D0">
+                            <h2>CATALOG</h2>
+                            <asp:Literal runat="server" ID="ltList"></asp:Literal>
+                            <!--/category-products-->
+                            <br />
+                            <div class="shipping text-center">
+                                <h2>Featured News</h2>
+                                <!--featured News-->
+
+                                <div class="media commnets" style="border-bottom: 1px solid black;">
+                                    <a class="pull-left" href="#">
+                                        <img src="images/news/media-one.jpg" alt="" />
+                                    </a>
+                                    <div class="media-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+
+                                    </div>
+                                </div>
+
+                                <div class="media commnets" style="border-bottom: 1px solid black;">
+                                    <a class="pull-left" href="#">
+                                        <img src="images/news/media-one.jpg" alt="" />
+                                    </a>
+                                    <div class="media-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+
+                                    </div>
+                                </div>
+
+                                <div class="media commnets" style="border-bottom: 1px solid black;">
+                                    <a class="pull-left" href="#">
+                                        <img src="images/news/media-one.jpg" alt="" />
+                                    </a>
+                                    <div class="media-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--featured news-->
+                        </div>
+                    </div>
+                    <div>
+                        <asp:ContentPlaceHolder ID="MainContentPlaceHolder" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer id="footer">
+            <!--Footer-->
+
+
+            <div class="footer-widget">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">Online Help</a></li>
+                                    <li><a href="#">Contact Us</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="https://www.youtube.com/channel/UCsPQTAe2Qrau1e2TumlaATQ" target="_blank" dir="ltr">Masline Electronics</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">Terms of Use</a></li>
+                                    <li><a href="#">Privecy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="single-widget">
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">Company Information</a></li>
+                                    <li><a href="#">Careers</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-1">
+                            <div class="single-widget">
+                                <h2>1821546454654</h2>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li><a href="#">jobs@masline.com</a></li>
+                                    <li><a href="#">Contact us at sales@masline.com</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <p class="pull-left">Copyright © 2015. Masline Electronics INC. All rights reserved.</p>
+
+                    </div>
+                </div>
+            </div>
+
+        </footer>
+
+
+
+        <!--/Footer-->
+
+
+
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery.scrollUp.min.js"></script>
+        <script src="js/price-range.js"></script>
+        <script src="js/jquery.prettyPhoto.js"></script>
+        <script src="js/main.js"></script>
+
+
+
+
+
+
+
+        <%--        <table style="width: 100%;">
             <tr>
-                <td colspan="2">
-                    <div id="header">
+                <td colspan="2">--%>
+        <%--   <div id="header">
                         <a href="Home.aspx" title="Home" rel="home" id="logo" class="logo">
                             <img src="images/logo_reconstruction5_1.png" alt="Home" />
                         </a>
@@ -95,20 +303,16 @@
                                 <tr>
                                     <td>
                                         <button type="button" class="btn btn-info" id="btnShoppingCart">
-                                            Shopping Cart<span class="glyphicon glyphicon-shopping-cart"></span> <%--<span class="badge" id="lblCartItemCount" runat="server"></span>--%>
-                                            <asp:Label ID="lblCartItemCount" runat="server" CssClass="badge"></asp:Label>
-                                            <%--    <asp:Label runat="server" CssClass="badge" ID="lblCartItemCount1"></asp:Label>--%>
+                                            Shopping Cart<span class="glyphicon glyphicon-shopping-cart"></span> 
+                                            <asp:Label ID="lblCartItemCount" runat="server" CssClass="badge"></asp:Label>                                          
                                         </button>
                                     </td>
                                     <td>
-                                        <%-- <asp:Button class="btn btn-info" ID="btnSignUp" runat="server" Text="Signup" />--%>                                      
+                                                                   
                                     </td>
                                     <td>
-                                        <%--<asp:Button class="btn btn-info" ID="btnLogin" runat="server" Text="Login" OnClientClick="return OpenLogin();" />--%>
+                                      
                                         <a href="login.aspx" target="_self" class="btn btn-info" id="btnLogin" runat="server">Login</a>
-                                        <%--<button type="button" class="btn btn-info" id="btnLogin">
-                                Login
-                            </button>--%>
                                         <asp:Button class="btn btn-info" ID="btnLogOut" runat="server" Visible="false" OnClick="btnLogOut_Click" Text="LogOut" />
                                     </td>
                                 </tr>
@@ -145,24 +349,24 @@
                                 </tr>
                             </table>
                         </div>
-                    </div>
-                </td>
+                    </div>--%>
+        <%--           </td>
+            </tr>
+            <tr>
+                <td>--%>
+        <%--<asp:Literal runat="server" ID="ltList"></asp:Literal>--%>
+        <%--                </td>
+                <td>--%>
+        <%-- <asp:ContentPlaceHolder ID="MainContentPlaceHolder" runat="server">
+                    </asp:ContentPlaceHolder>--%>
+        <%--                </td>
             </tr>
             <tr>
                 <td>
-                    <asp:Literal runat="server" ID="ltList"></asp:Literal>
-                </td>
-                <td>
-                    <asp:ContentPlaceHolder ID="MainContentPlaceHolder" runat="server">
-                    </asp:ContentPlaceHolder>
+                   
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <%--Footer--%>
-                </td>
-            </tr>
-        </table>
+        </table>--%>
         <div id="CartPopUp">
             <br />
             <br />
