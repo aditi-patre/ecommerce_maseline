@@ -613,7 +613,7 @@ ul.sub-menu {
 }
 
 .linkBg {
-    position: absolute;
+    /*position: absolute;*/ /*commented by aditi*/
     background-image: url(../images/home/linkBg.png);
     background-attachment: scroll;
     width: 855px;
@@ -749,7 +749,6 @@ background-image:url(../images/home/welcomeBg.png);
         left: 50%;
         margin-left: -65px;
     }
-
 h2.title:before {
     content: " ";
     position: absolute;
@@ -848,6 +847,7 @@ h2.title:before {
 
 .price-range {
     margin-top: 30px;
+    padding-left:10px; /*added by aditi*/
 }
 
 .well {
@@ -857,9 +857,14 @@ h2.title:before {
     box-shadow: none;
     margin-bottom: 20px;
     min-height: 20px;
-    padding: 35px;
+    /*padding: 35px;*/
+    padding:20px 5px 0px 0px; 
+    width:230px;
 }
 
+.slider slider-horizontal{
+    width:98%;
+}
 
 .tooltip-inner {
     background-color: #FE980F;
@@ -2565,4 +2570,19 @@ h2.title {
 
 .contact-info .social-networks ul li a:hover {
     color: #FE980F;
+}
+
+.SearchCheckbox input[type="checkbox"] 
+{ 
+    margin-right: 10px; 
+    padding-left:10px;
+}
+
+/* Productlisting left vertical bar*/
+.brand_products{
+    padding-left:10px;
+}
+
+.SearchAttributes{
+    padding-left:10px;
 }

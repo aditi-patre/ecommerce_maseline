@@ -158,7 +158,7 @@ public partial class ProductListing : System.Web.UI.Page
         sb.Append("<table>");
         for (int i = 0; i < dt.Rows.Count; i++)
         {
-            sb.Append("<tr><td style=\"padding-bottom:15px;\">" + dt.Rows[i]["Name"] + ": </td><td style=\"padding-bottom:15px;\"><input type=\"text\" name='" + dt.Rows[i]["AttributeID"] + "' id='" + dt.Rows[i]["AttributeID"] + "' runat=\"server\" style=\" width:80px;\" /><br/></td></tr>");
+            sb.Append("<tr><td style=\"padding-bottom:15px;\">" + dt.Rows[i]["Name"] + ": </td><td style=\"padding-bottom:15px; padding-left:15px;\"><input type=\"text\" name='" + dt.Rows[i]["AttributeID"] + "' id='" + dt.Rows[i]["AttributeID"] + "' runat=\"server\" style=\" width:80px;\" /><br/></td></tr>");
         }
         sb.Append("</table>");
         ltAttributes.Text = sb.ToString();

@@ -326,7 +326,7 @@
 
     <section>
         <div class="container">
-            <div>
+            <div style="margin-top:-4%;">
                 <h2>CATALOGUE</h2>
             </div>
             <div class="breadcrumbs">
@@ -335,16 +335,16 @@
                     <li class="active">Product Listing</li>
                 </ol>
             </div>
-            <div class="row">
+            <div class="row" style="margin-top:-5%;">
                 <div class="col-sm-3">
-                    <div class="left-sidebar">
+                    <div class="left-sidebar" style="width:85%;">
                         <h2>MODIFY SEARCH</h2>
                         <div class="brands_products">
                             <!--brands_products-->
                             <h3>Manufacture</h3>
                             <div style="height: 160px; overflow-y: hidden;">
                                 <div class="brands-name">
-                                    <asp:CheckBoxList ID="chkManufacturer" runat="server" Height="80px">
+                                    <asp:CheckBoxList ID="chkManufacturer" runat="server" Height="80px" CssClass="SearchCheckbox">
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
@@ -357,7 +357,7 @@
                             <div style="height: 160px; overflow-y: hidden;">
 
                                 <div class="brands-name">
-                                    <asp:CheckBoxList ID="chkCategory" runat="server" Height="80px">
+                                    <asp:CheckBoxList ID="chkCategory" runat="server" Height="80px" CssClass="SearchCheckbox">
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
@@ -371,7 +371,7 @@
                             <h3>SubCategory</h3>
                             <div style="height: 160px; overflow-y: hidden;">
                                 <div class="brands-name">
-                                    <asp:CheckBoxList ID="chkSubCategory" runat="server" Height="80px">
+                                    <asp:CheckBoxList ID="chkSubCategory" runat="server" Height="80px" CssClass="SearchCheckbox">
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
@@ -388,15 +388,15 @@
                             <h3>Price Range</h3>
                             <div class="well">
                                 <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" 
-                                    data-slider-value="[250,450]" id="sl2" /><br />
+                                    data-slider-value="[250,450]" id="sl2" style=" width:98%;" /><br />
                                 <b>$ 0</b> <b class="pull-right">$ 600</b>
                             </div>
                         </div>
                         <!--/price-range-->
 
-                        <asp:CheckBox ID="chkInStock" runat="server" Text="In Stock" />
+                        <asp:CheckBox ID="chkInStock" runat="server" Text="In Stock" CssClass="SearchCheckbox"/>
                         <br />
-                        <asp:CheckBox ID="chkPricingAvail" runat="server" Text="Pricing Available" />
+                        <asp:CheckBox ID="chkPricingAvail" runat="server" Text="Pricing Available"  CssClass="SearchCheckbox"/>
                         <input type="button" id="btnApplyFilter1" value="Apply Filter" style="visibility: hidden;" />
                         <asp:HiddenField ID="hdnCategory" runat="server" />
                         <asp:HiddenField ID="hdnSubCategory" runat="server" />

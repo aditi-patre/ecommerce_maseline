@@ -6,7 +6,77 @@
         <!--slider-->
         <div class="container">
             <div class="row">
-                <div>
+                <div class="col-sm-12">
+                    <div class="mainmenu pull-left">
+                        <ul class="nav navbar-nav collapse navbar-collapse">
+                            <li><a href="index.html" class="active">HOME</a></li>
+                            <li class="dropdown"><a href="#">CATALOG<i class="fa fa-angle-down"></i></a>
+                                <ul role="menu" class="sub-menu">
+                                    <li><a href="ProductListing.aspx">Products</a></li>
+                                    <li><a href="ProductDetails.aspx">Product Details</a></li>
+                                    <li><a href="Login.aspx?Checkout=Y">Checkout</a></li>
+                                    <li><a href="ViewCart.aspx">Cart</a></li>
+                                    <li><a href="Login.aspx">Login</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown"><a href="#">SERVICES<i class="fa fa-angle-down"></i></a>
+                                <ul role="menu" class="sub-menu">
+                                    <li><a href="blog.html">Blog List</a></li>
+                                    <li><a href="blog-single.html">Blog Single</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="404.html">PRODUCT VIDEOS</a></li>
+                            <li><a href="contact-us.html">LINE CARD</a></li>
+                        </ul>
+                    </div>
+                    <div class="welcomeBg">welcome  to   Homepage</div>
+                    <div id="slider-carousel" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
+                            <li data-target="#slider-carousel" data-slide-to="1"></li>
+                            <li data-target="#slider-carousel" data-slide-to="2"></li>
+                        </ol>
+
+                        <div class="carousel-inner">
+                            <div class="item active">
+
+                                <div class="col-sm-6">
+                                    <img src="images/home/banner1.jpg" class="girl img-responsive" alt="" />
+
+                                </div>
+                            </div>
+                            <div class="item ">
+
+                                <div class="col-sm-6">
+                                    <img src="images/home/banner2.jpg" class="girl img-responsive" alt="" />
+
+                                </div>
+                            </div>
+
+                            <div class="item ">
+
+                                <div class="col-sm-6">
+                                    <img src="images/home/banner3.jpg" class="girl img-responsive" alt="" />
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
+                            <i class="fa fa-angle-left"></i>
+                        </a>
+                        <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </div>
+
+                </div>
+
+
+
+
+  <%--              <div>
                     <div id="slider-carousel" class="carousel slide" data-ride="carousel">
                         <ol class="carousel-indicators">
                             <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
@@ -67,13 +137,13 @@
                         </a>
                     </div>
 
-                </div>
+                </div>--%>
             </div>
         </div>
     </section>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="server">
-    <div class="col-sm-9">
+    <div class="col-sm-9" style="padding-left:15px; padding-right:15px;">
         <h2>
             <img src="images/home/icon.png" />WHY MASLINE?</h2>
 
