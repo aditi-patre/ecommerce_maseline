@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="Server">
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script>var $j = jQuery.noConflict(true);</script>    
+    <script>var $j = jQuery.noConflict(true);</script>
     <script type="text/javascript">
         function GetProducts(Category, SubCategory) {
             window.location("Catalogue.aspx?a=x");
@@ -44,7 +44,7 @@
 
         /* Set search parameters in hidden fields*/
         function SetSearchFields(x) {
-           
+
             var selManufacturer = "", selCategory = "", selSubCategory = "";
             $j("[id*=chkManufacturer] input:checked").each(function (index, item) {
                 if (selManufacturer == "")
@@ -91,8 +91,8 @@
         /* Set the additional search fields on click of Apply Filter after Show more */
         function SetSearchFields2() {
             if (document.getElementById('<%=hdnPopUpSearchCriteria.ClientID%>').value.indexOf("Manufacturer") != -1) {
-            $j("[id*=dvCheckBoxListControl] input:checked").each(function (index, item) {
-                if (document.getElementById('<%=hdnManufacturer.ClientID%>').value == "")
+                $j("[id*=dvCheckBoxListControl] input:checked").each(function (index, item) {
+                    if (document.getElementById('<%=hdnManufacturer.ClientID%>').value == "")
                         document.getElementById('<%=hdnManufacturer.ClientID%>').value += $(item).val();
                     else {
                         var IsFound = false;
@@ -146,7 +146,7 @@
                 });
             }
 
-            document.getElementById('<%=hdnInStock.ClientID%>').value = document.getElementById('MainContentPlaceHolder_chkInStock').checked;
+    document.getElementById('<%=hdnInStock.ClientID%>').value = document.getElementById('MainContentPlaceHolder_chkInStock').checked;
             document.getElementById('<%=hdnPricingAvailable.ClientID%>').value = document.getElementById('MainContentPlaceHolder_chkPricingAvail').checked;
             document.getElementById('<%=hdnAttributes.ClientID%>').value = document.getElementById('<%=hdnAttributes.ClientID%>').value;
             return true;
@@ -213,7 +213,7 @@
         }
         /****/
 
-        
+
         /* Display pop up on click of show more */
         var SearchCriteria = "";
         var obj = {};
@@ -222,10 +222,9 @@
 
         /**Javascript popup**/
         var popUpObj;
-        function ShowMoreSearchOption(btn)
-        {
+        function ShowMoreSearchOption(btn) {
             if (btn.id.indexOf("btnMoreManufacturer") != -1) {
-                SearchCriteria = "Select " + "Manufacturer";               
+                SearchCriteria = "Select " + "Manufacturer";
             }
             else if (btn.id.indexOf("btnMoreCategory") != -1) {
                 SearchCriteria = "Select " + "Category";
@@ -239,21 +238,49 @@
             ShowPopUp();
         }
 
-        function ShowPopUp()
-        {
+        function ShowPopUp() {
             var bcgDiv = document.getElementById("divBackground");
             bcgDiv.style.display = "block";
             document.getElementById("dialog-form").style.display = "block";
             $("#PopUpHeading")[0].innerHTML = SearchCriteria;
         }
 
-        function HidePopUp()
-        {
+        function HidePopUp() {
             var bcgDiv = document.getElementById("divBackground");
             bcgDiv.style.display = "none";
             document.getElementById("dialog-form").style.display = "none";
         }
         /**Javascript popup end**/
+
+        var SearchObj = {};
+        function FilterGrid(ddl) {
+            var SearchCriteria = "";
+            var _ddl = "";
+            if (ddl.id.indexOf("ddlSortBy") != -1) {
+                _ddl = document.getElementById('<%=ddlSortBy.ClientID %>');
+                SearchObj.SearchCriteria = "SortBy";
+                SearchObj.SearchValue = _ddl.options[_ddl.selectedIndex].value;
+            }
+            else if (ddl.id.indexOf("ddlPageSize") != -1) {
+                _ddl = document.getElementById('<%=ddlPageSize.ClientID %>');
+                    SearchObj.SearchCriteria = "PageSize";
+                    SearchObj.SearchValue = _ddl.options[_ddl.selectedIndex].value;
+                }
+
+            $.ajax({
+                type: "POST",
+                url: "QueryPage.aspx/FilterGrid",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(SearchObj),
+                dataType: "json",
+                success: function (result) {
+                    alert(JSON.parse(result.d).Message);
+                },
+                error: function () {
+                    alert("Request could not be made");
+                }
+            });
+        }
 
         function PopulateCheckBoxList(str) {
             obj.CriteriaToExpand = str;
@@ -322,11 +349,80 @@
     $('#dvCheckBoxListControl').empty();
     $('#dvCheckBoxListControl').append(table);
 }//Create Checkboxlist close
-    </script>
 
+
+//**To expand/collapse columns
+var tbl = null;
+var UpperBound = 0;
+var LowerBound = 1;
+var CollapseImage = 'images/minus.png';
+var ExpandImage = 'images/plus.png';
+var n = 1;
+var TimeSpan = 25;
+var Rows = null;
+var Cols = null;
+var img = "";
+
+window.onload = function () {
+    tbl = document.getElementById('<%= this.gvProducts.ClientID %>');
+    UpperBound = parseInt('<%= this.gvProducts.Rows.Count %>');
+    Rows = tbl.getElementsByTagName('tr');
+    Cols = tbl.getElementsByTagName('td');
+}
+
+function Toggle(Image, Index) {
+    ToggleImage(Image, Index);
+    ToggleColumns(Image, Index);
+}
+
+function ToggleImage(Image, Index) {
+    if (Image.src.indexOf("plus") != -1)
+    {
+        Image.src = ExpandImage;
+        Image.title = 'Expand';
+        n = UpperBound;
+        img = ExpandImage;
+        Image.IsExpanded = false;
+    }
+    else
+    {
+        Image.src = CollapseImage;
+        Image.title = 'Collapse';
+        n = LowerBound;
+        img = CollapseImage;
+        Image.IsExpanded = true;
+    }
+}
+
+function ToggleColumns(Image, Index) {
+    document.getElementById('<%=hdnColNoImg.ClientID %>').value = Index + "|" + img;
+    if (n < LowerBound || n > UpperBound) return;
+    if (tbl.rows.length > 0) {
+        var tbl_row = tbl.rows[parseInt(n)];
+        var tbl_Cell = tbl_row.cells[Index];
+        if (tbl_Cell.style.width >= "100px") {
+
+            tbl_Cell.style.width = "5px";
+
+        }
+        else {
+            tbl_Cell.style.width = "100px";
+
+        }
+
+        if (Image.IsExpanded) n++; else n--;
+        setTimeout(function () { ToggleColumns(Image, Index); }, TimeSpan);
+    }
+
+    document.getElementById('<%=btn1.ClientID %>').click();
+
+}
+//**
+    </script>
+    <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
     <section>
         <div class="container">
-            <div style="margin-top:-4%;">
+            <%-- <div style="margin-top:-4%;">
                 <h2>CATALOGUE</h2>
             </div>
             <div class="breadcrumbs">
@@ -334,10 +430,10 @@
                     <li><a href="#">Home</a></li>
                     <li class="active">Product Listing</li>
                 </ol>
-            </div>
-            <div class="row" style="margin-top:-5%;">
+            </div>--%>
+            <div class="row">
                 <div class="col-sm-3">
-                    <div class="left-sidebar" style="width:85%;">
+                    <div class="left-sidebar" style="width: 85%; border: 1px solid lightgrey;">
                         <h2>MODIFY SEARCH</h2>
                         <div class="brands_products">
                             <!--brands_products-->
@@ -361,7 +457,7 @@
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
-                            <input type="button" id="btnMoreCategory" value="Show More >>" class="btn btn-primary"  onclick="ShowMoreSearchOption(this)" />
+                            <input type="button" id="btnMoreCategory" value="Show More >>" class="btn btn-primary" onclick="ShowMoreSearchOption(this)" />
                         </div>
                         <!--/brands_products-->
 
@@ -375,7 +471,7 @@
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
-                            <input type="button" id="btnMoreSubCategory" value="Show More >>" class="btn btn-primary"  onclick="ShowMoreSearchOption(this)" />
+                            <input type="button" id="btnMoreSubCategory" value="Show More >>" class="btn btn-primary" onclick="ShowMoreSearchOption(this)" />
                         </div>
                         <!--/SubCategory-->
                         <br />
@@ -387,16 +483,16 @@
                             <!--price-range-->
                             <h3>Price Range</h3>
                             <div class="well">
-                                <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" 
-                                    data-slider-value="[250,450]" id="sl2" style=" width:98%;" /><br />
+                                <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5"
+                                    data-slider-value="[250,450]" id="sl2" style="width: 98%;" /><br />
                                 <b>$ 0</b> <b class="pull-right">$ 600</b>
                             </div>
                         </div>
                         <!--/price-range-->
 
-                        <asp:CheckBox ID="chkInStock" runat="server" Text="In Stock" CssClass="SearchCheckbox"/>
+                        <asp:CheckBox ID="chkInStock" runat="server" Text="In Stock" CssClass="SearchCheckbox" />
                         <br />
-                        <asp:CheckBox ID="chkPricingAvail" runat="server" Text="Pricing Available"  CssClass="SearchCheckbox"/>
+                        <asp:CheckBox ID="chkPricingAvail" runat="server" Text="Pricing Available" CssClass="SearchCheckbox" />
                         <input type="button" id="btnApplyFilter1" value="Apply Filter" style="visibility: hidden;" />
                         <asp:HiddenField ID="hdnCategory" runat="server" />
                         <asp:HiddenField ID="hdnSubCategory" runat="server" />
@@ -409,145 +505,191 @@
                     </div>
                 </div>
 
-                <div class="col-sm-9">
-                    <!--features_items-->
-                    <h2>PRODUCT LISTINGS</h2>
-                    <div>
-                        <%--<ul class="pagination">
-                            <li class="active"><a href="">1</a></li>
-                            <li><a href="">2</a></li>
-                            <li><a href="">3</a></li>
-                            <li><a href="">&raquo;</a></li>
-                        </ul>--%>
-                        <ul class="pagination">
-                            <asp:Repeater ID="rptPager" runat="server">
-                                <ItemTemplate>
-                                    <li class='<%# Convert.ToBoolean(Eval("Enabled")) ? "" : "active" %>'>
-                                        <asp:LinkButton ID="lnkPage" runat="server" Text='<%#Eval("Text") %>' CommandArgument='<%# Eval("Value") %>'
-                                            OnClick="Page_Changed" OnClientClick='<%# !Convert.ToBoolean(Eval("Enabled")) ? "return false;" : "" %>'>
-                                        </asp:LinkButton>
-                                    </li>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-15 pull-left">
-                    <div class="features_items">
-                        <div class="table-responsive cart_info">
-                            <asp:GridView ID="gvProducts" runat="server" AutoGenerateColumns="false" DataKeyNames="ProductID"
-                                ShowFooter="false" CssClass="table table-condensed" Width="1000px" Style="font-size: 15px"
-                                PagerStyle-CssClass="pgr" PagerSettings-Position="Bottom" AlternatingRowStyle-CssClass="alt"
-                                RowStyle-Wrap="true" AlternatingRowStyle-Wrap="true" EditRowStyle-Wrap="true"
-                                FooterStyle-Wrap="true" GridLines="None" ShowHeaderWhenEmpty="true" EnableCallBacks="False"
-                                ShowHeader="true" OnRowDataBound="gvProducts_DataBound" OnRowCreated="gvProducts_RowCreated" AllowPaging="true" PageSize="10"
-                                OnRowCommand="gvProducts_RowCommand">
-                                <HeaderStyle CssClass="cart_menu"></HeaderStyle>
-                                <Columns>
-                                    <asp:TemplateField HeaderText="Item" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="25%">
-                                        <HeaderStyle CssClass="image" />
-                                        <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" CssClass="cart_product" />
-                                        <ItemTemplate>
-                                            <asp:Image ID="imgProduct" runat="server" ToolTip="ProductImage" style=" width:100px; height:75px;" />
-                                            <asp:Label ID="lblImagePath" runat="server" Style="display: none;" Text='<%# Eval("ImageName") %>'></asp:Label>
-                                        </ItemTemplate>
-                                    </asp:TemplateField >
-                                    <asp:TemplateField HeaderText="Product Name" HeaderStyle-HorizontalAlign="Right" ItemStyle-Width="30%">
-                                        <HeaderStyle CssClass="description" />
-                                        <ItemStyle HorizontalAlign="center" VerticalAlign="Top" CssClass="cart_description" />
-                                        <ControlStyle CssClass="cart_description" />
-                                        <ItemTemplate>
-                                            <h4>
-                                                <asp:LinkButton ID="lbtnProdName" runat="server" Text='<%# Eval("Name") %>' CommandName="ShowProductDetails" CommandArgument='<%# Eval("ProductID") %>'></asp:LinkButton>
-                                            </h4>
-                                          <%--  <p id="lblProductCode" runat="server"><%# Eval("ProductCode") %></p>--%>
-                                            <asp:Label ID="lblProductCode" runat="server" Text='<%# Eval("ProductCode") %>'></asp:Label>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <%--<asp:BoundField HeaderText="Item" DataField="ProductCode" ItemStyle-CssClass="cart_description"></asp:BoundField>--%>
-                                    <asp:BoundField HeaderText="Manufacturer" DataField="Manufacturer" ItemStyle-CssClass="cart_description" ItemStyle-Width="15%"></asp:BoundField>
-                                    <asp:TemplateField HeaderText="Quantity" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
-                                        <HeaderStyle CssClass="cart_total" />
-                                        <ItemStyle CssClass="cart_total" />
-                                        <ItemTemplate>
-                                            <span>
-                                                <asp:Label ID="lblPricing" runat="server" Text='<%# Eval("Pricing") %>' Style="display: none;"></asp:Label>
-                                                <asp:Literal ID="ltQty" runat="server"></asp:Literal>
-                                            </span>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Price" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
-                                        <HeaderStyle CssClass="cart_total" />
-                                        <ItemStyle CssClass="cart_total" />
-                                        <ItemTemplate>
-                                            <span>
-                                                <asp:Label ID="lblPrice" runat="server" Text='<%# Eval("Price") %>'></asp:Label>
-                                                <asp:Literal ID="ltPricing" runat="server"></asp:Literal>
-                                            </span>
-                                            <span style="float: right; padding-right: 30px;">
-                                                <asp:LinkButton ID="btnGetPrice" runat="server" Text="Request"
-                                                    OnClientClick='<%# string.Format("javascript:return ProductRequest(\"{0}\",\"{1}\")", Eval("ProductID"),"Price") %>'></asp:LinkButton>
-                                            </span>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Inventory" ItemStyle-Width="30%" HeaderStyle-HorizontalAlign="Center" >
-                                        <ItemStyle CssClass="cart_quantity" />
-                                        <ItemTemplate>
-                                            <span>
-                                                <div style="float: left;">
-                                                    <asp:Label ID="lblInventory" runat="server" Text='<%# Eval("Inventory") %>'></asp:Label>
-                                                </div>
-                                                <div style="padding-left: 100px;">
-                                                    <%--<asp:Button ID="btnAddToCart" class="btn btn-primary" Text="Add To Cart" title="Add to cart" runat="server"
-                                                        OnClientClick='<%# string.Format("javascript:return btnAddToCart_Client(\"{0}\")", Eval("ProductID")) %>' />--%>
-                                                    <asp:ImageButton ID="btnAddToCart" runat="server" ImageUrl="images/product-details/addTocart.jpg" title="Add to cart"
-                                                        OnClientClick='<%# string.Format("javascript:return btnAddToCart_Client(\"{0}\")", Eval("ProductID")) %>' />
-                                                </div>
-                                                <div style="padding-left: 100px;">
-                                                    <asp:LinkButton ID="btnCallAvail" runat="server" Text="Call for Availability"
-                                                        OnClientClick='<%# string.Format("javascript:return ProductRequest(\"{0}\",\"{1}\")", Eval("ProductID"),"Availability") %>' />
-                                                </div>
-                                            </span>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <%--<asp:TemplateField HeaderText="Price">
-                                        <HeaderStyle CssClass="price" />
-                                        <ItemStyle CssClass="cart_price" />
-                                        <ItemTemplate>
-                                            <span>
-                                                <span style="float: left;">
-                                                    <asp:Label ID="lblPrice" runat="server" Text='<%# Eval("Price") %>'></asp:Label>
-                                                    <asp:Label ID="lblPricing" runat="server" Text='<%# Eval("Pricing") %>' Style="display: none;"></asp:Label>
-                                                    <asp:Literal ID="ltPricing" runat="server"></asp:Literal>
-                                                </span>
-                                                <span style="float: right; padding-right: 30px;">
-                                                    <asp:LinkButton ID="btnGetPrice" runat="server" Text="Request"
-                                                        OnClientClick='<%# string.Format("javascript:return ProductRequest(\"{0}\",\"{1}\")", Eval("ProductID"),"Price") %>'></asp:LinkButton>
-                                                </span>
-                                            </span>
-                                        </ItemTemplate>
-                                    </asp:TemplateField> --%>
-                                </Columns>
-                            </asp:GridView>
+                <asp:UpdatePanel ID="up_gvProducts" runat="server" ChildrenAsTriggers="true" UpdateMode="Always">
+                    <ContentTemplate>
+                        <div class="col-sm-9">
+                            <!--features_items-->
+                            <h2>PRODUCT LISTINGS</h2>
+                            <div>
+                                <%--<ul class="pagination">
+                                <asp:Repeater ID="rptPager" runat="server">
+                                    <ItemTemplate>
+                                        <li class='<%# Convert.ToBoolean(Eval("Enabled")) ? "" : "active" %>'>
+                                            <asp:LinkButton ID="lnkPage" runat="server" Text='<%#Eval("Text") %>' CommandArgument='<%# Eval("Value") %>'
+                                                OnClick="Page_Changed" OnClientClick='<%# !Convert.ToBoolean(Eval("Enabled")) ? "return false;" : "" %>'>
+                                            </asp:LinkButton>
+                                        </li>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                            </ul>--%>
+                                <div style="padding-top: 15px; padding-bottom: 15px;">
+                                    Sort by
+                                    <asp:DropDownList ID="ddlSortBy" runat="server" CssClass="dropdownSearch" OnSelectedIndexChanged="ddlSortBy_SelectedIndexChanged" AutoPostBack="true">
+                                        <asp:ListItem Text="Product Name: A to Z" Value="ProdA_Z"></asp:ListItem>
+                                        <asp:ListItem Text="Product Name: Z to A" Value="ProdZ_A"></asp:ListItem>
+                                        <asp:ListItem Text="Manufacturer: A to Z" Value="McftA_Z"></asp:ListItem>
+                                        <asp:ListItem Text="Manufacturer: Z to A" Value="McftZ_A"></asp:ListItem>
+                                        <asp:ListItem Text="Price: Low to High" Value="PriceL_H"></asp:ListItem>
+                                        <asp:ListItem Text="Price: High to Low" Value="PriceH_L"></asp:ListItem>
+                                    </asp:DropDownList>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    Show
+                                    <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="dropdownSearch" Style="width: 80px;" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged" AutoPostBack="true">
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
                         </div>
+                        <div class="col-sm-15 pull-left">
+                            <div class="features_items">
+                                <div class="table-responsive cart_info" style="overflow-x: scroll; width:1000px;">
+                                    <asp:GridView ID="gvProducts" runat="server" AutoGenerateColumns="false" DataKeyNames="ProductID"
+                                        ShowFooter="false" CssClass="table table-condensed" Width="1100px" Style="font-size: 15px"
+                                        PagerStyle-CssClass="pgr" PagerSettings-Position="Bottom"
+                                        RowStyle-Wrap="true" AlternatingRowStyle-Wrap="true" EditRowStyle-Wrap="true"
+                                        FooterStyle-Wrap="true" GridLines="None" ShowHeaderWhenEmpty="true" EnableCallBacks="False"
+                                        ShowHeader="true" OnRowDataBound="gvProducts_DataBound" OnRowCreated="gvProducts_RowCreated" AllowPaging="true"
+                                        OnRowCommand="gvProducts_RowCommand">
+                                        <HeaderStyle CssClass="cart_menu"></HeaderStyle>
+                                        <Columns>
+                                            <asp:TemplateField HeaderText="Item" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="25%">
+                                                <HeaderStyle CssClass="image" />
+                                                <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" CssClass="cart_product" />
+                                                <ItemTemplate>
+                                                    <asp:Image ID="imgProduct" runat="server" ToolTip="ProductImage" Style="width: 100px; height: 75px;" />
+                                                    <asp:Label ID="lblImagePath" runat="server" Style="display: none;" Text='<%# Eval("ImageName") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Product Name" HeaderStyle-HorizontalAlign="Right" ItemStyle-Width="30%">
+                                                <HeaderStyle CssClass="description" HorizontalAlign="Center" />
+                                                <ItemStyle HorizontalAlign="center" VerticalAlign="Top" CssClass="cart_description" />
+                                                <ControlStyle CssClass="cart_description" />
+                                                <ItemTemplate>
+                                                    <h4>
+                                                        <asp:LinkButton ID="lbtnProdName" runat="server" Text='<%# Eval("Name") %>' CommandName="ShowProductDetails" CommandArgument='<%# Eval("ProductID") %>'></asp:LinkButton>
+                                                    </h4>
+                                                    <%--  <p id="lblProductCode" runat="server"><%# Eval("ProductCode") %></p>--%>
+                                                    <asp:Label ID="lblProductCode" runat="server" Text='<%# Eval("ProductCode") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <%--<asp:BoundField HeaderText="Item" DataField="ProductCode" ItemStyle-CssClass="cart_description"></asp:BoundField>--%>
+                                            <asp:BoundField HeaderText="Manufacturer" DataField="Manufacturer" ItemStyle-CssClass="cart_description" ItemStyle-Width="15%"></asp:BoundField>
+                                            <asp:TemplateField HeaderText="Quantity" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
+                                                <HeaderStyle CssClass="cart_total" />
+                                                <ItemStyle CssClass="cart_total" />
+                                                <ItemTemplate>
+                                                    <span>
+                                                        <asp:Label ID="lblPricing" runat="server" Text='<%# Eval("Pricing") %>' Style="display: none;"></asp:Label>
+                                                        <asp:Literal ID="ltQty" runat="server"></asp:Literal>
+                                                    </span>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Price" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
+                                                <HeaderStyle CssClass="cart_total" />
+                                                <ItemStyle CssClass="cart_total" />
+                                                <ItemTemplate>
+                                                    <span>
+                                                        <asp:Label ID="lblPrice" runat="server" Text='<%# Eval("Price") %>'></asp:Label>
+                                                        <asp:Literal ID="ltPricing" runat="server"></asp:Literal>
+                                                    </span>
+                                                    <span style="float: right; padding-right: 30px;">
+                                                        <asp:LinkButton ID="btnGetPrice" runat="server" Text="Request"
+                                                            OnClientClick='<%# string.Format("javascript:return ProductRequest(\"{0}\",\"{1}\")", Eval("ProductID"),"Price") %>'></asp:LinkButton>
+                                                    </span>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Inventory" ItemStyle-Width="30%" HeaderStyle-HorizontalAlign="Center">
+                                                <ItemStyle CssClass="cart_quantity" />
+                                                <ItemTemplate>
+                                                    <span>
+                                                        <div style="float: left;">
+                                                            <asp:Label ID="lblInventory" runat="server" Text='<%# Eval("Inventory") %>'></asp:Label>
+                                                        </div>
+                                                        <div style="padding-left: 100px;">
+                                                            <asp:ImageButton ID="btnAddToCart" runat="server" ImageUrl="images/product-details/addTocart.jpg" title="Add to cart"
+                                                                OnClientClick='<%# string.Format("javascript:return btnAddToCart_Client(\"{0}\")", Eval("ProductID")) %>' />
+                                                        </div>
+                                                        <div style="padding-left: 100px;">
+                                                            <asp:LinkButton ID="btnCallAvail" runat="server" Text="Call for Availability"
+                                                                OnClientClick='<%# string.Format("javascript:return ProductRequest(\"{0}\",\"{1}\")", Eval("ProductID"),"Availability") %>' />
+                                                        </div>
+                                                    </span>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="8px" ItemStyle-Width="8px" ControlStyle-Width="8px">
+                                                <HeaderTemplate>
+                                                    <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,6);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
+                                                    <br />
+                                                    <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
+                                                    <%--<asp:ImageButton ID="ibtnExpand" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" CommandArgument='<%# Eval("6") %>' CommandName="CollapseExpand" />--%>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblDescrip" runat="server" Text='<%# Eval("Descrip") %>' Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
+                                                </ItemTemplate>
+                                                <HeaderStyle CssClass="Shorter" />
+                                                <ItemStyle CssClass="Shorter" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="8px" ItemStyle-Width="8px" ControlStyle-Width="8px">
+                                                <HeaderTemplate>
+                                                    <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,7);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
+                                                    <br />
+                                                    <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblTechnology" runat="server" Text='<%# Eval("Technology") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                                </ItemTemplate>
+                                                <ItemStyle CssClass="Shorter" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="8px" ItemStyle-Width="8px" ControlStyle-Width="8px">
+                                                <HeaderTemplate>
+                                                    <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,8);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
+                                                    <br />
+                                                    <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblHarmonizedCode" runat="server" Text='<%# Eval("HarmonizedCode") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                                </ItemTemplate>
+                                                <ItemStyle CssClass="Shorter" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="8px" ItemStyle-Width="8px" ControlStyle-Width="8px">
+                                                <HeaderTemplate>
+                                                    <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,9);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
+                                                    <br />
+                                                    <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCategory" runat="server" Text='<%# Eval("Category") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                                </ItemTemplate>
+                                                <ItemStyle CssClass="Shorter" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="8px" ItemStyle-Width="8px" ControlStyle-Width="8px">
+                                                <HeaderTemplate>
+                                                    <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,10);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
+                                                    <br />
+                                                    <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblSubCategory" runat="server" Text='<%# Eval("SubCategory") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                                </ItemTemplate>
+                                                <ItemStyle CssClass="Shorter" />
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                    <asp:HiddenField ID="hdnColNoImg" runat="server" />
+                                    <asp:Button ID="btn1" OnClick="btnExpand_Click" runat="server" Style="display: none;" />
 
-                        <%--                           <ul class="pagination"> <li class="active"><a href="">1</a></li>
-                            <li><a href="">2</a></li>
-                            <li><a href="">3</a></li>
-                            <li><a href="">&raquo;</a></li>
-    </ul>--%>
-                        <ul class="pagination">
-                            <asp:Repeater ID="rptPagerBottom" runat="server">
-                                <ItemTemplate>
-                                    <li class='<%# Convert.ToBoolean(Eval("Enabled")) ? "" : "active" %>'>
-                                        <asp:LinkButton ID="lnkPage" runat="server" Text='<%#Eval("Text") %>' CommandArgument='<%# Eval("Value") %>'
-                                            OnClick="Page_Changed" OnClientClick='<%# !Convert.ToBoolean(Eval("Enabled")) ? "return false;" : "" %>'>
-                                        </asp:LinkButton>
-                                    </li>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </ul>
-                        <%--  <asp:LinkButton ID="LinkButton2" runat="server" CssClass="labelText" Text=">>"
+                                </div>
+                                <ul class="pagination">
+                                    <asp:Repeater ID="rptPagerBottom" runat="server">
+                                        <ItemTemplate>
+                                            <li class='<%# Convert.ToBoolean(Eval("Enabled")) ? "" : "active" %>'>
+                                                <asp:LinkButton ID="lnkPage" runat="server" Text='<%#Eval("Text") %>' CommandArgument='<%# Eval("Value") %>'
+                                                    OnClick="Page_Changed" OnClientClick='<%# !Convert.ToBoolean(Eval("Enabled")) ? "return false;" : "" %>'>
+                                                </asp:LinkButton>
+                                            </li>
+                                        </ItemTemplate>
+                                    </asp:Repeater>
+                                </ul>
+                                <asp:Label ID="lblGridInfo" runat="server"></asp:Label>
+                                <%--  <asp:LinkButton ID="LinkButton2" runat="server" CssClass="labelText" Text=">>"
                             CausesValidation="false" OnClick="lbtnPrevious3_Click">&raquo;</asp:LinkButton>
                         <asp:DataList ID="dlPaging" runat="server" RepeatDirection="Horizontal" OnItemCommand="dlPaging_ItemCommand"
                             OnItemDataBound="dlPaging_ItemDataBound">
@@ -558,8 +700,14 @@
                         </asp:DataList>
                         <asp:LinkButton ID="LinkButton1" CssClass="labelText" runat="server" Text=">>"
                             CausesValidation="false" OnClick="lbtnNext3_Click"></asp:LinkButton>--%>
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                    </ContentTemplate>
+                    <%--  <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="ddlSortBy"  />
+                         <asp:AsyncPostBackTrigger ControlID="ddlPageSize" />
+                    </Triggers>--%>
+                </asp:UpdatePanel>
             </div>
         </div>
     </section>
@@ -597,7 +745,8 @@
             <div>
                 <div id="PopUpHeading" style="height: 30px; text-align: center;"></div>
                 <div style="float: right; margin-top: -25px;">
-                    <asp:ImageButton ID="lbtnRemove" runat="server" OnClientClick="HidePopUp();" ImageUrl="~/images/delete_icon.png" /></div>
+                    <asp:ImageButton ID="lbtnRemove" runat="server" OnClientClick="HidePopUp();" ImageUrl="~/images/delete_icon.png" />
+                </div>
             </div>
             <br />
             <div id="dvCheckBoxListControl"></div>

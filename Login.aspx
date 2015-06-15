@@ -1,56 +1,52 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="Login" MasterPageFile="~/SiteMaster.master" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="Login" MasterPageFile="~/SiteMaster.master" ValidateRequest="false" %>
 
 <%--<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">--%>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolderTop" runat="server">  
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolderTop" runat="server">
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="server">
-      <script type="text/javascript">
-          /* $(function () {
-              //******Redirect to registration page on click of signup
-              document.getElementById("btnRegister").onclick = function () {
-                  window.location.href = "Registeration.aspx";
-              };
-          });*/
-
-          function ValidateLogin() {
-              if (document.getElementById("MainContentPlaceHolder_txtUserName").value == "" && document.getElementById("MainContentPlaceHolder_txtPassword").value == "" && document.getElementById("MainContentPlaceHolder_txtEmailAddress").value == "") {
-                  document.getElementById("MainContentPlaceHolder_lblErrorUserName").innerHTML = "*";
-                  document.getElementById("MainContentPlaceHolder_lblErrorPassword").innerHTML = "*";
-                  document.getElementById("MainContentPlaceHolder_lblErrorEmail").innerHTML = "*";
-                  return false;
-              }
-              else if (document.getElementById("MainContentPlaceHolder_txtEmailAddress").value == "" && !(document.getElementById("MainContentPlaceHolder_txtUserName").value != "" && document.getElementById("MainContentPlaceHolder_txtPassword").value != "")) {
-                  if (document.getElementById("MainContentPlaceHolder_txtUserName").value == "")
-                      document.getElementById("MainContentPlaceHolder_lblErrorUserName").innerHTML = "*";
-                  else
-                      document.getElementById("MainContentPlaceHolder_lblErrorPassword").innerHTML = "*";
-                  return false;
-              }
-              else if (document.getElementById("MainContentPlaceHolder_txtEmailAddress").value != "") {
-                  var EmailPattern = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-                  if (EmailPattern.test(document.getElementById("MainContentPlaceHolder_txtEmailAddress").value) == false) {
-                      document.getElementById("MainContentPlaceHolder_lblErrorEmail").innerHTML = "Invalid";
-                  }
-              }
-              else {
-                  document.getElementById("MainContentPlaceHolder_lblErrorUserName").innerHTML = "";
-                  document.getElementById("MainContentPlaceHolder_lblErrorPassword").innerHTML = "";
-                  document.getElementById("MainContentPlaceHolder_lblErrorEmail").innerHTML = "";
-                  return true;
+    <script type="text/javascript">
+        function ValidateLogin() {
+            if (document.getElementById('<%=txtUserName.ClientID %>').value == "" && document.getElementById('<%=txtPassword.ClientID %>').value == "" && document.getElementById('<%=txtEmailAddress.ClientID %>').value == "") {
+                document.getElementById('<%=lblErrorUserName.ClientID %>').innerHTML = "*";
+                document.getElementById('<%=lblErrorPassword.ClientID %>').innerHTML = "*";
+                document.getElementById('<%=lblErrorEmail.ClientID %>').innerHTML = "*";
+                return false;
+            }
+            else if (document.getElementById('<%=txtEmailAddress.ClientID %>').value == "" && !(document.getElementById('<%=txtUserName.ClientID %>').value != "" && document.getElementById('<%=txtPassword.ClientID %>').value != "")) {
+                if (document.getElementById('<%=txtUserName.ClientID %>').value == "")
+                    document.getElementById('<%=lblErrorUserName.ClientID %>').innerHTML = "*";
+                else
+                    document.getElementById('<%=lblErrorPassword.ClientID %>').innerHTML = "*";
+                return false;
+            }
+            else if (document.getElementById('<%=txtEmailAddress.ClientID %>').value != "") {
+                var EmailPattern = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+                if (EmailPattern.test(document.getElementById('<%=txtEmailAddress.ClientID %>').value) == false) {
+                    document.getElementById('<%=lblErrorEmail.ClientID %>').innerHTML = "Invalid";
+                }
+                return false;
+            }
+            else {
+                document.getElementById('<%=lblErrorUserName.ClientID %>').innerHTML = "";
+                document.getElementById('<%=lblErrorPassword.ClientID %>').innerHTML = "";
+                document.getElementById('<%=lblErrorEmail.ClientID %>').innerHTML = "";
+                
               }
               //post req to payment method, specify redirection URL
-          }
+  }
     </script>
 
-    <section id="form"><!--form-->
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-4 col-sm-offset-1">
-					<div class="login-form"><!--login form-->
-						<h2>Login to your account</h2>
-						<%--<form action="#">
+    <section id="form">
+        <!--form-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-1">
+                    <div class="login-form">
+                        <!--login form-->
+                        <h2>Login to your account</h2>
+                        <%--<form action="#">
 							<input type="text" placeholder="Name" />
 							<input type="email" placeholder="Email Address" />
 							<span>
@@ -76,12 +72,15 @@
                             <input type="checkbox" class="checkbox" />
                             Keep me signed in
                         </span>
-                        <asp:ImageButton ImageUrl="images/home/login_button.png" ID="btnLogin" runat="server" OnClick="btnLogin_Click" OnClientClick="return ValidateLogin();" Width="150px"/>
+                        <asp:ImageButton ImageUrl="images/home/login_button.png" ID="btnLogin" runat="server" OnClick="btnLogin_Click" OnClientClick="return ValidateLogin()" Width="150px" />
+                        <%--  <asp:Button runat="server" ID="btnValidatelogin" style="display:none;" OnClick="btnLogin_Click"/>
+                        <asp:Image ID="btnLogin" onclick="javascript:ValidateLogin();" runat="server" ImageUrl="images/home/login_button.png" ToolTip="Login" ImageAlign="AbsMiddle" style="width:150px" />--%>
                         <%--<asp:Button ID="btnLogin" runat="server" Text="Login" OnClick="btnLogin_Click" CssClass="btn btn-primary" OnClientClick="return ValidateLogin();" Width="100px" />--%>
-                        <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnLogin_Click" CssClass="btn btn-primary" OnClientClick="return ValidateLogin();" Width="100px" />
-					</div><!--/login form-->
-				</div>
-				<div id="dvEmailAddress" runat="server">
+                        <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnLogin_Click" CssClass="btn btn-primary" OnClientClick="ValidateLogin()" Width="100px" />
+                    </div>
+                    <!--/login form-->
+                </div>
+                <div id="dvEmailAddress" runat="server">
                     <div class="col-sm-1">
                         <h2 class="or">OR</h2>
                     </div>
@@ -96,10 +95,11 @@
                         <!--/sign up form-->
                     </div>
                 </div>
-				
-			</div>
-		</div>
-	</section><!--/form-->
+
+            </div>
+        </div>
+    </section>
+    <!--/form-->
 </asp:Content>
 
 

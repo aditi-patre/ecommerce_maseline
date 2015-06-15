@@ -9,13 +9,24 @@ using System.Web.UI.WebControls;
 
 public partial class SiteMaster : System.Web.UI.MasterPage
 {
-    protected void Page_PreRender(object sender, EventArgs e)
-    {
-        //ViewState["lblCartItemCount"] = lblCartItemCount.Text;
+    //protected void Page_PreRender(object sender, EventArgs e)
+    //{
+    //    //ViewState["lblCartItemCount"] = lblCartItemCount.Text;
 
-        if (!IsPostBack)
-            PopulateLeftMenu();
-    }
+        
+    //}
+
+    //public string _ltListText
+    //{
+    //    get
+    //    {
+    //        return ltList.Text;
+    //    }
+    //    set
+    //    {
+    //        ltList.Text = value;
+    //    }
+    //}
     protected void Page_Load(object sender, EventArgs e)
     {
         Session["PopUpParentUrl"] = Request.Url.PathAndQuery;
@@ -43,6 +54,8 @@ public partial class SiteMaster : System.Web.UI.MasterPage
         }
         //lblCartItemCount.Text = ShoppingCart.Instance.Items.Count.ToString();
         //}
+        if (!IsPostBack)
+            PopulateLeftMenu();
     }
 
     //private void PopulateLeftMenu()
@@ -127,11 +140,25 @@ public partial class SiteMaster : System.Web.UI.MasterPage
         //lblCartItemCount.Text = "0";
     }
 
+    protected void btnSearchProduct_Click(object sender, EventArgs e)
+    {
+        Product objProduct = new Product();
+        objProduct.ProductCode = hdnPCode.Value;
+        DataTable dt = objProduct.GetList(hdnPCode.Value);
+        if(dt!= null && dt.Rows.Count > 0)
+        {
+            Response.Redirect("ProductDetails.aspx?PCode=" + dt.Rows[0]["ProductID"].ToString());
+        }        
+    }
     private void PopulateLeftMenu()
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append("<div class=\"panel-group category-products\" id=\"accordian\">");
+        StringBuilder sb1 = new StringBuilder();
+        sb.Append("<div>");
+        sb.Append("<div style=\"height:250px;overflow-x:hidden;overflow-y:hidden;\" id=\"_divCatalog\" runat=\"server\">");//overflow:scroll;overflow-x:hidden;overflow-y:scroll;
 
+        sb.Append("<div class=\"panel-group category-products\" id=\"accordian\">");
+        sb1.Append("<div class=\"panel-group category-products\" id=\"accordian1\">");
         Category objCat = new Category();
         DataTable dt = objCat.CategoriesList();
         if (dt != null && dt.Rows.Count > 0)
@@ -142,32 +169,53 @@ public partial class SiteMaster : System.Web.UI.MasterPage
                 if (Convert.ToInt32(dt.Rows[i]["subCategoryCount"]) > 0)// if subcategories are present
                 {
                     sb.Append("<div class=\"panel panel-default\"> <div class=\"panel-heading\"><h4 class=\"panel-title\">");
+                    sb1.Append("<div class=\"panel panel-default\"> <div class=\"panel-heading\"><h4 class=\"panel-title\">");
+
                     sb.Append(" <a data-toggle=\"collapse\" data-parent=\"#accordian\" href=\"#" + Convert.ToString(dt.Rows[i]["shortcode"]) + "\"><span class=\"badge pull-right\"><i class=\"fa fa-plus\"></i></span>");
+                    sb1.Append(" <a data-toggle=\"collapse\" data-parent=\"#accordian1\" href=\"#" + Convert.ToString(dt.Rows[i]["shortcode"]) + "1\"><span class=\"badge pull-right\"><i class=\"fa fa-plus\"></i></span>");
+
                     sb.Append("<a href='" + GenerateURL(Convert.ToString(dt.Rows[i]["CategoryID"]), "") + "'><span>" + Convert.ToString(dt.Rows[i]["name"]) + "</span></a>");
+                    sb1.Append("<a href='" + GenerateURL(Convert.ToString(dt.Rows[i]["CategoryID"]), "") + "'><span>" + Convert.ToString(dt.Rows[i]["name"]) + "</span></a>");
+
                     sb.Append("                </a>            </h4>        </div>");
+                    sb1.Append("                </a>            </h4>        </div>");
                     Category objCat2 = new Category(Convert.ToInt32(dt.Rows[i]["categoryID"]));
                     if (objCat2.SubCategories.Count > 0)
                     {
                         sb.Append("<div id=\"" + Convert.ToString(dt.Rows[i]["shortcode"]) + "\" class=\"panel-collapse collapse\"><div class=\"panel-body\"><ul>");
-
+                        sb1.Append("<div id=\"" + Convert.ToString(dt.Rows[i]["shortcode"]) + "1\" class=\"panel-collapse collapse\"><div class=\"panel-body\"><ul>");
                         for (int j = 0; j < objCat2.SubCategories.Count; j++)
                         {
                             sb.Append("<li><a href='" + GenerateURL(objCat2.SubCategories[j].CategoryID.ToString(), objCat2.SubCategories[j].SubCategoryID.ToString()) + "'><span>" + objCat2.SubCategories[j].Name + "</span></a></li>");
+                            sb1.Append("<li><a href='" + GenerateURL(objCat2.SubCategories[j].CategoryID.ToString(), objCat2.SubCategories[j].SubCategoryID.ToString()) + "'><span>" + objCat2.SubCategories[j].Name + "</span></a></li>");
                         }
                         sb.Append("</ul> </div></div>");
+                        sb1.Append("</ul> </div></div>");
                     }
                     sb.Append("</div>"); //added on 29 may
+                    sb1.Append("</div>");
                 }
                 else //No sub categories
                 {
                     sb.Append("  <div class=\"panel panel-default\">       <div class=\"panel-heading\">   <h4 class=\"panel-title\">");
-                    sb.Append("<a href='" + GenerateURL(Convert.ToString(dt.Rows[i]["CategoryID"]), "") + "'><span>" + Convert.ToString(dt.Rows[i]["name"]) + "</span></a>");
-                    sb.Append("</h4> </div> </div>");
+                    sb1.Append("  <div class=\"panel panel-default\">       <div class=\"panel-heading\">   <h4 class=\"panel-title\">");
 
+                    sb.Append("<a href='" + GenerateURL(Convert.ToString(dt.Rows[i]["CategoryID"]), "") + "'><span>" + Convert.ToString(dt.Rows[i]["name"]) + "</span></a>");
+                    sb1.Append("<a href='" + GenerateURL(Convert.ToString(dt.Rows[i]["CategoryID"]), "") + "'><span>" + Convert.ToString(dt.Rows[i]["name"]) + "</span></a>");
+
+                    sb.Append("</h4> </div> </div>");
+                    sb1.Append("</h4> </div> </div>");
                     // sb.Append("<li><a href='" + GenerateURL(Convert.ToString(dt.Rows[i]["shortcode"]), "") + "'><span>" + Convert.ToString(dt.Rows[i]["name"]) + "</span></a></li>");
                 }
             }
             sb.Append("</div>");
+            sb1.Append("</div>");
+
+            sb.Append("</div><br/>"); //over flow div ends
+            sb.Append("<a href='#' id=\"ShowCats\" OnClick=\"btnShowCats()\" style=\"padding-left:160px;\"><span>Show More >></span></a>");
+            sb.Append("</div>");
+            hdnCategoryListing.Value = sb1.ToString();
+            //hdnCategoryListing.Text = sb1.ToString();
         }
         ltList.Text = sb.ToString();
     }

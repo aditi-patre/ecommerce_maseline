@@ -56,10 +56,14 @@ public class Manufacturer
     public DataTable GetList()
     {
         DataTable dt = null;
-        SqlParameter[] sqlParams = new SqlParameter[0];
+        //SqlParameter[] sqlParams = new SqlParameter[0];
         try
         {
-            dt = SqlHelper.ExecuteDataSet("ManufacturerGetList", CommandType.StoredProcedure, sqlParams).Tables[0];
+            string Query = "select ManufacturerID, Name, ISNULL(ManufacturerCode,'') as ManufacturerCode, ISNULL(IsActive,1) as IsActive from Manufacturer where ISNULL(IsActive,1) = 1";
+            if(this.Name != "")
+                Query = Query +" and Name like '%"+this.Name+"%'";
+            Query += " order by Name";
+            dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
         }
         catch (Exception ex)
         {

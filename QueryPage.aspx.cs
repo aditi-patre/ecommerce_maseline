@@ -39,6 +39,18 @@ public partial class QueryPage : System.Web.UI.Page
         }
     }*/
 
+    //[WebMethod]
+    //public static void FilterGrid(string SearchCriteria, string SearchValue)
+    //{
+    //    try
+    //    {
+
+    //    }
+    //    catch(Exception ex)
+    //    {
+
+    //    }
+    //}
 
     [WebMethod]
     public static string ExpandSearch(string CriteriaToExpand)

@@ -31,6 +31,9 @@ public class UserInfo
         get;
         set;
     }
+
+    public int RoleID
+    { get; set; }
     #endregion
 
     #region Constructors
@@ -54,6 +57,7 @@ public class UserInfo
             this.UserId = UserID;
             this.UserName = Convert.ToString(dtUserInfo.Rows[0]["UserName"]);
             this.Password = Convert.ToString(dtUserInfo.Rows[0]["Password"]);
+            this.RoleID = Convert.ToInt32(dtUserInfo.Rows[0]["RoleID"]);
         }
     }
     #endregion
@@ -76,11 +80,13 @@ public class UserInfo
         return true;
     }
 
-    public static int GetUserIdByUsernameAndPassword(string username, string password)
+   
+    public static int GetUserIdByUsernameAndPassword(string username, string password, out int Role_ID)
     {
         int userId = 0;
+        Role_ID = 0;
         SqlConnection con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ToString());
-        using (SqlCommand cmd = new SqlCommand("SELECT UserID, Password, UserGuid FROM [Users] WHERE UserName=@username", con))
+        using (SqlCommand cmd = new SqlCommand("SELECT UserID, Password, UserGuid, isnull(RoleID,0) as RoleID FROM [Users] WHERE UserName=@username", con))
         {
             cmd.Parameters.AddWithValue("@username", username);
             con.Open();
@@ -90,6 +96,7 @@ public class UserInfo
                 int dbUserId = Convert.ToInt32(dr["UserID"]);
                 string dbPassword = Convert.ToString(dr["Password"]);
                 string dbUserGuid = Convert.ToString(dr["UserGuid"]);
+                Role_ID = Convert.ToInt32(dr["RoleID"]);
                 HttpContext.Current.Session["User"] = username+"|"+dbUserId.ToString();
                 string hashedPassword = Security.HashSHA1(password + dbUserGuid);
                 if (dbPassword == hashedPassword)

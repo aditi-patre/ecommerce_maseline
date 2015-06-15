@@ -33,12 +33,14 @@ public partial class ProductListing : System.Web.UI.Page
             //if (isListing)
             //{
             //            GetProducts("", "", "", "", false, false);
-            if (Request.QueryString.ToString() == "")
-                GetProducts("", "", "", "", false, false,"", 1);
-            else
-                GetProducts(Category, SubCategory, "", "", false, false,"",1);
-            //}
             PopulateSearchCriteria();
+
+            if (Request.QueryString.ToString() == "")
+                GetProducts("", "", "", "", false, false, "", 1, Convert.ToInt32(ddlPageSize.SelectedValue) + 1, "", "");
+            else
+                GetProducts(Category, SubCategory, "", "", false, false, "", 1, Convert.ToInt32(ddlPageSize.SelectedValue) + 1, "", "");
+            //}
+
         }
     }
 
@@ -153,7 +155,6 @@ public partial class ProductListing : System.Web.UI.Page
                 dt = dt.Select(filter).CopyToDataTable();
             }
         }
-
         StringBuilder sb = new StringBuilder();
         sb.Append("<table>");
         for (int i = 0; i < dt.Rows.Count; i++)
@@ -162,29 +163,50 @@ public partial class ProductListing : System.Web.UI.Page
         }
         sb.Append("</table>");
         ltAttributes.Text = sb.ToString();
-    }
-    private void GetProducts(string CategoryID, string SubCategoryID, string ManufacturerID, string Attributes, bool IsInStock, bool IsPricingAvailable, string PriceRange, int CurrentPageNo)
-    {
-        Product objP = new Product();
-        DataTable dt = new DataTable();
-        int TotalRecords;
-        dt = objP.GetList(CategoryID, SubCategoryID, ManufacturerID, Attributes, IsInStock, IsPricingAvailable, PriceRange, CurrentPageNo, out TotalRecords).Tables[0];
-        if (dt != null)
+
+        dt = new DataTable();
+        dt.Columns.Add("Index", typeof(int));
+        dt.Columns.Add("PageSize", typeof(string));
+        for (int i = 0; i < 100; i++)
         {
-            gvProducts.DataSource = dt;
-            gvProducts.DataBind();
-            gCurrentPage = CurrentPageNo;
-            gTotalRecords = TotalRecords;
-            //BindPagingList();
-            PopulatePager(TotalRecords, gCurrentPage);
+            dt.Rows.Add(i, (i + 1).ToString());
         }
+        dt.Rows.Add(100, "All");
+        ddlPageSize.DataSource = dt;
+        ddlPageSize.DataTextField = "PageSize";
+        ddlPageSize.DataValueField = "Index";
+        ddlPageSize.DataBind();
+        ddlPageSize.Items.FindByValue("9").Selected = true;
+    }
+    private void GetProducts(string CategoryID, string SubCategoryID, string ManufacturerID, string Attributes, bool IsInStock, bool IsPricingAvailable, string PriceRange, int CurrentPageNo, int PageSize, string SortField, string SortOrder)
+    {
+        try
+        {
+            Product objP = new Product();
+            DataTable dt = new DataTable();
+            int TotalRecords;
+            dt = objP.GetList(CategoryID, SubCategoryID, ManufacturerID, Attributes, IsInStock, IsPricingAvailable, PriceRange, CurrentPageNo, PageSize, SortField, SortOrder, out TotalRecords).Tables[0];
+            if (dt != null)
+            {
+                gvProducts.DataSource = dt;
+                gvProducts.DataBind();
+                gCurrentPage = CurrentPageNo;
+                gTotalRecords = TotalRecords;
+                //BindPagingList();
+                PopulatePager(TotalRecords, gCurrentPage, PageSize);
+            }
+        }
+        catch (Exception ex)
+        { }
     }
     protected void gvProducts_DataBound(object sender, GridViewRowEventArgs e)
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
+            gvProducts.AlternatingRowStyle.CssClass = "ListingAltRowStyle";
+            gvProducts.RowStyle.CssClass = "ListingRowStyle";
             try
-            {   
+            {
                 /* Map the path of product image*/
                 Image img = (Image)e.Row.FindControl("imgProduct");
                 Label lblImagePath = (Label)e.Row.FindControl("lblImagePath");
@@ -306,14 +328,28 @@ public partial class ProductListing : System.Web.UI.Page
         {
             try
             {
-                e.Row.Attributes.Add("onmouseover", "this.className='Row'");
-                e.Row.Attributes.Add("onmouseout", "this.className='alt'");
+                //e.Row.Attributes.Add("onmouseover", "this.className='Row'");
+                //e.Row.Attributes.Add("onmouseout", "this.className='alt'");
             }
             catch (Exception ex)
             {
 
             }
         }
+        //else if (e.Row.RowType == DataControlRowType.Header)
+        //{
+        //    foreach (TableCell tc in e.Row.Cells)
+        //    {
+        //        if (tc.HasControls())
+        //        {
+        //            Table lnk = (Table)tc.Controls[0];
+        //            //System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+        //            System.Web.UI.WebControls.Button btn = new System.Web.UI.WebControls.Button();
+        //            btn.Text = "[+]";
+        //            tc.Controls.Add(btn);
+        //        }
+        //    }
+        //}
     }
 
     protected void gvProducts_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -323,15 +359,165 @@ public partial class ProductListing : System.Web.UI.Page
         {
             Response.Redirect("ProductDetails.aspx?PCode=" + ProductID);
         }
+        //else if(e.CommandName =="CollapseExpand")
+        //{
+        //    ImageButton img = (ImageButton)sender;
+        //    if (img.ImageUrl.Contains("minus.png"))
+        //    {
+        //        img.ImageUrl = img.ImageUrl.Replace("minus", "plus");
+        //        gvProducts.Columns[Convert.ToInt32(e.CommandArgument)].ItemStyle.CssClass = "";
+        //        gvProducts.Columns[Convert.ToInt32(e.CommandArgument)].ItemStyle.Width = Unit.Pixel(100);
+        //    }
+        //    else
+        //    {
+        //        img.ImageUrl = img.ImageUrl.Replace("plus", "minus");
+        //        gvProducts.Columns[Convert.ToInt32(e.CommandArgument)].ItemStyle.CssClass = "Shorter";
+        //    }
+        //}
+    }
+
+    protected void btnExpand_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Label lblHeader = new Label();
+            Image img = (Image)gvProducts.HeaderRow.Cells[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].Controls[1];
+            Label lbl = new Label();
+            string lblID = "";
+            if (gvProducts.Rows[0].FindControl("lblDescrip") != null && Convert.ToInt32(hdnColNoImg.Value.Split('|')[0]) == 6)
+            {
+                lblID = "lblDescrip";
+                lblHeader = (Label)gvProducts.HeaderRow.Cells[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].Controls[3];
+                lblHeader.Text = "Description";
+            }
+            else if (gvProducts.Rows[0].FindControl("lblTechnology") != null && Convert.ToInt32(hdnColNoImg.Value.Split('|')[0]) == 7)
+            {
+                lblID = "lblTechnology";
+                lblHeader = (Label)gvProducts.HeaderRow.Cells[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].Controls[3];
+                lblHeader.Text = "Technology";
+            }
+            else if (gvProducts.Rows[0].FindControl("lblHarmonizedCode") != null && Convert.ToInt32(hdnColNoImg.Value.Split('|')[0]) == 8)
+            {
+                lblID = "lblHarmonizedCode";
+                lblHeader = (Label)gvProducts.HeaderRow.Cells[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].Controls[3];
+                lblHeader.Text = "Harmonized Code";
+            }
+            else if (gvProducts.Rows[0].FindControl("lblCategory") != null && Convert.ToInt32(hdnColNoImg.Value.Split('|')[0]) == 9)
+            {
+                lblID = "lblCategory";
+                lblHeader = (Label)gvProducts.HeaderRow.Cells[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].Controls[3];
+                lblHeader.Text = "Category";
+            }
+            else if (gvProducts.Rows[0].FindControl("lblSubCategory") != null && Convert.ToInt32(hdnColNoImg.Value.Split('|')[0]) == 10)
+            {
+                lblID = "lblSubCategory";
+                lblHeader = (Label)gvProducts.HeaderRow.Cells[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].Controls[3];
+                lblHeader.Text = "Sub-Category";
+            }
+            if (!hdnColNoImg.Value.Contains("plus"))
+                lblHeader.Text = "";
+            if (hdnColNoImg.Value.Contains("plus"))
+            {
+                img.ImageUrl = "~/images/minus.png";
+                img.ToolTip = "Collapse";
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].ItemStyle.CssClass = "";
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].ItemStyle.Width = Unit.Pixel(150);
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].HeaderStyle.Width = Unit.Pixel(150);
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].ControlStyle.Width = Unit.Pixel(150);
+
+                for (int i = 0; i < gvProducts.Rows.Count; i++)
+                {
+                    lbl = (Label)gvProducts.Rows[i].FindControl(lblID);
+                    lbl.Style.Add(HtmlTextWriterStyle.Width, "auto");
+                    lbl.Style.Add(HtmlTextWriterStyle.OverflowX, "visible");
+                    lbl.Style.Add(HtmlTextWriterStyle.WhiteSpace, "nowrap");
+                }
+                lblHeader.Style.Add(HtmlTextWriterStyle.Width, "auto");
+                lblHeader.Style.Add(HtmlTextWriterStyle.OverflowX, "visible");
+                lblHeader.Style.Add(HtmlTextWriterStyle.WhiteSpace, "nowrap");
+            }
+            else
+            {
+                //Image img = (Image)gvProducts.HeaderRow.Cells[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].FindControl("ibtnExpand");
+                img.ImageUrl = "~/images/plus.png";
+                img.ToolTip = "Expand";
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].ItemStyle.CssClass = "Shorter";
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].ItemStyle.Width = Unit.Pixel(0);
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].HeaderStyle.Width = Unit.Pixel(0);
+                gvProducts.Columns[Convert.ToInt32(hdnColNoImg.Value.Split('|')[0])].ControlStyle.Width = Unit.Pixel(0);
+
+                for (int i = 0; i < gvProducts.Rows.Count; i++)
+                {
+                    lbl = (Label)gvProducts.Rows[i].FindControl(lblID);
+                    lbl.Style.Add(HtmlTextWriterStyle.Width, "0px");
+                    lbl.Style.Add(HtmlTextWriterStyle.OverflowX, "hidden");
+                    lbl.Style.Add(HtmlTextWriterStyle.WhiteSpace, "nowrap");
+                }
+                lblHeader.Style.Add(HtmlTextWriterStyle.Width, "0px");
+                lblHeader.Style.Add(HtmlTextWriterStyle.OverflowX, "hidden");
+            }
+        }
+        catch (Exception ex)
+
+        { }
     }
 
     protected void btnApplyFilter_Click(object sender, EventArgs e)
     {
-        int CurrentPageNo = 1;
-        //ltCatalogue.Text = "";
-        GetProducts(hdnCategory.Value, hdnSubCategory.Value, hdnManufacturer.Value, hdnAttributes.Value, Convert.ToBoolean(hdnInStock.Value), Convert.ToBoolean(hdnPricingAvailable.Value), Convert.ToString(hdnPriceRange.Value), CurrentPageNo);
+        //int CurrentPageNo = 1;
+        ////ltCatalogue.Text = "";
+        //string SortOrder = ddlSortBy.SelectedValue.Contains("Z_A") ? "DESC" : "ASC";
+        //string SortField ="Product";
+        //if(ddlSortBy.SelectedValue.Contains("Prod"))
+        //{
+        //    SortField ="Product";
+        //}
+        //else if(ddlSortBy.SelectedValue.Contains("Mcft"))
+        //{
+        //    SortField="Manufacturer";
+        //}
+        //else if(ddlSortBy.SelectedValue.Contains("Price"))
+        //{
+        //    SortField ="Price";
+        //}
+        //GetProducts(hdnCategory.Value, hdnSubCategory.Value, hdnManufacturer.Value, hdnAttributes.Value, Convert.ToBoolean(hdnInStock.Value), Convert.ToBoolean(hdnPricingAvailable.Value), Convert.ToString(hdnPriceRange.Value), CurrentPageNo, Convert.ToInt32(ddlPageSize.SelectedValue)+1,SortField,SortOrder);
+        ApplySort();
     }
 
+    protected void ddlSortBy_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ApplySort();
+    }
+    protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ApplySort();
+    }
+    private void ApplySort()
+    {
+        try
+        {
+            int CurrentPageNo = 1;
+            string SortOrder = ddlSortBy.SelectedValue.Contains("Z_A") ? "DESC" : "ASC";
+            string SortField = "Product";
+            if (ddlSortBy.SelectedValue.Contains("Prod"))
+            {
+                SortField = "Product";
+            }
+            else if (ddlSortBy.SelectedValue.Contains("Mcft"))
+            {
+                SortField = "Manufacturer";
+            }
+            else if (ddlSortBy.SelectedValue.Contains("Price"))
+            {
+                SortField = "Price";
+            }
+            hdnInStock.Value = hdnInStock.Value == "" ? "false" : hdnInStock.Value;
+            hdnPricingAvailable.Value = hdnPricingAvailable.Value == "" ? "false" : hdnPricingAvailable.Value;
+            GetProducts(hdnCategory.Value, hdnSubCategory.Value, hdnManufacturer.Value, hdnAttributes.Value, Convert.ToBoolean(hdnInStock.Value), Convert.ToBoolean(hdnPricingAvailable.Value), Convert.ToString(hdnPriceRange.Value), CurrentPageNo, Convert.ToInt32(ddlPageSize.SelectedValue) + 1, SortField, SortOrder);
+        }
+        catch (Exception ex)
+        { }
+    }
 
     #region ForPaging
     /*
@@ -584,12 +770,12 @@ public partial class ProductListing : System.Web.UI.Page
     #endregion
 
     #region TopPaging
-    private void PopulatePager(int recordCount, int currentPage)
+    private void PopulatePager(int recordCount, int currentPage, int size)
     {
-        int PageSize = 10;
+        int PageSize = size;
         List<ListItem> pages = new List<ListItem>();
         int startIndex, endIndex;
-        int pagerSpan = 3;
+        int pagerSpan = 5;
 
         //Calculate the Start and End Index of pages to be displayed.
         double dblPageCount = (double)((decimal)recordCount / Convert.ToDecimal(PageSize));
@@ -639,18 +825,34 @@ public partial class ProductListing : System.Web.UI.Page
         {
             pages.Add(new ListItem(">>", (currentPage + 1).ToString()));
         }
-        rptPager.DataSource = pages;
-        rptPager.DataBind();
+        //rptPager.DataSource = pages;
+        //rptPager.DataBind();
         rptPagerBottom.DataSource = pages;
         rptPagerBottom.DataBind();
     }
 
     protected void Page_Changed(object sender, EventArgs e)
     {
+        string SortOrder = ddlSortBy.SelectedValue.Contains("Z_A") ? "DESC" : "ASC";
+        string SortField = "Product";
+        if (ddlSortBy.SelectedValue.Contains("Prod"))
+        {
+            SortField = "Product";
+        }
+        else if (ddlSortBy.SelectedValue.Contains("Mcft"))
+        {
+            SortField = "Manufacturer";
+        }
+        else if (ddlSortBy.SelectedValue.Contains("Price"))
+        {
+            SortField = "Price";
+        }
+
         int pageIndex = int.Parse((sender as LinkButton).CommandArgument);
         hdnInStock.Value = hdnInStock.Value == "" ? "false" : hdnInStock.Value;
         hdnPricingAvailable.Value = hdnPricingAvailable.Value == "" ? "false" : hdnPricingAvailable.Value;
-        GetProducts(hdnCategory.Value, hdnSubCategory.Value, hdnManufacturer.Value, hdnAttributes.Value, Convert.ToBoolean(hdnInStock.Value), Convert.ToBoolean(hdnPricingAvailable.Value), Convert.ToString(hdnPriceRange.Value),pageIndex);
+        GetProducts(hdnCategory.Value, hdnSubCategory.Value, hdnManufacturer.Value, hdnAttributes.Value, Convert.ToBoolean(hdnInStock.Value), Convert.ToBoolean(hdnPricingAvailable.Value), Convert.ToString(hdnPriceRange.Value), pageIndex, Convert.ToInt32(ddlPageSize.SelectedValue) + 1, SortField, SortOrder);
     }
     #endregion
+
 }

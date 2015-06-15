@@ -2,53 +2,110 @@
     CodeFile="ProductDetails.aspx.cs" Inherits="ProductDetails" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="Server">
+    <script type="text/javascript">
+        var Product = {};
+        /* Add to Cart*/
+        function btnAddToCart_Client() {
+            Product.ProductID = document.getElementById('<%=hdnProductID.ClientID%>').value;;
+            $.ajax({
+                type: "POST",
+                url: "QueryPage.aspx/AddToCart",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(Product),
+                dataType: "json",
+                success: function (result) {
+                    alert("Item added to cart");
+                },
+                error: function () {
+                    alert("Item could not be added to the cart");
+                }
+            });
+            return false;
+        }
+
+        function btnAddToCart_Client2(prodID) {
+            Product.ProductID = prodID;
+            $.ajax({
+                type: "POST",
+                url: "QueryPage.aspx/AddToCart",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(Product),
+                dataType: "json",
+                success: function (result) {
+                    alert("Item added to cart");
+                },
+                error: function () {
+                    alert("Item could not be added to the cart");
+                }
+            });
+            return false;
+        }
+        /****/
+
+        function btnShowCats() {
+            ShowPopUp();
+            $('#dvCataLogList').append(document.getElementById('<%=hdnCategoryListing.ClientID%>').value);
+        }
+        function ShowPopUp() {
+            var bcgDiv = document.getElementById("divBackground");
+            bcgDiv.style.display = "block";
+            document.getElementById("dialog-form").style.display = "block";
+        }
+
+        function HidePopUp() {
+            var bcgDiv = document.getElementById("divBackground");
+            bcgDiv.style.display = "none";
+            document.getElementById("dialog-form").style.display = "none";
+        }
+    </script>
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-sm-3">
                     <div class="left-sidebar" style="background-color: #CFD4D0">
                         <h2>CATALOG</h2>
-                        <asp:Literal runat="server" ID="ltList"></asp:Literal>
+                        <asp:Literal runat="server" ID="ltList"></asp:Literal><asp:HiddenField ID="hdnCategoryListing" runat="server" />
                         <!--/category-products-->
-                        <br />
-                        <div class="shipping text-center">
-                            <h2>Featured News</h2>
-                            <!--featured News-->
+                        <div style="padding-top: 20px;">
+                            <div class="shipping text-center" style="border: 1px solid lightgrey;">
+                                <h2>Featured News</h2>
+                                <!--featured News-->
 
-                            <div class="media commnets" style="border-bottom: 1px solid black;">
-                                <a class="pull-left" href="#">
-                                    <img src="images/news/media-one.jpg" alt="" />
-                                </a>
-                                <div class="media-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+                                <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                    <a class="pull-left" href="#">
+                                        <img src="images/news/media-one.jpg" alt="" />
+                                    </a>
+                                    <div class="media-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
 
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="media commnets" style="border-bottom: 1px solid black;">
-                                <a class="pull-left" href="#">
-                                    <img src="images/news/media-one.jpg" alt="" />
-                                </a>
-                                <div class="media-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+                                <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                    <a class="pull-left" href="#">
+                                        <img src="images/news/media-one.jpg" alt="" />
+                                    </a>
+                                    <div class="media-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
 
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="media commnets" style="border-bottom: 1px solid black;">
-                                <a class="pull-left" href="#">
-                                    <img src="images/news/media-one.jpg" alt="" />
-                                </a>
-                                <div class="media-body">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+                                <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                    <a class="pull-left" href="#">
+                                        <img src="images/news/media-one.jpg" alt="" />
+                                    </a>
+                                    <div class="media-body">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-sm-15 pull-right">
+                <div class="col-sm-15 pull-right" style="border: 1px solid lightgray;">
                     <h2>PRODUCT DETAILS</h2>
 
                     <div class="product-details">
@@ -77,7 +134,7 @@
 
                         </div>
                         <div class="col-sm-7">
-                            <div class="product-information">
+                            <div class="product-information" id="productinfo" runat="server">
                                 <!--/product-information-->
                                 <img src="images/product-details/new.jpg" class="newarrival" alt="" />
                                 <h2>
@@ -101,8 +158,11 @@
                                         <asp:Label ID="lblInventory" runat="server" />
                                     </p>
                                 </h2>
+                                <asp:ImageButton ID="btnAddToCart" runat="server" ImageUrl="images/product-details/addTocart.jpg" title="Add to cart"
+                                    OnClientClick='<%# string.Format("javascript:return btnAddToCart_Client()") %>' />
                                 <%--</a>--%>
                             </div>
+
                             <!--/product-information-->
                         </div>
 
@@ -111,7 +171,7 @@
 
                     </div>
 
-                    <div class="recommended_items">
+                    <div class="recommended_items" id="recommendedItems" runat="server">
                         <!--recommended_items-->
                         <h2 class="title text-center">recommended items</h2>
 
@@ -206,5 +266,24 @@
                 </div>
             </div>
         </div>
+        <asp:HiddenField ID="hdnProductID" runat="server" />
     </section>
+    <%--Popup for category listing--%>
+    <div id="divBackground" style="position: fixed; z-index: 998; height: 100%; width: 100%; top: 0; left: 0; background-color: Black; filter: alpha(opacity=60); opacity: 0.6; -moz-opacity: 0.8; display: none">
+    </div>
+    <div id="dialog-form" class="dvdialog-form" style="background-color: #CFD4D0; height: 800px; z-index: 999; position: absolute; color: #000000; filter: alpha(opacity=60); opacity: 1.0; -moz-opacity: 1.0; left: 35%; top: 12%; display: none;">
+        <div style="background-color: #CFD4D0; padding-bottom: 15px; padding-left: 15px; padding-right: 15px; padding-top: 15px; width: 100%; height: 90%; overflow: auto; overflow-x: hidden;">
+            <div>
+                <div style="height: 30px; text-align: center;">CATALOG</div>
+                <div style="float: right; margin-top: -25px;">
+                    <a href="#">
+                        <img src="images/delete_icon.png" onclick="HidePopUp()" alt="" /></a>
+                </div>
+            </div>
+            <br />
+            <div id="dvCataLogList" style="height: 100%;"></div>
+            <br />
+            <br />
+        </div>
+    </div>
 </asp:Content>
