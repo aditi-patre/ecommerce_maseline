@@ -39,6 +39,18 @@ public partial class QueryPage : System.Web.UI.Page
         }
     }*/
 
+    //[WebMethod]
+    //public static void FilterGrid(string SearchCriteria, string SearchValue)
+    //{
+    //    try
+    //    {
+
+    //    }
+    //    catch(Exception ex)
+    //    {
+
+    //    }
+    //}
 
     [WebMethod]
     public static string ExpandSearch(string CriteriaToExpand)
@@ -64,7 +76,8 @@ public partial class QueryPage : System.Web.UI.Page
             else if (CriteriaToExpand.Contains("Manufacturer"))
             {
                 Manufacturer objM = new Manufacturer();
-                DataTable dtM = objM.GetList();
+                int TR;
+                DataTable dtM = objM.GetList(1,101,"","",out TR);
                 dtM.Columns["ManufacturerID"].ColumnName = "Value";
                 dtM.AcceptChanges();
                 List<ManufacturerItem> chkM = new List<ManufacturerItem>();
@@ -288,6 +301,20 @@ public partial class QueryPage : System.Web.UI.Page
         return text;
     }
 
+    [WebMethod]
+    public static string CategorySave(string ID, string Name, string Code, string Descrip)
+    {
+        Output objMsg = new Output();
+        Category objM = new Category(Convert.ToInt32(ID));
+        objM.Name = Name;
+        objM.ShortCode = Code;
+        objM.Descrip = Descrip;
+        objM.Save();
+        objMsg.IsSuccess = true;
+        objMsg.Message = "Manufacturer details have been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+        JavaScriptSerializer js = new JavaScriptSerializer();
+        return js.Serialize(objMsg);
+    }
 }
 public class ManufacturerItem
 {

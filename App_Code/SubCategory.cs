@@ -64,11 +64,26 @@ public class SubCategory
 
     public DataTable GetList()
     {
+        //DataTable dt = null;
+        //SqlParameter[] sqlParams = new SqlParameter[0];
+        //try
+        //{
+        //    dt = SqlHelper.ExecuteDataSet("SubCategoryGetList", CommandType.StoredProcedure, sqlParams).Tables[0];
+        //}
+        //catch (Exception ex)
+        //{
+
+        //}
+        //return dt;
+
         DataTable dt = null;
-        SqlParameter[] sqlParams = new SqlParameter[0];
         try
         {
-            dt = SqlHelper.ExecuteDataSet("SubCategoryGetList", CommandType.StoredProcedure, sqlParams).Tables[0];
+            string Query = "select SubCategoryID, S_ShortCode, Name, CategoryID, C_ShortCode, Descrip from SubCategory where ISNULL(IsActive,1) = 1";
+            if (this.Name != "")
+                Query = Query + " and Name like '%" + this.Name + "%'";
+            Query += " order by Name";
+            dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
         }
         catch (Exception ex)
         {

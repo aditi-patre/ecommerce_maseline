@@ -3,8 +3,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="Server">
 
     <script type="text/javascript">
-        function ChangeQty(param) {
-            debugger;
+        function ChangeQty(param) {       
             var c1 = param.split('|')[0];
             var txtQty = document.getElementById(c1);
             if (isNaN(parseInt(txtQty.value)))

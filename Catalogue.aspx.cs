@@ -230,7 +230,8 @@ public partial class Catalogue : System.Web.UI.Page
     {
         DataTable dt = new DataTable();
         Manufacturer objM = new Manufacturer();
-        dt = objM.GetList();
+        int TR;
+        dt = objM.GetList(1,101,"","", out TR);
         chkManufacturer.DataSource = dt;
         chkManufacturer.DataTextField = "Name";
         chkManufacturer.DataValueField = "ManufacturerID";

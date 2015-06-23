@@ -152,6 +152,7 @@ public partial class ViewCart : System.Web.UI.Page
         int ProductId = Convert.ToInt32(gvShoppingCart.DataKeys[gvRow.RowIndex].Value);
         ShoppingCart.Instance.RemoveItem(ProductId);
         BindCart();
-        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Item removed from cart');", true);   
+        ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Item removed from cart');", true);
+        Response.Redirect("ViewCart.aspx");
     }
 }

@@ -12,7 +12,7 @@ public class Manufacturer
 {
     #region Properties
     public int ManufacturerID
-    { get;set;}
+    { get; set; }
 
     public string Name
     { get; set; }
@@ -26,12 +26,12 @@ public class Manufacturer
 
     #region Constructors
     public Manufacturer()
-	{
+    {
         ManufacturerID = -1;
         ManufacturerCode = "";
         Name = "";
         IsActive = true;
-	}
+    }
 
     public Manufacturer(int ManufacturerID)
     {
@@ -40,9 +40,9 @@ public class Manufacturer
         SqlParameter[] sqlParams = new SqlParameter[1];
         sqlParams[0] = new SqlParameter("@ManufacturerID", ManufacturerID);
         ds = SqlHelper.ExecuteDataSet("ManufacturerGetDetails", CommandType.StoredProcedure, sqlParams);
-         if (ds != null)
+        if (ds != null)
             dt = ds.Tables[0];
-        if(dt.Rows.Count > 0)
+        if (dt.Rows.Count > 0)
         {
             this.ManufacturerID = ManufacturerID;
             this.ManufacturerCode = Convert.ToString(dt.Rows[0]["ManufacturerCode"]);
@@ -53,13 +53,34 @@ public class Manufacturer
     #endregion
 
     #region Methods
-    public DataTable GetList()
+    public DataTable GetList(int CurrentPgNo, int PageSize, string SortField, string SortOrder, out int TotalRecords)
     {
         DataTable dt = null;
-        SqlParameter[] sqlParams = new SqlParameter[0];
+        if (CurrentPgNo == 0)
+            CurrentPgNo = 1;
+        int StrIndex = 1;
+        TotalRecords = 0;
+        if (SortField == "")
+            SortField = "Name";
+        if (SortOrder == "")
+            SortOrder = "ASC";
+        //SqlParameter[] sqlParams = new SqlParameter[0];
         try
         {
-            dt = SqlHelper.ExecuteDataSet("ManufacturerGetList", CommandType.StoredProcedure, sqlParams).Tables[0];
+            string Query = "select ManufacturerID, Name, ISNULL(ManufacturerCode,'') as ManufacturerCode, ISNULL(IsActive,1) as IsActive, ROW_NUMBER() OVER (ORDER BY "+SortField +" " +SortOrder.ToUpper()+" ) AS RowNum from Manufacturer where ISNULL(IsActive,1) = 1";
+            if (this.Name != "")
+                Query = Query + " and Name like '%" + this.Name + "%'";
+            dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
+            TotalRecords = dt.Rows.Count;
+
+            if (PageSize <= 100) //Not all records are to be fetched
+            {
+                if (CurrentPgNo == 0)
+                    CurrentPgNo = 1;
+                StrIndex = PageSize * (CurrentPgNo - 1);
+                Query = "select * from ("+Query+")t where RowNum >=" + StrIndex + " and RowNum<=" + Convert.ToInt32(StrIndex + PageSize);
+            }           
+            dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
         }
         catch (Exception ex)
         {
@@ -125,14 +146,14 @@ public class Manufacturer
             sqlParams[0] = new SqlParameter("@ManufacturerID", this.ManufacturerID);
             SqlHelper.ExecuteNonQuery("ManufacturerDelete", CommandType.StoredProcedure, sqlParams);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return false;
         }
         return true;
     }
 
-    
+
 
     #endregion
 
