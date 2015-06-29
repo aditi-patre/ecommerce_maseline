@@ -61,9 +61,16 @@ public class Product
     #region Constructors
     public Product()
     {
-        //
-        // TODO: Add constructor logic here
-        //
+        this.ProductID = -1;
+        this.Name = "";
+        this.CategoryID = -1;
+        this.SubCategoryID = -1;
+        this.Descrip = "";
+        this.ManufacturerID = -1;
+        this.Technology = "";
+        this.HarmonizedCode = "";
+        this.Price = 0.00M;
+        this.ProductCode = ""; ;
     }
 
     public Product(int ProductID)
@@ -167,6 +174,79 @@ public class Product
         dt = SqlHelper.ExecuteDataSet("SELECT * FROM Product WHERE ProductCode='" + ProductCode + "'", CommandType.Text, sqlParams).Tables[0];
 
         return dt;
+    }
+
+
+    public bool Save()
+    {
+        if (this.ProductID == 0)
+            return this.Insert();
+        else
+            return this.Update();
+    }
+
+    private bool Insert()
+    {
+        try
+        {
+            SqlParameter[] sqlParams = new SqlParameter[1];
+            sqlParams[0] = new SqlParameter("@ProductID", SubCategoryID);
+            sqlParams[0].Direction = ParameterDirection.Output;
+            sqlParams[0].SqlDbType = SqlDbType.Int;
+            sqlParams[0].ParameterName = "@ProductID";
+
+            string Query = "insert into Product(Name, ProductCode, CategoryID, SubCategoryID, Descrip, Technology, HarmonizedCode, Price, ManufacturerID, Inventory, ImageName) values('";
+            Query += this.Name + "','" + this.ProductCode + "','" + this.CategoryID + "','" + this.Descrip + "','" + this.Technology + "','" + this.HarmonizedCode + "','" + this.Price + "','" + this.ManufacturerID + "','" + this.Inventory + "','" + this.ImageName + "');";
+            Query += " set @ProductID= @@identity";
+            SqlHelper.ExecuteScalar(Query, CommandType.Text, sqlParams);
+            this.SubCategoryID = Convert.ToInt32(sqlParams[0].Value);
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+        return this.CategoryID > 0;
+    }
+
+    private bool Update()
+    {
+        try
+        {
+            string Query = "";
+            SqlHelper.ExecuteNonQuery(Query, CommandType.Text, null);
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public bool CodeExists(string ID)
+    {
+        DataTable dt = null;
+        string Query = "select ProductID from Product where ProductCode = '" + this.ProductCode + "' and ISNULL(IsActive,1) = 1 and ProductID !=" + ID;
+        dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
+        if (dt.Rows.Count > 0)
+            return true;
+        else
+            return false;
+
+    }
+
+    public bool Delete()
+    {
+        try
+        {
+            string Query = " update Product set IsActive = 0 where ProductID =" + this.SubCategoryID;
+            SqlHelper.ExecuteNonQuery(Query, CommandType.Text, null);
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+        return true;
     }
     #endregion
 }

@@ -765,9 +765,12 @@ ul.sub-menu {
     text-align: center;
     text-transform: uppercase;
     position: relative;
-    height: 35px;
-    padding-top: 5px;
+    /*height: 35px;
+    padding-top: 5px;*/
+    height: 46px;
+    padding-top: 15px;
 }
+
 
     .left-sidebar h2:after, h2.title:after {
         content: " ";
@@ -2914,10 +2917,17 @@ h2.title {
                 }
 }
 /*****/
+
+.MultiLineText {
+    border: 1px solid black !important;
+    background-color: white !important;
+}
+
 .listingtbl {
     width: 1000px;
     display: inline-block;
     overflow: auto;
+    border: 1px solid lightgray;
 }
 
 .listingMcft {
@@ -2934,10 +2944,10 @@ h2.title {
     }
 
     .listingMcft {
-    width: 340px;
-    display: inline-block;
-    overflow: auto;
-}
+        width: 340px;
+        display: inline-block;
+        overflow: auto;
+    }
 }
 
 @media(max-width:480px) and (min-width:381px) {
@@ -2947,11 +2957,11 @@ h2.title {
         overflow: auto;
     }
 
-        .listingMcft {
-    width: 400px;
-    display: inline-block;
-    overflow: auto;
-}
+    .listingMcft {
+        width: 400px;
+        display: inline-block;
+        overflow: auto;
+    }
 }
 
 @media(max-width:580px) and (min-width:481px) {
@@ -2961,11 +2971,11 @@ h2.title {
         overflow: auto;
     }
 
-        .listingMcft {
-    width: 450px;
-    display: inline-block;
-    overflow: auto;
-}
+    .listingMcft {
+        width: 450px;
+        display: inline-block;
+        overflow: auto;
+    }
 }
 
 @media(max-width:700px) and (min-width:581px) {
@@ -2975,11 +2985,11 @@ h2.title {
         overflow: auto;
     }
 
-        .listingMcft {
-    width: 520px;
-    display: inline-block;
-    overflow: auto;
-}
+    .listingMcft {
+        width: 520px;
+        display: inline-block;
+        overflow: auto;
+    }
 }
 
 @media(max-width:800px) and (min-width:701px) {
@@ -2989,11 +2999,11 @@ h2.title {
         overflow: auto;
     }
 
-        .listingMcft {
-    width: 600px;
-    display: inline-block;
-    overflow: auto;
-}
+    .listingMcft {
+        width: 600px;
+        display: inline-block;
+        overflow: auto;
+    }
 }
 
 @media(max-width:1300px) and (min-width:801px) {
@@ -3003,3 +3013,30 @@ h2.title {
         overflow: auto;
     }
 }
+
+.ListingSrchHeading{
+    border-bottom: 1px solid lightgray;
+}
+
+/*.tablecell
+{
+    border-color: #8D2812;
+    border-width: 0px 0px 1px 1px;
+    border-style: solid;
+}
+
+.tablecell td 
+{
+	border-width: 1px 1px 0 0 ;
+	border-style: solid;
+	border-color: #8D2812;
+	-moz-border-radius: ;
+}
+
+.tablebdr
+{ 
+    border-color: #8D2812;
+    border-width: 1px;
+	border-style: solid;
+	border-collapse: collapse;
+}*/

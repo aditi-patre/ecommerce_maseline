@@ -23,7 +23,8 @@
                 success: function (result) {
                     CategoryPopUp.dialog("close");
                     alert(JSON.parse(result.d).Message);
-                    document.getElementById('<%=btnRefresh.ClientID%>').click();
+                    if (JSON.parse(result.d).IsSuccess == true)
+                        document.getElementById('<%=btnRefresh.ClientID%>').click();
                 },
                 error: function (e) {
                     alert("Category could not be saved!!");
@@ -38,9 +39,9 @@
                 _Title = "Update Category";
                 var grd = document.getElementById('<%= gvCategory.ClientID %>');
 
-                document.getElementById('<%=txtCategoryCode.ClientID%>').value = grd.rows[parseInt(rowIndex) + 1].cells['0'].innerText;
-                document.getElementById('<%=txtCategoryName.ClientID%>').value = grd.rows[parseInt(rowIndex) + 1].cells['1'].innerText;
-                document.getElementById('<%=txtCategoryDescrip.ClientID%>').value = grd.rows[parseInt(rowIndex) + 1].cells['2'].innerText;
+                document.getElementById('<%=txtCategoryCode.ClientID%>').value = grd.rows[parseInt(rowIndex) + 1].cells['0'].innerHTML.replace(new RegExp("&nbsp;", 'g'), "");
+                document.getElementById('<%=txtCategoryName.ClientID%>').value = grd.rows[parseInt(rowIndex) + 1].cells['1'].innerHTML.replace(new RegExp("&nbsp;", 'g'), "");
+                document.getElementById('<%=txtCategoryDescrip.ClientID%>').value = grd.rows[parseInt(rowIndex) + 1].cells['2'].innerHTML.replace(new RegExp("&nbsp;", 'g'), "");
             }
             else {
                 _Title = "Add Category";
@@ -68,6 +69,12 @@
         function Search() {
             document.getElementById('<%=btnSearch.ClientID %>').click();
         }
+
+        function HandleKeyPress(e) {
+            if (e.keyCode === 13) {
+                Search();
+            }
+        }
     </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -75,20 +82,20 @@
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
         <asp:UpdatePanel ID="up_gvProducts" runat="server" ChildrenAsTriggers="true" UpdateMode="Conditional">
             <ContentTemplate>
-                <div class="col-sm-9" style="padding: 10px 10px 10px 20px; width: 125%;">
+                <div class="col-sm-9" style="padding: 10px 10px 10px 20px; width: 150%;">
                     <h2>CATEGORY LISTING</h2>
                     <div style="padding-top: 15px; padding-bottom: 15px;">
                         <div class="col-sm-12">
                             <div class="col-sm-4">
                                 <div class="input-group" style="width: 300px;">
-                                    <input type="text" class="form-control" placeholder="Category Name" name="srch-term" id="txtSearchCategory" runat="server" />
+                                    <input type="text" class="form-control" placeholder="Category Name" name="srch-term" id="txtSearchCategory" runat="server" onkeypress="HandleKeyPress(event)" />
                                     <div class="input-group-btn">
                                         <button class="btn btn-default" type="submit" onclick="Search()"><i class="glyphicon glyphicon-search"></i></button>
                                         <asp:Button ID="btnSearch" runat="server" OnClick="btnSearch_Click" Style="display: none;" />
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4" style="margin-left: -6%;">
                                 Sort by
                         <asp:DropDownList ID="ddlSortBy" runat="server" CssClass="dropdownSearch" OnSelectedIndexChanged="ddlSortBy_SelectedIndexChanged" AutoPostBack="true">
                             <asp:ListItem Text="Category Name: A to Z" Value="CatA_Z"></asp:ListItem>
@@ -97,35 +104,19 @@
                             <asp:ListItem Text="Category Code: Z to A" Value="CatCodeZ_A"></asp:ListItem>
                         </asp:DropDownList>
                             </div>
-                            <div class="col-sm-2" style="margin-left: -9%;">
+                            <div class="col-sm-2" style="margin-left: -14%;">
                                 Show
                         <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="dropdownSearch" Style="width: 80px;" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged" AutoPostBack="true">
                         </asp:DropDownList>
                             </div>
-                            <div class="col-sm-1">
+                            <div class="col-sm-1" style="margin-left: -4%;">
+                                <asp:Button ID="btnClearSearch" runat="server" CssClass="btn btn-primary pull-right" Style="margin-top: 0px !important;" OnClick="btnClearSearch_Click" Text="Clear" />
+                                &nbsp;&nbsp;&nbsp;&nbsp;                                    
+                            </div>
+                            <div class="col-sm-1" style="margin-left: 2%;">
                                 <button type="button" class="btn btn-primary pull-right" style="margin-top: 0px !important;" onclick="return CategoryEdit(0,-1);" id="btnAdd">Add</button>
                             </div>
                         </div>
-                        <%--     <div class="input-group" style="width: 300px;">
-                        <input type="text" class="form-control" placeholder="Category Name" name="srch-term" id="txtSearchCategory" runat="server" />
-                        <div class="input-group-btn">
-                            <button class="btn btn-default" type="submit" onclick="Search()"><i class="glyphicon glyphicon-search"></i></button>
-                            <asp:Button ID="btnSearch" runat="server" OnClick="btnSearch_Click" Style="display: none;" />
-                        </div>
-                    </div>
-                    <div style="float: right; margin-top: -4%;">
-                        Sort by
-                        <asp:DropDownList ID="ddlSortBy" runat="server" CssClass="dropdownSearch" OnSelectedIndexChanged="ddlSortBy_SelectedIndexChanged" AutoPostBack="true">
-                            <asp:ListItem Text="Category Name: A to Z" Value="CatA_Z"></asp:ListItem>
-                            <asp:ListItem Text="Category Name: Z to A" Value="CatZ_A"></asp:ListItem>
-                            <asp:ListItem Text="Category Code: A to Z" Value="CatCodeA_Z"></asp:ListItem>
-                            <asp:ListItem Text="Category Code: Z to A" Value="CatCodeZ_A"></asp:ListItem>
-                        </asp:DropDownList>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        Show
-                        <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="dropdownSearch" Style="width: 80px;" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged" AutoPostBack="true">
-                        </asp:DropDownList>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button type="button" class="btn btn-primary pull-right" style="margin-top: 0px !important;" onclick="return CategoryEdit(0,-1);" id="btnAdd">Add</button>
-                    </div>--%>
                     </div>
                 </div>
                 <div style="width: 115%;">
@@ -135,7 +126,7 @@
                                 <div class="table-responsive cart_info">
                                     <asp:GridView ID="gvCategory" runat="server" AutoGenerateColumns="false" DataKeyNames="CategoryID"
                                         ShowFooter="false" CssClass="table table-condensed" Style="font-size: 15px"
-                                        AlternatingRowStyle-CssClass="alt"
+                                        AlternatingRowStyle-CssClass="alt" EmptyDataText="No records found!!"
                                         RowStyle-Wrap="true" AlternatingRowStyle-Wrap="true" EditRowStyle-Wrap="true"
                                         FooterStyle-Wrap="true" GridLines="None" ShowHeaderWhenEmpty="true" EnableCallBacks="False"
                                         ShowHeader="true" OnRowDataBound="gvCategory_RowDataBound" OnRowCommand="gvCategory_RowCommand">
@@ -206,7 +197,7 @@
                         <br />
                     </td>
                     <td>
-                        <asp:TextBox ID="txtCategoryDescrip" runat="server" EnableViewState="true"></asp:TextBox><br />
+                        <asp:TextBox ID="txtCategoryDescrip" runat="server" TextMode="MultiLine" Rows="4" EnableViewState="true" CssClass="MultiLineText"></asp:TextBox><br />
                         <br />
                     </td>
                 </tr>

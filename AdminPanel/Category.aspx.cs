@@ -10,7 +10,6 @@ public partial class AdminPanel_Category : System.Web.UI.Page
 {
     int PageSize = 10;
     public int ManufactureID;
-    string Search = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         //if (!IsPostBack)
@@ -58,7 +57,7 @@ public partial class AdminPanel_Category : System.Web.UI.Page
     {
         int TR;
         Category obj = new Category();
-        obj.Name = Search;
+        obj.Name = txtSearchCategory.Value;
         DataTable dtM = obj.CategoriesList(Pgindex, PageSize, SortField, SortOrder, out TR);
         gvCategory.DataSource = dtM;
         gvCategory.DataBind();
@@ -229,10 +228,19 @@ public partial class AdminPanel_Category : System.Web.UI.Page
                 gvCategory.DataSource = dt;
                 gvCategory.DataBind();
             }
+            PopulatePager(TR, 1, Convert.ToInt32(ddlPageSize.SelectedValue) + 1);
         }
         catch (Exception ex)
         {
 
         }
+    }
+
+    protected void btnClearSearch_Click(object sender, EventArgs e)
+    {
+        txtSearchCategory.Value = "";
+        ddlSortBy.SelectedValue = "CatA_Z";
+        ddlPageSize.SelectedValue = "9";
+        ApplySort();
     }
 }

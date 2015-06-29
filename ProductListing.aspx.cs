@@ -27,12 +27,6 @@ public partial class ProductListing : System.Web.UI.Page
             if (Request.QueryString["listing"] != null)
                 isListing = Convert.ToBoolean(Request.QueryString["listing"]);
 
-            //if (!isListing)
-            //    ltCatalogue.Text = GetCategories(Category, SubCategory);
-            //else
-            //if (isListing)
-            //{
-            //            GetProducts("", "", "", "", false, false);
             PopulateSearchCriteria();
 
             if (Request.QueryString.ToString() == "")
@@ -40,7 +34,6 @@ public partial class ProductListing : System.Web.UI.Page
             else
                 GetProducts(Category, SubCategory, "", "", false, false, "", 1, Convert.ToInt32(ddlPageSize.SelectedValue) + 1, "", "");
             //}
-
         }
     }
 
@@ -256,7 +249,7 @@ public partial class ProductListing : System.Web.UI.Page
                     if (Convert.ToDouble(lblPrice.Text) <= 0)
                     {
                         ltQty.Text = "-";
-                        lblPrice.Text = "Requires Quote";
+                        lblPrice.Text = "";//"Requires Quote";
                         btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "block");
                     }
                     else
@@ -268,7 +261,6 @@ public partial class ProductListing : System.Web.UI.Page
                 }
                 else //display pricing as per quantity table
                 {
-                    //lblInventory.Style.Add(HtmlTextWriterStyle.Display, "none");
                     btnGetPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
                     lblPrice.Style.Add(HtmlTextWriterStyle.Display, "none");
 
@@ -459,7 +451,6 @@ public partial class ProductListing : System.Web.UI.Page
             }
         }
         catch (Exception ex)
-
         { }
     }
 

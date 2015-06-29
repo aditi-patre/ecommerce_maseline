@@ -5,21 +5,27 @@
     <script type="text/javascript">
         var Product = {};
         /* Add to Cart*/
-        function btnAddToCart_Client() {
-            Product.ProductID = document.getElementById('<%=hdnProductID.ClientID%>').value;;
-            $.ajax({
-                type: "POST",
-                url: "QueryPage.aspx/AddToCart",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify(Product),
-                dataType: "json",
-                success: function (result) {
-                    alert("Item added to cart");
-                },
-                error: function () {
-                    alert("Item could not be added to the cart");
-                }
-            });
+        function btnAddToCart_Client1() {
+            Product.ProductID = document.getElementById('<%=hdnProductID.ClientID%>').value;
+            if (document.getElementById('<%=hdnQty.ClientID%>').value == "Unavailable")
+                alert("Product cannot be ordered as its unavailable");
+            else if (document.getElementById('<%=hdnPrice.ClientID%>').value == "Unavailable")
+                alert("Product cannot be ordered as pricing is unavailable");
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "QueryPage.aspx/AddToCart",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(Product),
+                    dataType: "json",
+                    success: function (result) {
+                        alert("Item added to cart");
+                    },
+                    error: function () {
+                        alert("Item could not be added to the cart");
+                    }
+                });
+            }
             return false;
         }
 
@@ -187,8 +193,8 @@
                                         <asp:Label ID="lblInventory" runat="server" />
                                     </p>
                                 </h2>
-                                <asp:ImageButton ID="btnAddToCart" runat="server" ImageUrl="images/product-details/addTocart.jpg" title="Add to cart"
-                                    OnClientClick='<%# string.Format("javascript:return btnAddToCart_Client()") %>' />
+                                <asp:ImageButton ID="btnAddToCart" runat="server" ImageUrl="images/product-details/addTocart.jpg" title="Add to cart"  
+                                    OnClientClick="return btnAddToCart_Client1()" />
                                 <%--</a>--%>
                             </div>
 
@@ -297,6 +303,8 @@
             </div>
         </div>
         <asp:HiddenField ID="hdnProductID" runat="server" />
+        <asp:HiddenField ID="hdnQty" runat="server"/>
+        <asp:HiddenField ID="hdnPrice" runat="server"/>
     </section>
     <%--Popup for category listing--%>
     <div id="divBackground" style="position: fixed; z-index: 998; height: 100%; width: 100%; top: 0; left: 0; background-color: Black; filter: alpha(opacity=60); opacity: 0.6; -moz-opacity: 0.8; display: none">
@@ -311,7 +319,7 @@
                 </div>
             </div>
             <br />
-            <div id="dvCataLogList" style="height: 100%;"></div>
+            <div id="dvCataLogList" style="height: 100%;" runat="server"></div>
             <br />
             <br />
         </div>

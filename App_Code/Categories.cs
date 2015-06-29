@@ -153,7 +153,6 @@ public class Category
             return this.Update();
     }
 
-
     private bool Insert()
     {
         try
@@ -180,8 +179,18 @@ public class Category
     {
         try
         {
+            string Query1 = "select ShortCode from Category where CategoryID=" + this.CategoryID;
+            DataTable dt = SqlHelper.ExecuteDataSet(Query1, CommandType.Text, null).Tables[0];
+            string OldShortCode = dt.Rows[0][0].ToString();
+
             string Query = " update Category set ShortCode='" + this.ShortCode + "', Name='" + this.Name + "', Descrip='" + this.Descrip + "' where CategoryID=" + this.CategoryID;
             SqlHelper.ExecuteNonQuery(Query, CommandType.Text, null);
+
+            if (OldShortCode != this.ShortCode)
+            {
+                string Query2 = "update SubCategory set C_ShortCode = '" + this.ShortCode + "' where C_ShortCode='" + OldShortCode + "'";
+                SqlHelper.ExecuteNonQuery(Query2, CommandType.Text, null);
+            }
         }
         catch (Exception ex)
         {
@@ -205,6 +214,18 @@ public class Category
             return false;
         }
         return true;
+    }
+
+    public bool CodeExists(string ID)
+    {
+        DataTable dt = null;
+        string Query = "select CategoryID from Category where ShortCode = '" + this.ShortCode + "' and ISNULL(IsActive,1) = 1 and CategoryID !=" + ID;
+        dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
+        if (dt.Rows.Count > 0)
+            return true;
+        else
+            return false;
+
     }
     #endregion
 }

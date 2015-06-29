@@ -138,8 +138,8 @@ public partial class ProductDetails : System.Web.UI.Page
             sb.Append("</div><br/>"); //over flow div ends
             sb.Append("<a href='#' id=\"ShowCats\" OnClick=\"btnShowCats()\" style=\"padding-left:160px;\"><span>Show More >></span></a>");
             sb.Append("</div>");
-            hdnCategoryListing.Value = sb1.ToString();
-            //hdnCategoryListing.Text
+            //hdnCategoryListing.Value = sb1.ToString();
+            dvCataLogList.InnerHtml = sb1.ToString();
         }
         ltList.Text = sb.ToString();
     }
@@ -150,6 +150,18 @@ public partial class ProductDetails : System.Web.UI.Page
         try
         {
             Product objP = new Product(PCode);
+            if (objP.Inventory <= 0)
+            {
+                hdnQty.Value = "Unavailable";
+            }
+            else
+                hdnQty.Value = "";
+            if (objP.Price <= 0)
+            {
+                hdnPrice.Value = "Unavailable";
+            }
+            else
+                hdnPrice.Value = "";
             string FolderPath = System.Configuration.ConfigurationManager.AppSettings["ImagePath"].ToString() + "//" + PCode.ToString();
             string ProdImagePath = FolderPath + "//" + objP.ImageName;
             if (File.Exists(Server.MapPath(ProdImagePath)))

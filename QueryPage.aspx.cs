@@ -212,7 +212,7 @@ public partial class QueryPage : System.Web.UI.Page
     }
 
     [WebMethod]
-    public static void RequestEntity(string ProductID, string RequestEntity, string Name, string Email, string ContactNo)
+    public static string RequestEntity(string ProductID, string RequestEntity, string Name, string Email, string ContactNo)
     {
         Output objMsg = new Output();
         string to = System.Configuration.ConfigurationManager.AppSettings["ReceiverEmail"].ToString();
@@ -251,6 +251,8 @@ public partial class QueryPage : System.Web.UI.Page
             objMsg.IsSuccess = false;
             objMsg.Message = "Mail could not be sent.";
         }
+        JavaScriptSerializer js = new JavaScriptSerializer();
+        return js.Serialize(objMsg);
     }
 
 
@@ -262,9 +264,17 @@ public partial class QueryPage : System.Web.UI.Page
         Manufacturer objM = new Manufacturer(Convert.ToInt32(ID));
         objM.Name = Name;
         objM.ManufacturerCode = Code;
-        objM.Save();
-        objMsg.IsSuccess = true;
-        objMsg.Message = "Manufacturer details have been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+        if (objM.CodeExists(Convert.ToInt32(ID)))
+        {
+            objMsg.IsSuccess = false;
+            objMsg.Message = "Manufacturer Code needs to be unique";
+        }
+        else
+        {
+            objM.Save();
+            objMsg.IsSuccess = true;
+            objMsg.Message = "Manufacturer details have been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+        }
         JavaScriptSerializer js = new JavaScriptSerializer();
         return js.Serialize(objMsg);
     }
@@ -309,9 +319,71 @@ public partial class QueryPage : System.Web.UI.Page
         objM.Name = Name;
         objM.ShortCode = Code;
         objM.Descrip = Descrip;
-        objM.Save();
-        objMsg.IsSuccess = true;
-        objMsg.Message = "Manufacturer details have been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+        if (objM.CodeExists(ID))
+        {
+            objMsg.IsSuccess = false;
+            objMsg.Message = "Category Code needs to be unique";
+        }
+        else
+        {
+            objM.Save();
+            objMsg.IsSuccess = true;
+            objMsg.Message = "Category details have been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+        }
+        JavaScriptSerializer js = new JavaScriptSerializer();
+        return js.Serialize(objMsg);
+    }
+
+    [WebMethod]
+    public static string SubCategorySave(string ID, string Name, string Code, string Descrip, string CategoryID, string CategoryShortCode)
+    {
+        Output objMsg = new Output();
+        SubCategory objS = new SubCategory(Convert.ToInt32(ID));
+        objS.Name = Name;
+        objS.ShortCode = Code;
+        objS.Descrip = Descrip;
+        objS.CategoryID = Convert.ToInt32(CategoryID);
+        objS.C_ShortCode = CategoryShortCode;
+        if (objS.CodeExists(ID))
+        {
+            objMsg.IsSuccess = false;
+            objMsg.Message = "Sub-Category Code needs to be unique";
+        }
+        else
+        {
+            objS.Save();
+            objMsg.IsSuccess = true;
+            objMsg.Message = "Sub-Category details have been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+        }
+        JavaScriptSerializer js = new JavaScriptSerializer();
+        return js.Serialize(objMsg);
+    }
+
+    [WebMethod]
+    public static string ProductSave(string ID, string Name, string Code, string Descrip, string CatID, string SubCatID, string Price, string McftID, string Inventory, string ImgPath)
+    {
+        Output objMsg = new Output();
+        Product objM = new Product(Convert.ToInt32(ID));
+        objM.Name = Name;
+        objM.ProductCode = Code;
+        objM.Descrip = Descrip;
+        objM.CategoryID = Convert.ToInt32(CatID);
+        objM.SubCategoryID = Convert.ToInt32(SubCatID);
+        objM.Price = Convert.ToDecimal(Price);
+        objM.ManufacturerID = Convert.ToInt32(McftID);
+        objM.Inventory = Convert.ToInt32(Inventory);
+        objM.ImageName = Convert.ToString(ImgPath);
+        if (objM.CodeExists(ID))
+        {
+            objMsg.IsSuccess = false;
+            objMsg.Message = "Product Code needs to be unique";
+        }
+        else
+        {
+            objM.Save();
+            objMsg.IsSuccess = true;
+            objMsg.Message = "Category details have been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+        }
         JavaScriptSerializer js = new JavaScriptSerializer();
         return js.Serialize(objMsg);
     }

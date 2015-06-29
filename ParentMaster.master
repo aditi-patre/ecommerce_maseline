@@ -3,9 +3,7 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <%--<script src="http://code.jquery.com/jquery-1.7.2.js"></script>--%>
+<head runat="server">    
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="" />
@@ -19,6 +17,12 @@
     <link href="css/main.css" rel="stylesheet" />
     <link href="css/responsive.css" rel="stylesheet" />
     <script src="js/script.js"></script>
+      <script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
+
     <!--[if lt IE 9]>
     <script src="js/html5shiv.js"></script>
     <script src="js/respond.min.js"></script>
@@ -195,9 +199,9 @@
                                 <ul>
                                     <li class="active"><a href="Home.aspx" class="active">
                                         <img src="images/home/home.png" class="girl img-responsive" alt="" /></a></li>
-                                    <li><a href="#">
+                                    <li><a href="ProductListing.aspx">
                                         <img id="lnkCatalog" src="images/home/catalog.png" class="girl img-responsive" alt="" /></a>
-                                        <div id="dvCatalog" style="display: none;">
+                                        <%--<div id="dvCatalog" style="display: none;">
                                             <ul class="SubMenu">
                                                 <li><a href="ProductListing.aspx" style="color: white;">Products</a></li>
                                                 <li><a href="ProductDetails.aspx" style="color: white;">Product Details</a></li>
@@ -205,7 +209,7 @@
                                                 <li><a href="ViewCart.aspx" style="color: white;">Cart</a></li>
                                                 <li><a href="Login.aspx" style="color: white;">Login</a></li>
                                             </ul>
-                                        </div>
+                                        </div>--%>
                                     </li>
                                     <li><a href="#">
                                         <img id="lnkServices" src="images/home/services.png" class="girl img-responsive" alt="" /></a>
@@ -245,7 +249,7 @@
                                 <div class="col-sm-2">
                                     <div class="single-widget">
                                         <ul class="nav nav-pills nav-stacked" >
-                                            <li><a href="#">ABOUT US</a></li>
+                                            <li><a href="Home.aspx">ABOUT US</a></li>
                                             <li><a href="#">SERVICES</a></li>
                                         </ul>
                                     </div>
@@ -260,7 +264,7 @@
                                 <div class="col-sm-2">
                                     <div class="single-widget">
                                         <ul class="nav nav-pills nav-stacked">
-                                            <li><a href="#">WHY MASLINE</a></li>
+                                            <li><a href="Home.aspx">WHY MASLINE</a></li>
                                             <li><a href="ProductListing.aspx">CATALOG</a></li>
                                         </ul>
                                     </div>
@@ -276,7 +280,7 @@
                                 <div class="col-sm-2">
                                     <div class="single-widget">
                                         <ul class="nav nav-pills nav-stacked">
-                                            <li><a href="#">COMPANY INFORMATION</a></li>
+                                            <li><a href="Home.aspx">COMPANY INFORMATION</a></li>
                                             <li><a href="#">CAREERS</a></li>
                                         </ul>
                                     </div>
@@ -308,15 +312,13 @@
             </div>
         </div>
         <!--/Footer-->
-
-
-
-        <script src="js/jquery.js"></script>
-        <script src="js/bootstrap.min.js"></script>
+<%--        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>--%>
         <script src="js/jquery.scrollUp.min.js"></script>
         <script src="js/price-range.js"></script>
         <script src="js/jquery.prettyPhoto.js"></script>
         <script src="js/main.js"></script>
+        
         <asp:Button ID="btnSearchProduct" runat="server" OnClick="btnSearchProduct_Click" Style="display: none;" />
         <asp:HiddenField ID="hdnPCode" runat="server" />
     </form>

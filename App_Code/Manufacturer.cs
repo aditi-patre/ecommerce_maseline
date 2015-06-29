@@ -78,7 +78,7 @@ public class Manufacturer
                 if (CurrentPgNo == 0)
                     CurrentPgNo = 1;
                 StrIndex = PageSize * (CurrentPgNo - 1);
-                Query = "select * from ("+Query+")t where RowNum >=" + StrIndex + " and RowNum<=" + Convert.ToInt32(StrIndex + PageSize);
+                Query = "select * from ("+Query+")t where RowNum >" + StrIndex + " and RowNum<=" + Convert.ToInt32(StrIndex + PageSize);
             }           
             dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
         }
@@ -97,6 +97,18 @@ public class Manufacturer
             return this.Update();
     }
 
+
+    public bool CodeExists(int ID)
+    {
+        DataTable dt = null;
+        string Query = "select ManufacturerID from Manufacturer where ManufacturerCode = '" + this.ManufacturerCode + "' and ISNULL(IsActive,1) = 1 and ManufacturerID !="+ID.ToString();
+        dt = SqlHelper.ExecuteDataSet(Query, CommandType.Text, null).Tables[0];
+        if (dt.Rows.Count > 0)
+            return true;
+        else
+            return false;
+
+    }
 
     private bool Insert()
     {

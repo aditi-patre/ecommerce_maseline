@@ -240,9 +240,9 @@
                             <ul>
                                 <li class="active"><a href="Home.aspx" class="active">
                                     <img src="images/home/home.png" class="girl img-responsive" alt="" /></a></li>
-                                <li><a href="#">
+                                <li><a href="ProductListing.aspx">
                                     <img id="lnkCatalog"  src="images/home/catalog.png" class="girl img-responsive" alt="" /></a>
-                                    <div id="dvCatalog" style="display: none;">
+                                   <%-- <div id="dvCatalog" style="display: none;">
                                         <ul class="SubMenu">
                                             <li><a href="ProductListing.aspx" style=" color:white;">Products</a></li>
                                             <li><a href="ProductDetails.aspx" style=" color:white;">Product Details</a></li>
@@ -250,7 +250,7 @@
                                             <li><a href="ViewCart.aspx" style=" color:white;">Cart</a></li>
                                             <li><a href="Login.aspx" style=" color:white;">Login</a></li>
                                         </ul>
-                                    </div>
+                                    </div>--%>
                                 </li>
                                 <%--<li><a href='#'><img src="images/home/services.png"/></a></li>--%>
                                 <li><a href="#">
