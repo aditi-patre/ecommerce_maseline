@@ -1,0 +1,274 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="AdminMaster.master.cs" Inherits="AdminPanel_AdminMaster" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin | Masline</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../css/prettyPhoto.css" rel="stylesheet" />
+    <link href="../css/price-range.css" rel="stylesheet" />
+    <link href="../css/animate.css" rel="stylesheet" />
+    <link href="../css/main.css" rel="stylesheet" />
+    <link href="../css/responsive.css" rel="stylesheet" />
+
+    <script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
+    <%--<script type="text/javascript">
+        function Search() {
+            if (document.getElementById("HeaderSearch").value != "") {
+                if (window.location.href.indexOf("Manufacturer") != -1) {
+                    document.getElementById('<%=hdnSearchCriteria.ClientID %>').value = "Manufacturer";
+                }
+                else if (window.location.href.indexOf("SubCategory") != -1) {
+                    document.getElementById('<%=hdnSearchCriteria.ClientID %>').value = "SubCategory";
+                }
+                else if (window.location.href.indexOf("Category") != -1) {
+                    document.getElementById('<%=hdnSearchCriteria.ClientID %>').value = "Category";
+                }
+                else if (window.location.href.indexOf("Product") != -1) {
+                    document.getElementById('<%=hdnSearchCriteria.ClientID %>').value = "Product";
+                }
+    document.getElementById('<%=hdnSearch.ClientID %>').value = document.getElementById("HeaderSearch").value;
+                document.getElementById('<%=btnSearch.ClientID %>').click();
+            }
+        }
+    </script>--%>
+    <style type="text/css">
+        .LogoutAdmin {
+            background-image: url(../images/home/logout.png);
+            background-color: transparent;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 35px;
+            border-top-style: none;
+            border-right-style: none;
+            border-left-style: none;
+            border-bottom-style: none;
+        }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <header id="header">
+                <div class="header-middle">
+                    <!--header-middle-->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="pull-left">
+                                    <a href="Manufacturer.aspx">
+                                        <img src="../images/home/logo.png" alt="" /></a>
+                                </div>
+                            </div>
+                            <%--<div class="col-sm-4">
+                                <div class="search_box pull-right">                                   
+                                    <input type="text" placeholder="Search" id="HeaderSearch" runat="server" />
+                                    <img id="iSearch" src="../images/home/searchicon.png" onclick="Search()" runat="server" />
+                                </div>
+                            </div>--%>
+                            <div class="col-sm-8 pull-right">
+                                <div class="pull-right" style="padding-right:1%;">
+                                    <ul>
+                                        <li>
+                                            <a href="AdminLogin.aspx" target="_self" id="btnLogin" runat="server">
+                                                <img src="../images/home/login.jpg" /></a>
+                                            <asp:Label ID="lblUser" runat="server" Style="display: none; font-size: large;" ForeColor="White"></asp:Label>
+
+                                            <%--<asp:ImageButton ID="btnLogOut" runat="server" Visible="false" OnClick="btnLogOut_Click" ImageUrl="../images/home/logout.png"  onkeypress="return CancelReturnKey();"/>--%>
+                                            <asp:Button ID="btnLogOut" runat="server" UseSubmitBehavior="false" Visible="false" OnClick="btnLogOut_Click" CssClass="LogoutAdmin" />
+                                        </li>
+                                        <%--    <li>
+                                            <img src="../images/home/contact.jpg" />
+                                        </li>--%>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/header-middle-->
+            </header>
+            <!--/header-->
+
+            <section>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                            <div class="left-sidebar" style="padding-top:3.5%;">
+                                <%--style="background-color: #CFD4D0"--%>
+                                <h2>MENU</h2>
+                                <div class="panel-group category-products" id="accordian">
+                                    <%--<div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="AdminHome.aspx">Home</a></h4>
+                                        </div>
+                                    </div>--%>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="Manufacturer.aspx">Manufacturer</a></h4>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="Category.aspx">Category</a></h4>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="SubCategory.aspx">Sub-Category</a></h4>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="Product.aspx">Products</a></h4>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="FeaturedNews.aspx">Featured News</a></h4>
+                                        </div>
+                                    </div>
+                                    <%--<div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="AdminLogin.aspx">Login</a></h4>
+                                        </div>
+                                    </div>--%>
+                                </div>
+                                <asp:Literal runat="server" ID="hdnCategoryListing" Visible="false"></asp:Literal>
+                                <!--/category-products-->
+                                <%--  <div style="padding-top: 20px; background-color: white;">
+                                    <div class="shipping text-center" style="border: 1px solid lightgrey;">
+                                        <h2>Featured News</h2>                                   
+                                        <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                            <a class="pull-left" href="#">
+                                                <img src="../images/news/media-one.jpg" alt="" />
+                                            </a>
+                                            <div class="media-body">
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                            <a class="pull-left" href="#">
+                                                <img src="../images/news/media-one.jpg" alt="" />
+                                            </a>
+                                            <div class="media-body">
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                            <a class="pull-left" href="#">
+                                                <img src="../images/news/media-one.jpg" alt="" />
+                                            </a>
+                                            <div class="media-body">
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>--%>
+                            </div>
+                        </div>
+                        <div>
+                            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                            </asp:ContentPlaceHolder>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div style="height: 87px;">
+                &nbsp;
+            </div>
+            <!--Footer-->
+            <div class="container">
+                <div class="row">
+                    <%--     <footer id="footer">--%>
+                    <%-- <div class="footer-widget">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <div class="single-widget">
+                                            <ul class="nav nav-pills nav-stacked" style="padding-left: 40px;">
+                                                <li><a href="#">ABOUT US</a></li>
+                                                <li><a href="#">SERVICES</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="single-widget">
+                                             <ul class="nav nav-pills nav-stacked">
+                                                <li><a href="#">WHY MASLINE</a></li>
+                                                <li><a href="ProductListing.aspx">CATALOG</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="single-widget">
+                                            <ul class="nav nav-pills nav-stacked">
+                                                <li><a href="#">TERMS OF USE</a></li>
+                                                <li><a href="#">PRIVACY POLICY</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div class="single-widget">
+                                            <ul class="nav nav-pills nav-stacked">
+                                                <li><a href="#">COMPANY INFORMATION</a></li>
+                                                <li><a href="#">CAREERS</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-1">
+                                        <div class="single-widget" style="margin-top: -19px;">
+                                            <h2 style="margin-bottom: 3px;">
+                                                <img src="../images/home/call.png" alt="" style="height: 20px;" /></h2>
+                                            <ul class="nav nav-pills nav-stacked">
+                                                <li><a href="#" style="font-size: 12px; margin-top: -5px;">jobs@masline.com</a></li>
+                                                <li><a href="#" style="font-size: 12px; margin-top: -10px">Contact us at sales@masline.com</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>--%>
+                    <div class="footer-bottom">
+                        <div class="container">
+                            <div class="row" style="padding-left: 25px;">
+                                <p class="pull-left" style="color: white;">Copyright © 2015. Masline Electronics INC. All rights reserved.</p>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <%--</footer>--%>
+                </div>
+            </div>
+        </div>
+
+        <%--   <script src="../js/jquery.js"></script>--%>
+        <%--<script src="../js/bootstrap.min.js"></script>--%>
+        <script src="../js/jquery.scrollUp.min.js"></script>
+        <script src="../js/price-range.js"></script>
+        <script src="../js/jquery.prettyPhoto.js"></script>
+        <script src="../js/main.js"></script>
+        <%--  <asp:Button ID="btnSearch" runat="server" OnClick="btnSearch_Click" Style="display: none;" />--%>
+        <asp:HiddenField ID="hdnSearch" runat="server" />
+        <asp:HiddenField ID="hdnSearchCriteria" runat="server" />
+    </form>
+</body>
+</html>
