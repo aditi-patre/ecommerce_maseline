@@ -97,3 +97,10 @@
 {
     color:red;
 }
+.floating { float:left; overflow:hidden; }
+.floating img { display: block; }
+
+ul.ServicesUnorderedList
+{
+    list-style-type: circle;
+}

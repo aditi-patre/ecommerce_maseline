@@ -169,7 +169,7 @@ public class SubCategory
             return false;
         }
 
-        return this.CategoryID > 0;
+        return this.SubCategoryID > 0;
     }
 
     private bool Update()

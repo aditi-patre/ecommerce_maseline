@@ -21,6 +21,7 @@ public partial class ProductDetails : System.Web.UI.Page
             {
                 LoadProductDetails(PCode);
                 hdnProductID.Value = PCode.ToString();
+                LoadFeaturedNews();
             }
         }
         else
@@ -330,5 +331,32 @@ public partial class ProductDetails : System.Web.UI.Page
         }
         if (sb.ToString() != "")
             ltRecommendations.Text = sb.ToString();
+    }
+
+    private void LoadFeaturedNews()
+    {
+        FeaturedNews objF = new FeaturedNews();
+        DataTable dt = objF.GetList(true);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                ltFeaturedNews.Text += GenerateNewsTemplate(Convert.ToString(dt.Rows[i]["ImageName"]), Convert.ToString(dt.Rows[i]["Descrip"]));
+            }
+        }
+    }
+    private string GenerateNewsTemplate(string ImgName, string Content)
+    {
+        string ImagePath = "";
+        if (ImgName != "")
+            ImagePath = "images/news/" + ImgName;
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<div class=\"media commnets\" style=\"border-bottom: 1px solid lightgrey;\">");
+        sb.Append("<a class=\"pull-left\" href=\"#\">");
+        sb.Append("<img src='" + ImagePath + "' alt=\"\" style=\"width:52px; height:52px;\" />");
+        sb.Append("</a><div class=\"media-body\">");
+        sb.Append("<p>" + Content + "</p></div></div>");
+
+        return sb.ToString();
     }
 }

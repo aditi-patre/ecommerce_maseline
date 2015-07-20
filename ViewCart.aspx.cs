@@ -84,8 +84,8 @@ public partial class ViewCart : System.Web.UI.Page
         {
             ShoppingCart.Instance.RemoveItem(ProductID);
             BindCart();
-            //ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Item removed from cart');", true);
-            Response.Redirect(Convert.ToString(Session["PopUpParentUrl"]));
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "Alert", "alert('Item removed from cart');", true);
+            //Response.Redirect(Convert.ToString(Session["PopUpParentUrl"]));
         }
     }
     protected void gvShoppingCart_RowCreated(object sender, GridViewRowEventArgs e)

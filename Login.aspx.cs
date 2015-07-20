@@ -88,10 +88,18 @@ public partial class Login : System.Web.UI.Page
     {
         if (HttpContext.Current.Session["ShoppingCart"] != null)
         {
+            Guid OrderGuid = System.Guid.NewGuid();
             Orders order = new Orders();
             order.OrderID = 0;
-            order.UserID = Convert.ToInt32(Convert.ToString(HttpContext.Current.Session["User"]).Split('|')[1]);
-            order.UserEmail = "";
+            if (Convert.ToString(HttpContext.Current.Session["User"]) != "")
+            {
+                order.UserID = Convert.ToInt32(Convert.ToString(HttpContext.Current.Session["User"]).Split('|')[1]);
+                UserInfo obj = new UserInfo(order.UserID);
+                order.UserEmail = obj.UserEmail;
+            }
+            else
+                order.UserEmail = txtEmailAddress.Value;
+            order.OrderGUID = OrderGuid.ToString();
             order.Save();
 
             DataTable dtCart = new DataTable();

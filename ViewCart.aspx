@@ -73,7 +73,7 @@
                             <h4>
                                 <asp:LinkButton ID="lbtnProdName" runat="server" Text='<%# Eval("Prod.Name") %>' CommandName="ShowProductDetails" CommandArgument='<%# Eval("ProductID") %>'></asp:LinkButton>
                             </h4>
-                            <p id="lblProductCode" runat="server"><%# string.Format("{0}{1}","$", Eval("Prod.ProductCode")) %></p>
+                            <p id="lblProductCode" runat="server"><%# string.Format("{0}{1}","", Eval("Prod.ProductCode")) %></p>
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderText="Price" ControlStyle-BorderColor="White">

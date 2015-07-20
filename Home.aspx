@@ -210,28 +210,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <%--  <div class="mainmenu pull-left">
-                        <ul class="nav navbar-nav collapse navbar-collapse">
-                            <li><a href="Home.aspx" class="active"><img src="images/home/home.png" class="girl img-responsive" alt="" /></a></li>
-                            <li class="dropdown"><a href="#"><img src="images/home/catalog.png" class="girl img-responsive" alt="" /></a>
-                                <ul role="menu" class="sub-menu">
-                                    <li><a href="ProductListing.aspx">Products</a></li>
-                                    <li><a href="ProductDetails.aspx">Product Details</a></li>
-                                    <li><a href="Login.aspx?Checkout=Y">Checkout</a></li>
-                                    <li><a href="ViewCart.aspx">Cart</a></li>
-                                    <li><a href="Login.aspx">Login</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown"><a href="#"><img src="images/home/services.png" class="girl img-responsive" alt="" /></a>
-                                <ul role="menu" class="sub-menu">
-                                    <li><a href="blog.html">Blog List</a></li>
-                                    <li><a href="blog-single.html">Blog Single</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="404.html"><img src="images/home/product_video.png" class="girl img-responsive" alt="" /></a></li>
-                            <li><a href="contact-us.html"><img src="images/home/line_Card.png" class="girl img-responsive" alt="" /></a></li>
-                        </ul>
-                    </div>--%>
+                    
                     <div class="welcomeBg">
                         <img src="images/home/welcome.png" class="girl img-responsive" alt="" />
                     </div>
@@ -253,12 +232,17 @@
                                     </div>--%>
                                 </li>
                                 <%--<li><a href='#'><img src="images/home/services.png"/></a></li>--%>
-                                <li><a href="#">
+                                <li><a href="Services.aspx">
                                     <img id="lnkServices" src="images/home/services.png" class="girl img-responsive" alt="" /></a>
                                     <div id="dvServices" style="display: none;">
                                         <ul class="SubMenu">
-                                            <li><a href="blog.html" style=" color:white;">Blog List</a></li>
-                                            <li><a href="blog-single.html" style=" color:white;">Blog Single</a></li>
+                                            <li><a href="Services.aspx?p=logistics" style=" color:white;">Logistics</a></li>
+                                            <li><a href="Services.aspx?p=lead_forming" style=" color:white;">Lead Forming</a></li>
+                                            <li><a href="Services.aspx?p=custom_assembly" style=" color:white;">Custom Assembly</a></li>
+                                            <li><a href="Services.aspx?p=kitting" style=" color:white;">Kitting</a></li>
+                                            <li><a href="Services.aspx?p=packaging" style=" color:white;">Packaging</a></li>
+                                            <li><a href="Services.aspx?p=labeling" style=" color:white;">Labeling</a></li>
+                                            <li><a href="Services.aspx?p=final_inspection" style=" color:white;">Final Inspection</a></li>
                                         </ul>
                                     </div>
                                 </li>

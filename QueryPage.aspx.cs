@@ -77,7 +77,7 @@ public partial class QueryPage : System.Web.UI.Page
             {
                 Manufacturer objM = new Manufacturer();
                 int TR;
-                DataTable dtM = objM.GetList(1,101,"","",out TR);
+                DataTable dtM = objM.GetList(1, 101, "", "", out TR);
                 dtM.Columns["ManufacturerID"].ColumnName = "Value";
                 dtM.AcceptChanges();
                 List<ManufacturerItem> chkM = new List<ManufacturerItem>();
@@ -215,7 +215,7 @@ public partial class QueryPage : System.Web.UI.Page
     public static string RequestEntity(string ProductID, string RequestEntity, string Name, string Email, string ContactNo)
     {
         Output objMsg = new Output();
-        string to = System.Configuration.ConfigurationManager.AppSettings["ReceiverEmail"].ToString();
+        string to = System.Configuration.ConfigurationManager.AppSettings["CompanyEmail"].ToString();
         string from = System.Configuration.ConfigurationManager.AppSettings["FromEmail"].ToString();
         string subject = "Request " + RequestEntity;
         try
@@ -232,7 +232,7 @@ public partial class QueryPage : System.Web.UI.Page
             {
                 string path = HttpContext.Current.Request.MapPath("EmailTemplates/RequestQuote.html");
                 mm.Subject = subject;
-                mm.Body = GenerateEmailTemplate(path, hashtable);
+                mm.Body = Misc.GenerateEmailTemplate(path, hashtable);
                 mm.IsBodyHtml = true;
                 SmtpClient smtp = new SmtpClient();
                 smtp.Host = "smtp.gmail.com";
@@ -278,38 +278,55 @@ public partial class QueryPage : System.Web.UI.Page
         JavaScriptSerializer js = new JavaScriptSerializer();
         return js.Serialize(objMsg);
     }
-    public static string GenerateEmailTemplate(string path, Hashtable hashTable)
-    {
-        StreamReader streamreader = new StreamReader(path);
-        string text = "", stream;
-        try
-        {
-            text = "";
-            stream = streamreader.ReadLine();
-            while (stream != null)
-            {
-                stream = streamreader.ReadLine();
-                IDictionaryEnumerator en = hashTable.GetEnumerator();
-                while (en.MoveNext())
-                {
-                    if (stream.Contains(en.Key.ToString()))
-                    {
-                        string str = en.Value.ToString();
-                        stream = stream.Replace(en.Key.ToString(), en.Value.ToString());
-                        hashTable.Remove(en.Key);
-                        break;
-                    }
-                }
-                text = text + stream;
-            }
-            streamreader.Close();
-        }
-        catch (Exception ex)
-        {
-            streamreader.Close();
-        }
-        return text;
-    }
+
+    //[WebMethod]
+    //public static string FeaturedNewsSave(string ID, string Descrip, string ImageName)
+    //{
+    //    Output objMsg = new Output();
+    //    FeaturedNews obj = new FeaturedNews(Convert.ToInt32(ID));
+    //    obj.Descrip = Descrip;
+    //    obj.ImageName = ImageName;
+
+    //    obj.Save();
+    //    objMsg.IsSuccess = true;
+    //    objMsg.Message = "Featured News has been " + (Convert.ToInt32(ID) > 0 ? "update" : "saved") + " successfully";
+
+    //    JavaScriptSerializer js = new JavaScriptSerializer();
+    //    return js.Serialize(objMsg);
+    //}
+
+    //public static string GenerateEmailTemplate(string path, Hashtable hashTable)
+    //{
+    //    StreamReader streamreader = new StreamReader(path);
+    //    string text = "", stream;
+    //    try
+    //    {
+    //        text = "";
+    //        stream = streamreader.ReadLine();
+    //        while (stream != null)
+    //        {
+    //            stream = streamreader.ReadLine();
+    //            IDictionaryEnumerator en = hashTable.GetEnumerator();
+    //            while (en.MoveNext())
+    //            {
+    //                if (stream.Contains(en.Key.ToString()))
+    //                {
+    //                    string str = en.Value.ToString();
+    //                    stream = stream.Replace(en.Key.ToString(), en.Value.ToString());
+    //                    hashTable.Remove(en.Key);
+    //                    break;
+    //                }
+    //            }
+    //            text = text + stream;
+    //        }
+    //        streamreader.Close();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        streamreader.Close();
+    //    }
+    //    return text;
+    //}
 
     [WebMethod]
     public static string CategorySave(string ID, string Name, string Code, string Descrip)

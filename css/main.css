@@ -3040,3 +3040,9 @@ h2.title {
 	border-style: solid;
 	border-collapse: collapse;
 }*/
+
+.ContactUsAlign
+{
+    text-align:right;
+    padding-right:5%;
+}

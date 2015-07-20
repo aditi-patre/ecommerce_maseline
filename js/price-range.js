@@ -395,7 +395,8 @@ $('.span2').slider().on('slideStart', function (ev) {
 
 $('.span2').slider().on('slideStop', function (ev) {
     var newVal = $('.span2').data('slider').getValue();
-    if (originalVal != newVal) {        
+    if (originalVal != newVal) {       
         $("#hdnPriceRange").val(newVal);
     }
+    ApplyFilter();
 });

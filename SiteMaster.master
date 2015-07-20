@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="SiteMaster.master.cs" Inherits="SiteMaster"%>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="SiteMaster.master.cs" Inherits="SiteMaster" %>
 
 <!DOCTYPE html>
 
@@ -44,7 +44,7 @@
     <script type="text/javascript">
 
         function btnShowCats() {
-            ShowPopUp();            
+            ShowPopUp();
         }
         function ShowPopUp() {
             var bcgDiv = document.getElementById("divBackground");
@@ -134,9 +134,9 @@
                         </div>
                         <div class="col-sm-4">
                             <%--<div class="search_box"> --%><div class="search_box pull-right">
-                                <input type="text" placeholder="Search ProductCode"  id="HeaderSearch" />
+                                <input type="text" placeholder="Search ProductCode" id="HeaderSearch" />
                                 <a href="#">
-                                    <img src="images/home/searchicon.png" onclick="SearchPCode()"/></a>
+                                    <img src="images/home/searchicon.png" onclick="SearchPCode()" /></a>
                             </div>
                         </div>
                         <div class="col-sm-8 pull-right">
@@ -184,19 +184,21 @@
                         <div class="left-sidebar" style="background-color: #CFD4D0">
                             <h2>CATALOG</h2>
                             <asp:Literal runat="server" ID="ltList"></asp:Literal><%--<asp:HiddenField ID="hdnCategoryListing" runat="server" />--%>
-                            
+
                             <!--/category-products-->
                             <div style="padding-top: 20px; background-color: white;">
                                 <div class="shipping text-center" style="border: 1px solid lightgrey;">
                                     <h2>Featured News</h2>
                                     <!--featured News-->
-
-                                    <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                    <asp:Literal ID="ltFeaturedNews" runat="server"></asp:Literal>
+                                    <%--<div class="media commnets" style="border-bottom: 1px solid lightgrey;">
                                         <a class="pull-left" href="#">
                                             <img src="images/news/media-one.jpg" alt="" />
                                         </a>
                                         <div class="media-body">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt . 
+                                               
+                                            </p>
 
                                         </div>
                                     </div>
@@ -206,7 +208,9 @@
                                             <img src="images/news/media-one.jpg" alt="" />
                                         </a>
                                         <div class="media-body">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  
+                                                
+                                            </p>
 
                                         </div>
                                     </div>
@@ -216,11 +220,14 @@
                                             <img src="images/news/media-one.jpg" alt="" />
                                         </a>
                                         <div class="media-body">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  
+                                                
+                                            </p>
 
                                         </div>
-                                    </div>
+                                    </div>--%>
                                 </div>
+                            
                             </div>
                             <!--featured news-->
                         </div>
@@ -239,12 +246,12 @@
                     <!--Footer-->
                     <div class="footer-widget">
                         <div class="container">
-                            <div class="row" style=" margin-left:10px;">
+                            <div class="row" style="margin-left: 10px;">
                                 <div class="col-sm-2">
                                     <div class="single-widget">
-                                        <ul class="nav nav-pills nav-stacked" >
-                                            <li><a href="#">ABOUT US</a></li>
-                                            <li><a href="#">SERVICES</a></li>
+                                        <ul class="nav nav-pills nav-stacked">
+                                            <li><a href="AboutUs.aspx">ABOUT US</a></li>
+                                            <li><a href="Services.aspx">SERVICES</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -275,7 +282,7 @@
                                     <div class="single-widget">
                                         <ul class="nav nav-pills nav-stacked">
                                             <li><a href="Home.aspx">COMPANY INFORMATION</a></li>
-                                            <li><a href="#">CAREERS</a></li>
+                                            <li><a href="Careers.aspx">CAREERS</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -285,7 +292,7 @@
                                             <img src="images/home/call.png" /></h2>
                                         <ul class="nav nav-pills nav-stacked">
                                             <li><a href="#" style="font-size: 12px; margin-top: -5px;">jobs@masline.com</a></li>
-                                            <li><a href="#" style="font-size: 12px; margin-top: -10px">Contact us at sales@masline.com</a></li>
+                                            <li><a href="mailto:sales@masline.com" style="font-size: 12px; margin-top: -10px">Contact us at sales@masline.com</a></li>
                                         </ul>
                                     </div>
                                 </div>

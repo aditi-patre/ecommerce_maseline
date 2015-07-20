@@ -1,9 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ParentMaster.master" AutoEventWireup="true" CodeFile="ProductListing.aspx.cs" Inherits="ProductListing" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContentPlaceHolder" runat="Server">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js" type="text/javascript"></script>
-<%--    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>--%>
+    <%--    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>--%>
     <script>var $j = jQuery.noConflict(true);</script>
     <style class="firebugResetStyles" type="text/css" charset="utf-8">
         /* See license.txt for terms of usage */
@@ -143,13 +143,13 @@
     </style>
     <script type="text/javascript">
         var dialog;
-
+        var HideColumns = true;
         function GetProducts(Category, SubCategory) {
             window.location("Catalogue.aspx?a=x");
         }
 
         /* Set search parameters in hidden fields*/
-        function SetSearchFields(x) {            
+        function SetSearchFields(x) {
             var selManufacturer = "", selCategory = "", selSubCategory = "";
             $j("[id*=chkManufacturer] input:checked").each(function (index, item) {
                 if (selManufacturer == "")
@@ -197,64 +197,55 @@
         function SetSearchFields2() {
             if (document.getElementById('<%=hdnPopUpSearchCriteria.ClientID%>').value.indexOf("Manufacturer") != -1) {
                 document.getElementById('<%=hdnManufacturer.ClientID%>').value = "";
-                $j("[id*=dvCheckBoxListControl] input:checked").each(function (index, item)
-                {
+                $j("[id*=dvCheckBoxListControl] input:checked").each(function (index, item) {
                     if (document.getElementById('<%=hdnManufacturer.ClientID%>').value == "")
                         document.getElementById('<%=hdnManufacturer.ClientID%>').value += $(item).val();
-                    else
-                    {
-                         document.getElementById('<%=hdnManufacturer.ClientID%>').value += ", " + $(item).val();
+                    else {
+                        document.getElementById('<%=hdnManufacturer.ClientID%>').value += ", " + $(item).val();
                     }
                 });
-                
+
                 //Checking the outer checkbox (within page) if checkbox within popup are checked.
-                var hdnM =  document.getElementById('<%=hdnManufacturer.ClientID%>').value.split(", ");
-                for(var j=0; j<document.getElementById('MainContentPlaceHolder_chkManufacturer').getElementsByTagName("input").length; j++)
-                {
-                    if (hdnM.indexOf(document.getElementById('MainContentPlaceHolder_chkManufacturer').getElementsByTagName("input")[j].value) != -1)
-                    {
-                        document.getElementById('MainContentPlaceHolder_chkManufacturer').getElementsByTagName("input")[j].checked = true;                            
+                var hdnM = document.getElementById('<%=hdnManufacturer.ClientID%>').value.split(", ");
+                for (var j = 0; j < document.getElementById('MainContentPlaceHolder_chkManufacturer').getElementsByTagName("input").length; j++) {
+                    if (hdnM.indexOf(document.getElementById('MainContentPlaceHolder_chkManufacturer').getElementsByTagName("input")[j].value) != -1) {
+                        document.getElementById('MainContentPlaceHolder_chkManufacturer').getElementsByTagName("input")[j].checked = true;
                     }
                     else
                         document.getElementById('MainContentPlaceHolder_chkManufacturer').getElementsByTagName("input")[j].checked = false;
                 }
             }
-            else if (document.getElementById('<%=hdnPopUpSearchCriteria.ClientID%>').value.indexOf("Category") != -1)
-            {
+            else if (document.getElementById('<%=hdnPopUpSearchCriteria.ClientID%>').value.indexOf("Category") != -1) {
                 document.getElementById('<%=hdnCategory.ClientID%>').value = "";
                 $j("[id*=dvCheckBoxListControl] input:checked").each(function (index, item) {
                     if (document.getElementById('<%=hdnCategory.ClientID%>').value == "")
                         document.getElementById('<%=hdnCategory.ClientID%>').value += $(item).val();
                     else {
-                            document.getElementById('<%=hdnCategory.ClientID%>').value += ", " + $(item).val();
+                        document.getElementById('<%=hdnCategory.ClientID%>').value += ", " + $(item).val();
                     }
                 });
 
                 //Checking the outer checkbox (within page) if checkbox within popup are checked.
                 var hdnM = document.getElementById('<%=hdnCategory.ClientID%>').value.split(", ");
-                for (var j = 0; j < document.getElementById('MainContentPlaceHolder_chkCategory').getElementsByTagName("input").length; j++)
-                {
+                for (var j = 0; j < document.getElementById('MainContentPlaceHolder_chkCategory').getElementsByTagName("input").length; j++) {
                     if (hdnM.indexOf(document.getElementById('MainContentPlaceHolder_chkCategory').getElementsByTagName("input")[j].value) != -1)
                         document.getElementById('MainContentPlaceHolder_chkCategory').getElementsByTagName("input")[j].checked = true;
                     else
                         document.getElementById('MainContentPlaceHolder_chkCategory').getElementsByTagName("input")[j].checked = false;
                 }
             }
-            else if (document.getElementById('<%=hdnPopUpSearchCriteria.ClientID%>').value.indexOf("Sub-Category") != -1)
-            {
+            else if (document.getElementById('<%=hdnPopUpSearchCriteria.ClientID%>').value.indexOf("Sub-Category") != -1) {
                 document.getElementById('<%=hdnSubCategory.ClientID%>').value = "";
-                $j("[id*=dvCheckBoxListControl] input:checked").each(function (index, item)
-                {
+                $j("[id*=dvCheckBoxListControl] input:checked").each(function (index, item) {
                     if (document.getElementById('<%=hdnSubCategory.ClientID%>').value == "")
                         document.getElementById('<%=hdnSubCategory.ClientID%>').value += $(item).val();
                     else
-                         document.getElementById('<%=hdnSubCategory.ClientID%>').value += ", " + $(item).val();
+                        document.getElementById('<%=hdnSubCategory.ClientID%>').value += ", " + $(item).val();
                 });
 
                 //Checking the outer checkbox (within page) if checkbox within popup are checked.
                 var hdnM = document.getElementById('<%=hdnSubCategory.ClientID%>').value.split(", ");
-                for (var j = 0; j < document.getElementById('MainContentPlaceHolder_chkSubCategory').getElementsByTagName("input").length; j++)
-                {
+                for (var j = 0; j < document.getElementById('MainContentPlaceHolder_chkSubCategory').getElementsByTagName("input").length; j++) {
                     if (hdnM.indexOf(document.getElementById('MainContentPlaceHolder_chkSubCategory').getElementsByTagName("input")[j].value) != -1)
                         document.getElementById('MainContentPlaceHolder_chkSubCategory').getElementsByTagName("input")[j].checked = true;
                     else
@@ -262,7 +253,7 @@
                 }
             }
 
-            document.getElementById('<%=hdnInStock.ClientID%>').value = document.getElementById('MainContentPlaceHolder_chkInStock').checked;
+    document.getElementById('<%=hdnInStock.ClientID%>').value = document.getElementById('MainContentPlaceHolder_chkInStock').checked;
             document.getElementById('<%=hdnPricingAvailable.ClientID%>').value = document.getElementById('MainContentPlaceHolder_chkPricingAvail').checked;
             document.getElementById('<%=hdnAttributes.ClientID%>').value = document.getElementById('<%=hdnAttributes.ClientID%>').value;
             return true;
@@ -373,7 +364,7 @@
             var SearchCriteria = "";
             var _ddl = "";
             if (ddl.id.indexOf("ddlSortBy") != -1) {
-                _ddl = document.getElementById('<%=ddlSortBy.ClientID %>');
+                <%--_ddl = document.getElementById('<%=ddlSortBy.ClientID %>');--%>
                 SearchObj.SearchCriteria = "SortBy";
                 SearchObj.SearchValue = _ddl.options[_ddl.selectedIndex].value;
             }
@@ -432,7 +423,7 @@
             else if (obj.CriteriaToExpand.indexOf("Category") != -1 && document.getElementById('<%=hdnCategory.ClientID%>').value != "") {
                 a = document.getElementById('<%=hdnCategory.ClientID%>').value.split(", ");
             }
-            else if (obj.CriteriaToExpand.indexOf("Sub-Category") !=-1 && document.getElementById('<%=hdnSubCategory.ClientID%>').value != "") {
+            else if (obj.CriteriaToExpand.indexOf("Sub-Category") != -1 && document.getElementById('<%=hdnSubCategory.ClientID%>').value != "") {
                 a = document.getElementById('<%=hdnSubCategory.ClientID%>').value.split(", ");
             }
     $(checkboxlistItems).each(function () {
@@ -466,70 +457,132 @@
     $('#dvCheckBoxListControl').append(table);
 }//Create Checkboxlist close
 
+function ApplyFilter() {
+    document.getElementById('<%=btnApplyFilter.ClientID%>').click();
+}
 
 //**To expand/collapse columns
+var Toggle_All = false;
 var tbl = null;
 var UpperBound = 0;
 var LowerBound = 1;
 var CollapseImage = 'images/minus.png';
 var ExpandImage = 'images/plus.png';
 var n = 1;
-var TimeSpan = 25;
+var TimeSpan = 100;
 var Rows = null;
 var Cols = null;
 var img = "";
+var IsImageExpanded = false;
+
+function HideCols() {
+    tbl = document.getElementById('<%= this.gvProducts.ClientID %>');
+    HideColumns = document.getElementById('<%=hdnHideCols.ClientID %>').value;
+    var ibtn = document.getElementById('<%=btnShowAttributes.ClientID %>');
+    for (j = 0; j < tbl.rows.length; j++) {
+        for (i = 7; i <= 21; i++) {
+            if (HideColumns == "true") {
+                tbl.rows[j].cells[i].style.display = "none";
+                ibtn.src = "images/show_attributes.png";
+            }
+            else {
+                tbl.rows[j].cells[i].style.display = "block";
+                ibtn.src = "images/hide_attributes.png";
+            }
+        }
+    }
+}
+
 
 window.onload = function () {
     tbl = document.getElementById('<%= this.gvProducts.ClientID %>');
     UpperBound = parseInt('<%= this.gvProducts.Rows.Count %>');
     Rows = tbl.getElementsByTagName('tr');
     Cols = tbl.getElementsByTagName('td');
+    HideCols();
 }
 
-function Toggle(Image, Index) {
-    ToggleImage(Image, Index);
-    ToggleColumns(Image, Index);
+function Toggle(Index) {
+    ToggleImage(Index);
+    ToggleColumns(Index);
 }
 
 function ToggleImage(Image, Index) {
-    if (Image.src.indexOf("plus") != -1) {
-        Image.src = ExpandImage;
-        Image.title = 'Expand';
+    if (document.getElementById('<%=hdnHideCols.ClientID %>').value == true) {
         n = UpperBound;
         img = ExpandImage;
-        Image.IsExpanded = false;
+        IsImageExpanded = false;
     }
     else {
-        Image.src = CollapseImage;
-        Image.title = 'Collapse';
         n = LowerBound;
         img = CollapseImage;
-        Image.IsExpanded = true;
+        IsImageExpanded = true;
     }
+    document.getElementById('<%=hdnColImg.ClientID %>').value = img;
+
+    if (Toggle_All == 'false' || Toggle_All == 'False')
+        document.getElementById('<%=hdnColNoImg.ClientID %>').value = Index + "|" + img;
 }
 
-function ToggleColumns(Image, Index) {
-    document.getElementById('<%=hdnColNoImg.ClientID %>').value = Index + "|" + img;
+function ToggleColumns(Index) {
+    var HideColumns = document.getElementById('<%=hdnHideCols.ClientID %>').value;
+
+            if (Toggle_All == 'false' || Toggle_All == 'False')
+                document.getElementById('<%=hdnColNoImg.ClientID %>').value = Index + "|" + img;
     if (n < LowerBound || n > UpperBound) return;
     if (tbl.rows.length > 0) {
+        if (UpperBound > tbl.rows.length - 1)
+            UpperBound = tbl.rows.length - 1;
         var tbl_row = tbl.rows[parseInt(n)];
         var tbl_Cell = tbl_row.cells[Index];
-        if (tbl_Cell.style.width >= "100px") {
-
-            tbl_Cell.style.width = "5px";
-
+        if (parseInt(tbl_Cell.style.width.replace("px", "")) >= parseInt("100")) {
+            tbl_Cell.style.width = "3px";
+            if (HideColumns == "true")
+                tbl_Cell.style.display = "none";
+            else
+                tbl_Cell.style.display = "block";
         }
         else {
             tbl_Cell.style.width = "100px";
-
+            if (HideColumns == "true")
+                tbl_Cell.style.display = "none";
+            else
+                tbl_Cell.style.display = "block";
         }
 
-        if (Image.IsExpanded) n++; else n--;
-        setTimeout(function () { ToggleColumns(Image, Index); }, TimeSpan);
+        if (IsImageExpanded) n++; else n--;
+        setTimeout(function () { ToggleColumns(Index); }, TimeSpan);
     }
+    if (Toggle_All == 'false' || Toggle_All == 'False')
+        document.getElementById('<%=btn1.ClientID %>').click();
+}//Toggle Columns
 
-    document.getElementById('<%=btn1.ClientID %>').click();
+function ToggleAll(ibtn) {
 
+    if (document.getElementById('<%=hdnHideCols.ClientID %>').value == "true") {
+                document.getElementById('<%=hdnHideCols.ClientID %>').value = "false";
+                ibtn.src = "images/hide_attributes.png";
+            }
+            else {
+                document.getElementById('<%=hdnHideCols.ClientID %>').value = "true";
+                ibtn.src = "images/show_attributes.png";
+            }
+            ToggleAll_1();
+        }
+
+        //will be invoked On page index changed: call to expand/collapse cols based on prev selection
+        function ToggleAll_1() {
+            Toggle_All = true;
+            var gv = document.getElementById('<%=gvProducts.ClientID %>');
+        for (var i = 7; i <= 21; i++) {
+            Toggle(i);
+        }
+        HideCols();
+        document.getElementById('<%=btnShowAttributes.ClientID %>').click();
+}
+
+function SetToggle_All(val) {
+    Toggle_All = val;
 }
 //**
     </script>
@@ -554,7 +607,7 @@ function ToggleColumns(Image, Index) {
                             <h4 class="ListingSrchHeading">Manufacturer</h4>
                             <div style="height: 160px; overflow-y: hidden;">
                                 <div class="brands-name">
-                                    <asp:CheckBoxList ID="chkManufacturer" runat="server" Height="80px" CssClass="SearchCheckbox">
+                                    <asp:CheckBoxList ID="chkManufacturer" runat="server" Height="80px" CssClass="SearchCheckbox" onclick="ApplyFilter()">
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
@@ -567,7 +620,7 @@ function ToggleColumns(Image, Index) {
                             <div style="height: 160px; overflow-y: hidden;">
 
                                 <div class="brands-name">
-                                    <asp:CheckBoxList ID="chkCategory" runat="server" Height="80px" CssClass="SearchCheckbox">
+                                    <asp:CheckBoxList ID="chkCategory" runat="server" Height="80px" CssClass="SearchCheckbox" onclick="ApplyFilter()">
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
@@ -581,7 +634,7 @@ function ToggleColumns(Image, Index) {
                             <h4 class="ListingSrchHeading">SubCategory</h4>
                             <div style="height: 160px; overflow-y: hidden;">
                                 <div class="brands-name">
-                                    <asp:CheckBoxList ID="chkSubCategory" runat="server" Height="80px" CssClass="SearchCheckbox">
+                                    <asp:CheckBoxList ID="chkSubCategory" runat="server" Height="80px" CssClass="SearchCheckbox" onclick="ApplyFilter()">
                                     </asp:CheckBoxList>
                                 </div>
                             </div>
@@ -604,9 +657,9 @@ function ToggleColumns(Image, Index) {
                         </div>
                         <!--/price-range-->
 
-                        <asp:CheckBox ID="chkInStock" runat="server" Text="In Stock" CssClass="SearchCheckbox" Style="padding: 3% 6% 4% 6% !important;" />
+                        <asp:CheckBox ID="chkInStock" runat="server" Text="In Stock" CssClass="SearchCheckbox" Style="padding: 3% 6% 4% 6% !important;" onclick="ApplyFilter()" />
                         <br />
-                        <asp:CheckBox ID="chkPricingAvail" runat="server" Text="Pricing Available" CssClass="SearchCheckbox" Style="padding: 3% 6% 4% 6% !important;" />
+                        <asp:CheckBox ID="chkPricingAvail" runat="server" Text="Pricing Available" CssClass="SearchCheckbox" Style="padding: 3% 6% 4% 6% !important;" onclick="ApplyFilter()" />
                         <input type="button" id="btnApplyFilter1" value="Apply Filter" style="visibility: hidden;" />
                         <asp:HiddenField ID="hdnCategory" runat="server" />
                         <asp:HiddenField ID="hdnSubCategory" runat="server" />
@@ -616,7 +669,7 @@ function ToggleColumns(Image, Index) {
                         <asp:HiddenField ID="hdnPricingAvailable" runat="server" />
                         <asp:HiddenField ID="hdnPriceRange" runat="server" />
                         <div style="padding: 3% 6% 4% 6% !important;">
-                            <asp:Button ID="btnApplyFilter" runat="server" Text="Apply Filter" CssClass="btn btn-primary" OnClick="btnApplyFilter_Click" OnClientClick="return SetSearchFields(1);" />
+                            <asp:Button ID="btnApplyFilter" runat="server" Text="Apply Filter" CssClass="btn btn-primary" OnClick="btnApplyFilter_Click" Style="display: none;" OnClientClick="return SetSearchFields(1);" />
                         </div>
                     </div>
                 </div>
@@ -639,7 +692,7 @@ function ToggleColumns(Image, Index) {
                                 </asp:Repeater>
                             </ul>--%>
                                 <div style="padding-top: 15px; padding-bottom: 15px;">
-                                    Sort by
+                                    <%--  Sort by
                                     <asp:DropDownList ID="ddlSortBy" runat="server" CssClass="dropdownSearch" OnSelectedIndexChanged="ddlSortBy_SelectedIndexChanged" AutoPostBack="true">
                                         <asp:ListItem Text="Product Name: A to Z" Value="ProdA_Z"></asp:ListItem>
                                         <asp:ListItem Text="Product Name: Z to A" Value="ProdZ_A"></asp:ListItem>
@@ -647,7 +700,7 @@ function ToggleColumns(Image, Index) {
                                         <asp:ListItem Text="Manufacturer: Z to A" Value="McftZ_A"></asp:ListItem>
                                         <asp:ListItem Text="Price: Low to High" Value="PriceL_H"></asp:ListItem>
                                         <asp:ListItem Text="Price: High to Low" Value="PriceH_L"></asp:ListItem>
-                                    </asp:DropDownList>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </asp:DropDownList>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--%>
                                     Show
                                     <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="dropdownSearch" Style="width: 80px;" OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged" AutoPostBack="true">
                                     </asp:DropDownList>
@@ -659,36 +712,35 @@ function ToggleColumns(Image, Index) {
                             <div class="listingtbl">
                                 <%--class="col-md-12" style=" width:98%; overflow-x:scroll;">--%>
                                 <asp:GridView ID="gvProducts" runat="server" AutoGenerateColumns="false" DataKeyNames="ProductID"
-                                    ShowFooter="false" CssClass="table table-condensed" Width="" Style="font-size: 15px"
-                                    PagerStyle-CssClass="pgr" PagerSettings-Position="Bottom" BorderColor="LightGray" 
-                                    RowStyle-Wrap="true" AlternatingRowStyle-Wrap="true" EditRowStyle-Wrap="true" 
-                                    FooterStyle-Wrap="true" GridLines="Both" ShowHeaderWhenEmpty="true" EnableCallBacks="False"
+                                    ShowFooter="false" CssClass="table table-condensed" Width="" Style="font-size: 15px; border: 1px solid lightgray !important;"
+                                    PagerStyle-CssClass="pgr" PagerSettings-Position="Bottom" BorderColor="#CCCCCC" AllowSorting="true"
+                                    RowStyle-Wrap="true" AlternatingRowStyle-Wrap="true" EditRowStyle-Wrap="true" OnSorting="gvProducts_OnSorting"
+                                    FooterStyle-Wrap="true" ShowHeaderWhenEmpty="true" EnableCallBacks="False"
                                     ShowHeader="true" OnRowDataBound="gvProducts_DataBound" OnRowCreated="gvProducts_RowCreated" AllowPaging="true"
                                     OnRowCommand="gvProducts_RowCommand">
                                     <HeaderStyle CssClass="cart_menu"></HeaderStyle>
                                     <Columns>
-                                        <asp:TemplateField HeaderText="Item" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
+                                        <asp:TemplateField HeaderText="Item" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="18%">
                                             <HeaderStyle CssClass="image" />
                                             <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" CssClass="" />
                                             <ItemTemplate>
-                                                <asp:Image ID="imgProduct" runat="server" ToolTip="Click to view details" Style="width: 100px; height: 75px; cursor:pointer;" />
+                                                <asp:Image ID="imgProduct" runat="server" ToolTip="Click to view details" Style="width: 100px; height: 75px; cursor: pointer;" />
                                                 <asp:Label ID="lblImagePath" runat="server" Style="display: none;" Text='<%# Eval("ImageName") %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Product Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="20%">
+                                        <asp:TemplateField HeaderText="Product Name/Code" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="22%" HeaderStyle-Width="22%" SortExpression="Product">
                                             <HeaderStyle CssClass="description" HorizontalAlign="Center" />
                                             <ItemStyle HorizontalAlign="center" VerticalAlign="Top" CssClass="cart_description" />
                                             <ControlStyle CssClass="cart_description" />
                                             <ItemTemplate>
                                                 <h4>
-                                                    <asp:LinkButton ID="lbtnProdName" ToolTip="Click to view details" runat="server" Text='<%# Eval("Name") %>' CommandName="ShowProductDetails" CommandArgument='<%# Eval("ProductID") %>' style="cursor:pointer;" title="Click to view details" ></asp:LinkButton>
+                                                    <asp:LinkButton ID="lbtnProdName" ToolTip="Click to view details" runat="server" Text='<%# Eval("Name") %>' CommandName="ShowProductDetails" CommandArgument='<%# Eval("ProductID") %>' Style="cursor: pointer;" title="Click to view details"></asp:LinkButton>
                                                 </h4>
-                                                <%--  <p id="lblProductCode" runat="server"><%# Eval("ProductCode") %></p>--%>
                                                 <asp:Label ID="lblProductCode" runat="server" Text='<%# Eval("ProductCode") %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--<asp:BoundField HeaderText="Item" DataField="ProductCode" ItemStyle-CssClass="cart_description"></asp:BoundField>--%>
-                                        <asp:BoundField HeaderText="Manufacturer" DataField="Manufacturer" ItemStyle-CssClass="cart_description" ItemStyle-Width="15%"></asp:BoundField>
+                                        <asp:BoundField HeaderText="Manufacturer" DataField="Manufacturer" ItemStyle-CssClass="cart_description" HeaderStyle-Width="22%" ItemStyle-Width="17%" SortExpression="Manufacturer"></asp:BoundField>
                                         <asp:TemplateField HeaderText="Quantity" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="10%">
                                             <HeaderStyle CssClass="cart_total" />
                                             <ItemStyle CssClass="cart_total" />
@@ -699,7 +751,7 @@ function ToggleColumns(Image, Index) {
                                                 </span>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Price" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="17%">
+                                        <asp:TemplateField HeaderText="Price" HeaderStyle-HorizontalAlign="Center" ItemStyle-Width="17%" SortExpression="Price">
                                             <HeaderStyle CssClass="cart_total" />
                                             <ItemStyle CssClass="cart_total" />
                                             <ItemTemplate>
@@ -733,66 +785,175 @@ function ToggleColumns(Image, Index) {
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px">
                                             <HeaderTemplate>
-                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,6);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
-                                                <br />
-                                                <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
-                                                <%--<asp:ImageButton ID="ibtnExpand" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" CommandArgument='<%# Eval("6") %>' CommandName="CollapseExpand" />--%>
+                                                <asp:Image ID="ibtnShowAttributes" onclick="javascript:ToggleAll(this);" runat="server" ImageUrl="~/images/show_attributes.png" ToolTip="Show/Hide Attributes" ImageAlign="AbsMiddle" />
+                                                <%--<asp:Label ID="lblAttributes" runat="server" Text='<%# Eval("AttributeInfo") %>'></asp:Label>--%>
                                             </HeaderTemplate>
                                             <ItemTemplate>
+                                            </ItemTemplate>
+                                            <HeaderStyle CssClass="Shorter" />
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+
+                                        <asp:TemplateField HeaderText="Description" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Descrip">
+                                            <%-- <HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,7);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Descrip" CommandName="HeaderClick" OnClick="lbtnHeader_Click"></asp:LinkButton>
+                                                
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <%--<asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>    --%>
                                                 <asp:Label ID="lblDescrip" runat="server" Text='<%# Eval("Descrip") %>' Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
                                             </ItemTemplate>
                                             <HeaderStyle CssClass="Shorter" />
                                             <ItemStyle CssClass="Shorter" />
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px">
-                                            <HeaderTemplate>
-                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,7);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
-                                                <br />
-                                                <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
-                                            </HeaderTemplate>
+                                        <asp:TemplateField HeaderText="Technology" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Technology">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,8);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Technology" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
                                             <ItemTemplate>
                                                 <asp:Label ID="lblTechnology" runat="server" Text='<%# Eval("Technology") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
                                             </ItemTemplate>
                                             <ItemStyle CssClass="Shorter" />
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px">
-                                            <HeaderTemplate>
-                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,8);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
-                                                <br />
-                                                <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
-                                            </HeaderTemplate>
+                                        <asp:TemplateField HeaderText="Harmonized Code" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="HarmonizedCode">
+                                            <%-- <HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,9);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="HarmonizedCode" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
                                             <ItemTemplate>
                                                 <asp:Label ID="lblHarmonizedCode" runat="server" Text='<%# Eval("HarmonizedCode") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
                                             </ItemTemplate>
                                             <ItemStyle CssClass="Shorter" />
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px">
-                                            <HeaderTemplate>
-                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,9);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
-                                                <br />
-                                                <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
-                                            </HeaderTemplate>
+                                        <asp:TemplateField HeaderText="Category" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Category">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,10);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Category" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
                                             <ItemTemplate>
                                                 <asp:Label ID="lblCategory" runat="server" Text='<%# Eval("Category") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
                                             </ItemTemplate>
                                             <ItemStyle CssClass="Shorter" />
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px">
-                                            <HeaderTemplate>
-                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,10);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" />
-                                                <br />
-                                                <asp:Label ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;"></asp:Label>
-                                            </HeaderTemplate>
+                                        <asp:TemplateField HeaderText="SubCategory" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="SubCategory">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,11);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="SubCategory" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
                                             <ItemTemplate>
                                                 <asp:Label ID="lblSubCategory" runat="server" Text='<%# Eval("SubCategory") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Capacitance" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Capacitance">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,12);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Capacitance" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblCapacitance" runat="server" Text='<%# Eval("Capacitance") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Voltage" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Voltage">
+                                            <%-- <HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,13);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Voltage" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblVoltage" runat="server" Text='<%# Eval("Voltage") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Material" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Material">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,14);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Material" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblMaterial" runat="server" Text='<%# Eval("Material") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Style" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Style">
+                                            <%-- <HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,15);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Style" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblStyle" runat="server" Text='<%# Eval("Style") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Tolerance" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Tolerance">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,16);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Tolerance" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblTolerance" runat="server" Text='<%# Eval("Tolerance") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Temperature" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Temperature">
+                                            <%-- <HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,17);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Temperature" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblTemperature" runat="server" Text='<%# Eval("Temperature") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Construction" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Construction">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,18);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Construction" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblConstruction" runat="server" Text='<%# Eval("Construction") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Features" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Features">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,19);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Features" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblFeatures" runat="server" Text='<%# Eval("Features") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Wattage" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Wattage">
+                                            <%-- <HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,20);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Wattage" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblWattage" runat="server" Text='<%# Eval("Wattage") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
+                                            </ItemTemplate>
+                                            <ItemStyle CssClass="Shorter" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Resistance" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="3px" ItemStyle-Width="3px" ControlStyle-Width="3px" SortExpression="Resistance">
+                                            <%--<HeaderTemplate>
+                                                <asp:Image ID="ibtnExpand" onclick="javascript:Toggle(this,21);" runat="server" ImageUrl="~/images/plus.png" ToolTip="Expand" ImageAlign="AbsMiddle" Style="display: none;" />
+                                                <asp:LinkButton ID="label1" runat="server" Style="width: 0px; overflow-x: hidden; white-space: nowrap;" CommandArgument="Resistance" CommandName="HeaderClick"></asp:LinkButton>
+                                            </HeaderTemplate>--%>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblResistance" runat="server" Text='<%# Eval("Resistance") %>' Style="width: 0px; overflow: hidden; white-space: nowrap;"></asp:Label>
                                             </ItemTemplate>
                                             <ItemStyle CssClass="Shorter" />
                                         </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
                                 <asp:HiddenField ID="hdnColNoImg" runat="server" />
-                                <asp:Button ID="btn1" OnClick="btnExpand_Click" runat="server" Style="display: none;" />
-
+                                <asp:Button ID="btn1" runat="server" Style="display: none;" OnClick="btnExpand_Click" />
+                                <asp:HiddenField ID="hdnColImg" runat="server" />
+                                <asp:HiddenField ID="hdnHideCols" runat="server" />
+                                <asp:Button ID="btnShowAttributes" OnClick="btnShowAttributes_Click" runat="server" Style="display: none;" />
                             </div>
                             <ul class="pagination">
                                 <asp:Repeater ID="rptPagerBottom" runat="server">

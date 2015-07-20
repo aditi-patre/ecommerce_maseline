@@ -8,6 +8,7 @@ using System.Web;
 /// <summary>
 /// Summary description for Product
 /// </summary>
+[Serializable()]
 public class Product
 {
     #region Properties
@@ -137,9 +138,10 @@ public class Product
             arrPR[0] = "0";
             arrPR[1] = "0";
         }
-        SqlParameter[] sqlParams = new SqlParameter[13];
+        SqlParameter[] sqlParams = new SqlParameter[14];
         try
         {
+            string _Name = this.Name;
             sqlParams[0] = CategoryID != "" ? new SqlParameter("@CategoryID", CategoryID) : new SqlParameter("@CategoryID", DBNull.Value);
             sqlParams[1] = SubCategoryID != "" ? new SqlParameter("@SubCategoryID", SubCategoryID) : new SqlParameter("@SubCategoryID", DBNull.Value);
             sqlParams[2] = ManufacturerID != "" ? new SqlParameter("@ManufacturerID", ManufacturerID) : new SqlParameter("@ManufacturerID", DBNull.Value);
@@ -152,13 +154,13 @@ public class Product
             sqlParams[9] = PageSize > 100 ? new SqlParameter("@PageSize", DBNull.Value) : new SqlParameter("@PageSize", PageSize);
             sqlParams[10] = new SqlParameter("@SortField", SortField);
             sqlParams[11] = new SqlParameter("@SortOrder", SortOrder);
-
-            sqlParams[12] = new SqlParameter("@TotalRecords", TotalRecords);
-            sqlParams[12].Direction = ParameterDirection.Output;
-            sqlParams[12].SqlDbType = SqlDbType.Int;
-            sqlParams[12].ParameterName = "@TotalRecords";
+            sqlParams[12] = _Name != "" ? new SqlParameter("@Name", _Name) : new SqlParameter("@Name", DBNull.Value);
+            sqlParams[13] = new SqlParameter("@TotalRecords", TotalRecords);
+            sqlParams[13].Direction = ParameterDirection.Output;
+            sqlParams[13].SqlDbType = SqlDbType.Int;
+            sqlParams[13].ParameterName = "@TotalRecords";
             dt = SqlHelper.ExecuteDataSet("ProductGetList1", CommandType.StoredProcedure, sqlParams);
-            TotalRecords = Convert.ToInt32(sqlParams[12].Value);
+            TotalRecords = Convert.ToInt32(sqlParams[13].Value);
         }
         catch (Exception ex)
         {
@@ -190,31 +192,113 @@ public class Product
         try
         {
             SqlParameter[] sqlParams = new SqlParameter[1];
-            sqlParams[0] = new SqlParameter("@ProductID", SubCategoryID);
+            sqlParams[0] = new SqlParameter("@ProductID", 0);
             sqlParams[0].Direction = ParameterDirection.Output;
             sqlParams[0].SqlDbType = SqlDbType.Int;
             sqlParams[0].ParameterName = "@ProductID";
 
-            string Query = "insert into Product(Name, ProductCode, CategoryID, SubCategoryID, Descrip, Technology, HarmonizedCode, Price, ManufacturerID, Inventory, ImageName) values('";
-            Query += this.Name + "','" + this.ProductCode + "','" + this.CategoryID + "','" + this.Descrip + "','" + this.Technology + "','" + this.HarmonizedCode + "','" + this.Price + "','" + this.ManufacturerID + "','" + this.Inventory + "','" + this.ImageName + "');";
-            Query += " set @ProductID= @@identity";
+            string Query = "";
+            if (SubCategoryID <= 0)
+            {
+                Query = "insert into Product(Name, ProductCode, CategoryID, Descrip, Technology, HarmonizedCode, Price, ManufacturerID, Inventory, ImageName) values('";
+                Query += this.Name + "','" + this.ProductCode + "'," + this.CategoryID + ", '" + this.Descrip + "','" + this.Technology + "','" + this.HarmonizedCode + "', " + this.Price + ", " + this.ManufacturerID + ", " + this.Inventory + ", '" + this.ImageName + "');";
+                Query += " set @ProductID= @@identity";
+            }
+
+            if (SubCategoryID > 0)
+            {
+                Query = "insert into Product(Name, ProductCode, CategoryID, SubCategoryID, Descrip, Technology, HarmonizedCode, Price, ManufacturerID, Inventory, ImageName) values('";
+                Query += this.Name + "','" + this.ProductCode + "'," + this.CategoryID + "," + this.SubCategoryID + ", '" + this.Descrip + "','" + this.Technology + "','" + this.HarmonizedCode + "'," + this.Price + ", " + this.ManufacturerID + ", " + this.Inventory + ", '" + this.ImageName + "');";
+                Query += " set @ProductID= @@identity";
+            }
             SqlHelper.ExecuteScalar(Query, CommandType.Text, sqlParams);
-            this.SubCategoryID = Convert.ToInt32(sqlParams[0].Value);
+            this.ProductID = Convert.ToInt32(sqlParams[0].Value);
+
+            //Add Pricing if applicable
+            if (this.Pricing != null)
+            {
+                for (int i = 0; i < this.Pricing.Count; i++)
+                {
+                    if (this.Pricing[i].Key.IndexOf('-') >= 0)
+                    {
+                        string[] arrRange = this.Pricing[i].Key.Split('-');
+                        if (!arrRange[1].ToLower().Contains("up"))
+                            Query = "insert into Pricing(ProductID, MinQty, MaxQty,Price) values(" + this.ProductID + ", " + arrRange[0] + ", " + arrRange[1] + ", " + this.Pricing[i].Value + ");";
+                        else
+                            Query = "insert into Pricing(ProductID, MinQty, Price) values(" + this.ProductID + ", " + arrRange[0] + ", " + this.Pricing[i].Value + ");";
+                    }
+                    else
+                        Query = "insert into Pricing(ProductID, MinQty, Price) values(" + this.ProductID + ", " + this.Pricing[i].Key + ", " + this.Pricing[i].Value + ");";
+
+                    SqlHelper.ExecuteScalar(Query, CommandType.Text, null);
+                }
+            }
         }
         catch (Exception ex)
         {
             return false;
         }
 
-        return this.CategoryID > 0;
+        return this.ProductID > 0;
     }
 
     private bool Update()
     {
         try
         {
-            string Query = "";
+            string Query = " update Product set Name='" + this.Name + "', ProductCode='" + this.ProductCode + "', CategoryID=" + this.CategoryID;
+            if (SubCategoryID > 0)
+                Query += ", SubCategoryID=" + this.SubCategoryID.ToString();
+            Query += ", Descrip='" + this.Descrip + "', Technology='" + this.Technology + "', HarmonizedCode='" + this.HarmonizedCode + "', Price=" + this.Price.ToString() + ", ManufacturerID=" + this.ManufacturerID + ", Inventory=" + this.Inventory + ", ImageName='" + this.ImageName + "'";
+            Query += " where ProductID=" + this.ProductID;
             SqlHelper.ExecuteNonQuery(Query, CommandType.Text, null);
+
+            Product objP = new Product(this.ProductID);
+            int cnt = 0;
+            if (objP.Pricing != null)
+                cnt = objP.Pricing.Count;
+
+            if (this.Pricing != null)
+            {
+                for (int i = 0; i < this.Pricing.Count; i++)
+                {
+                    if (i < cnt)//Update existing pricing record
+                    {
+                        if (this.Pricing[i].Key.IndexOf('-') > -1)
+                        {
+                            string[] arrRange = this.Pricing[i].Key.Split('-');
+                            if (!arrRange[1].ToLower().Contains("up"))
+                                Query = "update Pricing set MinQty=" + arrRange[0] + ", MaxQty=" + arrRange[1] + ", Price=" + this.Pricing[i].Value + " where PricingID in (select top(" + Convert.ToInt32(i + 1) + ") PricingID from Pricing except (select top(" + i + ") PricingID from Pricing where ProductID=" + this.ProductID + "))";
+                            else
+                                Query = "update Pricing set MinQty=" + arrRange[0] + ", Price=" + this.Pricing[i].Value + " where PricingID in (select top(" + Convert.ToInt32(i + 1) + ") PricingID from Pricing except (select top(" + i + ") PricingID from Pricing where ProductID=" + this.ProductID + "))";
+                        }
+                        else
+                            Query = "update Pricing set MinQty=" + this.Pricing[i].Key + ", Price=" + this.Pricing[i].Value + " where PricingID in (select top(" + Convert.ToInt32(i + 1) + ") PricingID from Pricing except (select top(" + i + ") PricingID from Pricing where ProductID=" + this.ProductID + "))";
+
+                        SqlHelper.ExecuteScalar(Query, CommandType.Text, null);
+                    }
+                    else //add new
+                    {
+                        if (this.Pricing[i].Key.IndexOf('-') > -1)
+                        {
+                            string[] arrRange = this.Pricing[i].Key.Split('-');
+                            if (!arrRange[1].ToLower().Contains("up"))
+                                Query = "insert into Pricing(ProductID, MinQty,MaxQty, Price) values(" + this.ProductID + ", " + arrRange[0] + ", " + arrRange[1] + ", " + this.Pricing[i].Value + ")";
+                            else
+                                Query = "insert into Pricing(ProductID, MinQty,Price) values(" + this.ProductID + ", " + arrRange[0] + ", " + this.Pricing[i].Value + ")";
+                        }
+                        else
+                            Query = "insert into Pricing(ProductID, MinQty,Price) values(" + this.ProductID + ", " + this.Pricing[i].Key + ", " + this.Pricing[i].Value + ")";
+
+                        SqlHelper.ExecuteScalar(Query, CommandType.Text, null);
+                    }
+                }
+                if (this.Pricing.Count < cnt) //Delete pricing
+                {
+                    Query = "delete from Pricing where ProductID=" + this.ProductID + " and PricingID in (select PricingID from Pricing except (select top(" + this.Pricing.Count + ") PricingID from Pricing where ProductID=" + this.ProductID + "))";
+                    SqlHelper.ExecuteScalar(Query, CommandType.Text, null);
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -223,6 +307,29 @@ public class Product
         return true;
     }
 
+    public void AddPricing()
+    {
+        string Query = "";
+        int i = this.Pricing.Count - 1;
+        if (this.Pricing[i].Key.IndexOf('-') > -1)
+        {
+            string[] arrRange = this.Pricing[i].Key.Split('-');
+            Query = "insert into Pricing(ProductID, MinQty,MaxQty, Price) values(" + this.ProductID + ", " + arrRange[0] + ", " + arrRange[1] + ", " + this.Pricing[i].Value + ")";
+        }
+        else
+            Query = "insert into Pricing(ProductID, MinQty,Price) values(" + this.ProductID + ", " + this.Pricing[i].Key + ", " + this.Pricing[i].Value + ")";
+
+        SqlHelper.ExecuteScalar(Query, CommandType.Text, null);
+    }
+
+    public static DataTable GetSearchableAttributes()
+    {
+        DataTable dt = null;
+        SqlParameter[] sqlParams = new SqlParameter[0];
+        dt = SqlHelper.ExecuteDataSet("select distinct a.Name, isnull(a.IsSrchCriteria,1)as IsSrchCriteria, STUFF((SELECT distinct ',' + CONVERT(varchar(10),isnull(a1.[CategoryID],0)) FROM Attribute a1 WHERE a.Name = a1.Name FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,1,'') Categories from Attribute a where isnull(IsSrchCriteria,1)=1", CommandType.Text, sqlParams).Tables[0];
+
+        return dt;
+    }
     public bool CodeExists(string ID)
     {
         DataTable dt = null;
@@ -239,7 +346,7 @@ public class Product
     {
         try
         {
-            string Query = " update Product set IsActive = 0 where ProductID =" + this.SubCategoryID;
+            string Query = " update Product set IsActive = 0 where ProductID =" + this.ProductID;
             SqlHelper.ExecuteNonQuery(Query, CommandType.Text, null);
         }
         catch (Exception ex)
@@ -248,5 +355,6 @@ public class Product
         }
         return true;
     }
+
     #endregion
 }

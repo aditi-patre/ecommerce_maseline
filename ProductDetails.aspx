@@ -102,8 +102,8 @@
                             <div class="shipping text-center" style="border: 1px solid lightgrey;">
                                 <h2>Featured News</h2>
                                 <!--featured News-->
-
-                                <div class="media commnets" style="border-bottom: 1px solid lightgrey;">
+                                <asp:Literal ID="ltFeaturedNews" runat="server"></asp:Literal>
+                                <%--<div class="media commnets" style="border-bottom: 1px solid lightgrey;">
                                     <a class="pull-left" href="#">
                                         <img src="images/news/media-one.jpg" alt="" />
                                     </a>
@@ -131,8 +131,9 @@
                                         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt .  </p>
 
                                     </div>
-                                </div>
+                                </div>--%>
                             </div>
+                           
                         </div>
                     </div>
                 </div>

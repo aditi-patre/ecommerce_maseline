@@ -13,7 +13,7 @@ public partial class SiteMaster : System.Web.UI.MasterPage
     //{
     //    //ViewState["lblCartItemCount"] = lblCartItemCount.Text;
 
-        
+
     //}
     //public string CatList = "";
     //public string _ltListText
@@ -55,7 +55,10 @@ public partial class SiteMaster : System.Web.UI.MasterPage
         //lblCartItemCount.Text = ShoppingCart.Instance.Items.Count.ToString();
         //}
         if (!IsPostBack)
+        {
             PopulateLeftMenu();
+            LoadFeaturedNews();
+        }
     }
 
     //private void PopulateLeftMenu()
@@ -145,10 +148,10 @@ public partial class SiteMaster : System.Web.UI.MasterPage
         Product objProduct = new Product();
         objProduct.ProductCode = hdnPCode.Value;
         DataTable dt = objProduct.GetList(hdnPCode.Value);
-        if(dt!= null && dt.Rows.Count > 0)
+        if (dt != null && dt.Rows.Count > 0)
         {
             Response.Redirect("ProductDetails.aspx?PCode=" + dt.Rows[0]["ProductID"].ToString());
-        }        
+        }
     }
     private void PopulateLeftMenu()
     {
@@ -222,12 +225,40 @@ public partial class SiteMaster : System.Web.UI.MasterPage
         ltList.Text = sb.ToString();
     }
 
+    private void LoadFeaturedNews()
+    {
+        FeaturedNews objF = new FeaturedNews();
+        DataTable dt = objF.GetList(true);
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            for(int i=0; i<dt.Rows.Count;i++)
+            {
+                ltFeaturedNews.Text += GenerateNewsTemplate(Convert.ToString(dt.Rows[i]["ImageName"]), Convert.ToString(dt.Rows[i]["Descrip"]));
+            }
+        }
+    }
     private string GenerateURL(string Category, string SubCategory)
     {
         if (!String.IsNullOrEmpty(SubCategory))
             return "ProductListing.aspx?Cat=" + Category + "&SubCat=" + SubCategory;
         else
             return "ProductListing.aspx?Cat=" + Category;
+    }
+
+
+    private string GenerateNewsTemplate(string ImgName, string Content)
+    {
+        string ImagePath = "";
+        if (ImgName != "")
+            ImagePath = "images/news/" + ImgName;
+        StringBuilder sb = new StringBuilder();
+        sb.Append("<div class=\"media commnets\" style=\"border-bottom: 1px solid lightgrey;\">");
+        sb.Append("<a class=\"pull-left\" href=\"#\">");
+        sb.Append("<img src='" + ImagePath + "' alt=\"\" style=\"width:52px; height:52px;\" />");
+        sb.Append("</a><div class=\"media-body\">");
+        sb.Append("<p>" + Content + "</p></div></div>");
+
+        return sb.ToString();
     }
 
 }

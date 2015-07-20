@@ -3,7 +3,8 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">    
+<head runat="server">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="" />
@@ -17,9 +18,9 @@
     <link href="css/main.css" rel="stylesheet" />
     <link href="css/responsive.css" rel="stylesheet" />
     <script src="js/script.js"></script>
-      <script src="http://code.jquery.com/jquery-1.11.3.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.js"></script>
     <script src="http://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
 
@@ -163,38 +164,6 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="linkBg pull-right">
-                            <%-- <div class="mainmenu pull-right">
-                                <ul class="nav navbar-nav collapse navbar-collapse">
-                                    <li><a href="Home.aspx" class="active">
-                                        <img src="images/home/home.png" class="girl img-responsive" alt="" /></a></li>
-                                    <li class="dropdown">
-                                        <a href="#">
-                                            <img src="images/home/catalog.png" class="girl img-responsive" alt="" /></a>
-                                        <ul role="menu" class="sub-menu">
-                                            <li><a href="ProductListing.aspx">Products</a></li>
-                                            <li><a href="ProductDetails.aspx">Product Details</a></li>
-                                            <li><a href="Login.aspx?Checkout=Y">Checkout</a></li>
-                                            <li><a href="ViewCart.aspx">Cart</a></li>
-                                            <li><a href="Login.aspx">Login</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="#">
-                                            <img src="images/home/services.png" class="girl img-responsive" alt="" /><i class="fa fa-angle-down"></i></a>
-                                        <ul role="menu" class="sub-menu">
-                                            <li><a href="blog.html">Blog List</a></li>
-                                            <li><a href="blog-single.html">Blog Single</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="404.html">
-                                            <img src="images/home/product_video.png" class="girl img-responsive" alt="" />
-                                        </a>
-                                    </li>
-                                    <li><a href="contact-us.html">
-                                        <img src="images/home/line_Card.png" class="girl img-responsive" alt="" /></a></li>
-                                </ul>
-                            </div>--%>
                             <div id="cssmenu" style="right: 0;">
                                 <ul>
                                     <li class="active"><a href="Home.aspx" class="active">
@@ -211,12 +180,17 @@
                                             </ul>
                                         </div>--%>
                                     </li>
-                                    <li><a href="#">
+                                    <li><a href="Services.aspx">
                                         <img id="lnkServices" src="images/home/services.png" class="girl img-responsive" alt="" /></a>
                                         <div id="dvServices" style="display: none;">
                                             <ul class="SubMenu">
-                                                <li><a href="blog.html" style="color: white;">Blog List</a></li>
-                                                <li><a href="blog-single.html" style="color: white;">Blog Single</a></li>
+                                                <li><a href="Services.aspx?p=logistics" style="color: white;">Logistics</a></li>
+                                                <li><a href="Services.aspx?p=lead_forming" style="color: white;">Lead Forming</a></li>
+                                                <li><a href="Services.aspx?p=custom_assembly" style="color: white;">Custom Assembly</a></li>
+                                                <li><a href="Services.aspx?p=kitting" style="color: white;">Kitting</a></li>
+                                                <li><a href="Services.aspx?p=packaging" style="color: white;">Packaging</a></li>
+                                                <li><a href="Services.aspx?p=labeling" style="color: white;">Labeling</a></li>
+                                                <li><a href="Services.aspx?p=final_inspection" style="color: white;">Final Inspection</a></li>
                                             </ul>
                                         </div>
                                     </li>
@@ -227,7 +201,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <img src="images/common/innerBg.png" style="margin-top: -5.4%; width:100%;" />
+                        <img src="images/common/innerBg.png" style="margin-top: -5.4%; width: 100%;" />
                         <%--updated by aditi--%>
                     </div>
                 </div>
@@ -245,12 +219,12 @@
                     <!--Footer-->
                     <div class="footer-widget">
                         <div class="container">
-                            <div class="row" style=" margin-left:10px;">
+                            <div class="row" style="margin-left: 10px;">
                                 <div class="col-sm-2">
                                     <div class="single-widget">
-                                        <ul class="nav nav-pills nav-stacked" >
-                                            <li><a href="Home.aspx">ABOUT US</a></li>
-                                            <li><a href="#">SERVICES</a></li>
+                                        <ul class="nav nav-pills nav-stacked">
+                                            <li><a href="AboutUs.aspx">ABOUT US</a></li>
+                                            <li><a href="Services.aspx">SERVICES</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -281,7 +255,7 @@
                                     <div class="single-widget">
                                         <ul class="nav nav-pills nav-stacked">
                                             <li><a href="Home.aspx">COMPANY INFORMATION</a></li>
-                                            <li><a href="#">CAREERS</a></li>
+                                            <li><a href="Careers.aspx">CAREERS</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -291,7 +265,7 @@
                                             <img src="images/home/call.png" /></h2>
                                         <ul class="nav nav-pills nav-stacked">
                                             <li><a href="#" style="font-size: 12px; margin-top: -5px;">jobs@masline.com</a></li>
-                                            <li><a href="#" style="font-size: 12px; margin-top: -10px">Contact us at sales@masline.com</a></li>
+                                            <li><a href="mailto:sales@masline.com" style="font-size: 12px; margin-top: -10px">Contact us at sales@masline.com</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -312,13 +286,13 @@
             </div>
         </div>
         <!--/Footer-->
-<%--        <script src="js/jquery.js"></script>
+        <%--  <script src="js/jquery.js"></script>
         <script src="js/bootstrap.min.js"></script>--%>
         <script src="js/jquery.scrollUp.min.js"></script>
         <script src="js/price-range.js"></script>
         <script src="js/jquery.prettyPhoto.js"></script>
         <script src="js/main.js"></script>
-        
+
         <asp:Button ID="btnSearchProduct" runat="server" OnClick="btnSearchProduct_Click" Style="display: none;" />
         <asp:HiddenField ID="hdnPCode" runat="server" />
     </form>
