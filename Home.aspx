@@ -246,7 +246,7 @@
                                         </ul>
                                     </div>
                                 </li>
-                                <li><a href="404.html">
+                                <li><a href="VideoGallery.aspx">
                                     <img src="images/home/product_video.png" class="girl img-responsive" alt="" /></a></li>
                                 <li><a href="contact-us.html">
                                     <img src="images/home/line_Card.png" class="girl img-responsive" alt="" /></a></li>

@@ -140,6 +140,11 @@
                                             <h4 class="panel-title"><a href="FeaturedNews.aspx">Featured News</a></h4>
                                         </div>
                                     </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"><a href="VideoGallery.aspx">Video Gallery</a></h4>
+                                        </div>
+                                    </div>
                                     <%--<div class="panel panel-default">
                                         <div class="panel-heading">
                                             <h4 class="panel-title"><a href="AdminLogin.aspx">Login</a></h4>
